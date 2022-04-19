@@ -1,0 +1,10 @@
+{
+  "apps": [
+    {
+      "name": "SotatekStarterBackend_rinkeby",
+      "script": "node server.js",
+      "cwd": "",
+      "watch": false
+    }
+  ]
+}
