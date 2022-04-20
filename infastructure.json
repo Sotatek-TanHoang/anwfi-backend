@@ -73,7 +73,7 @@
           "Type": "CommaDelimitedList"
       },
       "ApiPort": {
-          "Description": "exposed by Oasis API container",
+          "Description": "exposed by ANWFI API container",
           "Type": "String"
       },
       "DNSCertArn": {
@@ -81,11 +81,11 @@
           "Type": "String"
       },
       "HostHeaderApi": {
-          "Description": "Host Header of Api Oasis",
+          "Description": "Host Header of Api ANFI",
           "Type": "String"
       },
       "S3bucket1": {
-          "Description": "S3 bucket for Oasis",
+          "Description": "S3 bucket for ANFI",
           "Type": "String"
       },
       "CFCertArn": {

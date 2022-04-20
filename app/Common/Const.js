@@ -157,7 +157,7 @@ module.exports = Object.freeze({
     DEPLOY_FAILED : 3
   },
   BACK_OFF_JOB: 900000, // 15 mins in miliseconds
-  JOIN_MESSAGE: "Oasis launchpad uses this cryptographic signature to verify that you are the owner of this wallet",
+  JOIN_MESSAGE: "ANWFI uses this cryptographic signature to verify that you are the owner of this wallet",
   USER_MESSAGE: "LaunchGarden uses this cryptographic signature to verify that you are the owner of this wallet",
-  ADMIN_MESSAGE: "Oasis launchpad uses this cryptographic signature to verify that you are the owner of this wallet"
+  ADMIN_MESSAGE: "ANWFI uses this cryptographic signature to verify that you are the owner of this wallet"
 });

@@ -1,8 +1,8 @@
 {
-  "name": "anwfi-voting",
+  "name": "anwfi-backend",
   "version": "0.1.0",
   "adonis-version": "4.1.0",
-  "description": "ANWFI voting backend.",
+  "description": "ANWFI backend.",
   "main": "index.js",
   "scripts": {
     "start": "node server.js",
