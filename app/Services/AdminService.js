@@ -40,7 +40,7 @@ class AdminService {
     }
 
     // get number of projects that each admin created
-    builder.withCount('projects as projects_created');
+    // builder.withCount('projects as projects_created');
     return builder;
   }
 

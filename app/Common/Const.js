@@ -158,6 +158,6 @@ module.exports = Object.freeze({
   },
   BACK_OFF_JOB: 900000, // 15 mins in miliseconds
   JOIN_MESSAGE: "ANWFI uses this cryptographic signature to verify that you are the owner of this wallet",
-  USER_MESSAGE: "LaunchGarden uses this cryptographic signature to verify that you are the owner of this wallet",
+  USER_MESSAGE: "ANWFI uses this cryptographic signature to verify that you are the owner of this wallet",
   ADMIN_MESSAGE: "ANWFI uses this cryptographic signature to verify that you are the owner of this wallet"
 });

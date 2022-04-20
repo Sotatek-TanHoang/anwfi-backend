@@ -9,7 +9,7 @@ class AdminController {
   async create({request}) {
     try {
       const inputs = request.only(['wallet_address', 'firstname', 'lastname']);
-      inputs.password = request.input('password');
+      // inputs.password = request.input('password');
       console.log('Create Admin with params: ', inputs);
 
       const adminService = new AdminService();
@@ -22,9 +22,9 @@ class AdminController {
 
       const admin = new AdminModel();
       admin.fill(inputs);
-      admin.signature = randomString(15);  // TODO: Fill any string
+      // admin.signature = randomString(15);  // TODO: Fill any string
       admin.status = Const.USER_STATUS.ACTIVE;
-      const res = await admin.save();
+      await admin.save();
 
       //TODO: Send mail to admin after create account
       
@@ -34,7 +34,7 @@ class AdminController {
       //   password: request.input('password'),
       // });
 
-      return HelperUtils.responseSuccess(res);
+      return HelperUtils.responseSuccess(admin);
     } catch (e) {
       console.log(e);
       return HelperUtils.responseErrorInternal('ERROR: create admin fail !');
@@ -47,7 +47,7 @@ class AdminController {
       const searchQuery = request.input('searchQuery');
       const limit = params.limit || Const.DEFAULT_LIMIT;
       const page = params.page || 1;
-
+      
       const adminService = new AdminService();
       let adminQuery = adminService.buildQueryBuilder(params);
       if (searchQuery) {
@@ -56,7 +56,7 @@ class AdminController {
       const admins = await adminQuery.paginate(page, limit);
       return HelperUtils.responseSuccess(admins);
     } catch (e) {
-      console.log(e);
+      console.log(e.message);
       return HelperUtils.responseErrorInternal('ERROR: get admin list fail !');
     }
   }

@@ -40,9 +40,9 @@ class User extends Model {
     return this.hasMany('App/Models/Token')
   }
 
-  preOrders() {
-    return this.belongsToMany('App/Models/Project').pivotTable('user_pre_orders').withPivot('amount');
-  }
+  // preOrders() {
+  //   return this.belongsToMany('App/Models/Project').pivotTable('user_pre_orders').withPivot('amount');
+  // }
 }
 
 module.exports = User

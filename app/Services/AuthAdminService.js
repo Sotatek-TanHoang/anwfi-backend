@@ -45,16 +45,18 @@ class AuthAdminService extends BaseService {
     return user;
   }
 
-  async createUser({email, username, signature, password, wallet_address, type, role}) {
+  async createUser({email, firstname,lastname, wallet_address, type, role}) {
     // const isExistWhitelistUser = await this.checkExistWhitelistUser({ email });
     // const userType = isExistWhitelistUser ? Const.USER_TYPE.WHITELISTED : Const.USER_TYPE.REGULAR;
     try {
       const user = new AdminModel;
       user.email = email;
       user.username = email;
-      user.password = password;
+      user.firstname=firstname
+      user.lastname=lastname
+      // user.password = password;
       user.wallet_address = wallet_address;
-      user.signature = signature;
+      // user.signature = signature;
       user.role = role || Const.USER_ROLE.ICO_OWNER;
       user.type = Const.USER_TYPE.WHITELISTED;  // Always whitelisted
       await user.save();

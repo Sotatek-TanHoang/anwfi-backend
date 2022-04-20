@@ -40,10 +40,10 @@ class Admin extends Model {
     return this.hasMany('App/Models/Token')
   }
 
-  projects() {
-    return this.hasMany('App/Models/Project', 'wallet_address', 'registed_by');
+  // projects() {
+  //   return this.hasMany('App/Models/Project', 'wallet_address', 'registed_by');
 
-  }
+  // }
 
 }
 
