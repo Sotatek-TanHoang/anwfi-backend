@@ -4,7 +4,7 @@ class Login {
     return {
       // username: 'required',
       // email: 'required',
-      // signature: 'required',
+      signature: 'required',
       // password: 'required',
       wallet_address: 'required',
     };
@@ -13,7 +13,7 @@ class Login {
   get messages() {
     return {
       'wallet_address.required': 'You must provide a wallet address.',
-      // 'signature.required': 'You must provide a signature.',
+      'signature.required': 'You must provide a signature.',
       // 'password.required': 'You must provide a password.',
     };
   }

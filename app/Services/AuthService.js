@@ -62,7 +62,7 @@ class AuthService extends BaseService {
     return user;
   }
 
-  async createUser({email, username, signature, password, wallet_address, type, role}) {
+  async createUser({email, username, wallet_address, type, role}) {
     // const isExistWhitelistUser = await this.checkExistWhitelistUser({ email });
     const isExistWhitelistUser = false;
     const userType = isExistWhitelistUser ? Const.USER_TYPE.WHITELISTED : Const.USER_TYPE.REGULAR;
@@ -70,9 +70,9 @@ class AuthService extends BaseService {
       const user = new UserModel;
       user.email = email;
       user.username = username;
-      user.password = password;
+      // user.password = password;
       user.wallet_address = wallet_address;
-      user.signature = signature;
+      // user.signature = signature;
       user.role = role || Const.USER_ROLE.ICO_OWNER;
       user.type = userType;
       await user.save();

@@ -9,7 +9,7 @@ const Model = use('Model')
 class User extends Model {
 
   static get hidden () {
-    return ['password', 'signature', 'confirmation_token']
+    return [ 'signature', 'confirmation_token']
   }
 
   static boot () {

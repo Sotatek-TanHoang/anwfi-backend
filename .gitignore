@@ -16,3 +16,4 @@ database/*.sqlite
 .history
 .idea
 yarn.lock
+.mysql-data
