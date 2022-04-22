@@ -23,26 +23,35 @@ Route.get('image/:fileName', 'FileController.getImage');
 Route.group(() => {
   // Auth
   Route.post('/login', 'AuthAdminController.login').validator('Login')
-  .middleware('checkSignature');
+  // .middleware('checkSignature');
 
   // TODO: implement confirm email later
 }).prefix(Const.USER_TYPE_PREFIX.ADMIN).middleware(['typeAdmin', 'checkPrefix', 'formatEmailAndWallet']);
 
-// Admin work route
+// Admin only work route
 Route.group(() => {
 
 
-  Route.post('/create-admin', 'AdminController.create').validator('CreateAdmin');
+  Route.post('/create-admin', 'AdminController.create').validator('CreateAdmin').middleware('checkParamRole');
   Route.get('admins', 'AdminController.adminList');
   Route.get('admins/:id', 'AdminController.adminDetail');
-
+  Route.put('/update-admin/:id','AdminController.update').validator('UpdateAdmin').middleware('checkParamRole');
+  Route.delete('/delete-admin/:id','AdminController.delete')
   Route.get('check-wallet-address', 'AuthAdminController.checkWalletAddress');
   Route.post('check-wallet-address', 'AuthAdminController.checkWalletAddress');
 
-}).prefix(Const.USER_TYPE_PREFIX.ADMIN).middleware(['typeAdmin', 'checkPrefix', 'checkAdminJwtSecret',
- 'auth:admin'
-]);
+}).prefix(Const.USER_TYPE_PREFIX.ADMIN)
+.middleware(['typeAdmin', 'checkPrefix', 'checkAdminJwtSecret', 'checkAdminOnly', 'auth:admin']);
 
+// Admin and Governance proposal route
+Route.group(() => {
+
+  // Route.post('create-proposal', '...handler');
+  // Route.post('update-proposal/:id', '...handler');
+
+}).prefix(Const.USER_TYPE_PREFIX.ADMIN).middleware(['typeAdmin', 'checkPrefix', 'checkAdminJwtSecret',
+  'auth:admin'
+]);
 // Public API:
 Route.group(() => {
 

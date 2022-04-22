@@ -76,7 +76,7 @@ class AuthAdminController {
       const authService = new AuthAdminService();
       const user = await authService.login({
         'wallet_address': wallet_address,
-        role: Const.USER_ROLE.ADMIN,
+        //role: Const.USER_ROLE.ADMIN, // governance and admin have different role.
       });
 
       const token = await auth.authenticator('admin').generate(user, true);

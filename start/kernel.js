@@ -42,6 +42,8 @@ const namedMiddleware = {
   guest: 'Adonis/Middleware/AllowGuestOnly',
   checkPrefix: 'App/Middleware/CheckPrefix',
   checkRole: 'App/Middleware/CheckRole',
+  checkParamRole:"App/Middleware/checkParamRole",
+  checkAdminOnly:"App/Middleware/checkAdminOnly",
   checkStatus: 'App/Middleware/CheckStatus',
   checkPublicStatus: 'App/Middleware/CheckPublicStatus',
   checkJwtSecret: 'App/Middleware/CheckJwtSecret',
