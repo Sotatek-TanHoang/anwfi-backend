@@ -98,12 +98,15 @@ class AdminController {
     }
   }
 
-  async adminDetail({ request, params }) {
+  async adminDetail({params }) {
     try {
       const id = params.id;
       const adminService = new AdminService();
       const admins = await adminService.findUser({ id });
-      return HelperUtils.responseSuccess(admins);
+      if(admins){
+        return HelperUtils.responseSuccess(admins);
+      }
+      return HelperUtils.responseErrorInternal('ERROR: get admin detail fail !');
     } catch (e) {
       console.log(e);
       return HelperUtils.responseErrorInternal('ERROR: get admin detail fail !');
