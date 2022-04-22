@@ -12,7 +12,7 @@ class UserSchema extends Schema {
       table.string('email', 255).nullable();
       table.boolean('is_active').notNullable().defaultTo(0);
       table.tinyint('status', '1').notNullable().default('1');
-      table.tinyint('role').notNullable().default(Const.USER_ROLE.ICO_OWNER);
+      table.tinyint('role').notNullable().default(Const.USER_ROLE.ADMIN);
       table.tinyint('type').notNullable().default(Const.USER_TYPE.REGULAR);
       table.string('wallet_address').notNullable();
       table.string('firstname', 255).nullable();

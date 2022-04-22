@@ -46,7 +46,7 @@ class AuthAdminController {
       console.log('Check Wallet: ', inputs, params);
       const user = await adminService.findUser({
         wallet_address: walletAddress,
-        // role: params.type === Const.USER_TYPE_PREFIX.ICO_OWNER ? Const.USER_ROLE.ICO_OWNER : Const.USER_ROLE.PUBLIC_USER,
+        // role: params.type === Const.USER_TYPE_PREFIX.ADMIN ? Const.USER_ROLE.ADMIN : Const.USER_ROLE.PUBLIC_USER,
       });
 
       if (!user) {
@@ -67,7 +67,7 @@ class AuthAdminController {
 
   async login({request, auth, params}) {
     const type = params.type;
-    if (type !== Const.USER_TYPE_PREFIX.ICO_OWNER && type !== Const.USER_TYPE_PREFIX.PUBLIC_USER) {
+    if (type !== Const.USER_TYPE_PREFIX.ADMIN && type !== Const.USER_TYPE_PREFIX.PUBLIC_USER) {
       return HelperUtils.responseNotFound('Not valid !');
     }
     const param = request.all();
@@ -76,7 +76,7 @@ class AuthAdminController {
       const authService = new AuthAdminService();
       const user = await authService.login({
         'wallet_address': wallet_address,
-        role: Const.USER_ROLE.ICO_OWNER,
+        role: Const.USER_ROLE.ADMIN,
       });
 
       const token = await auth.authenticator('admin').generate(user, true);

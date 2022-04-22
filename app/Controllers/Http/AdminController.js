@@ -8,10 +8,10 @@ class AdminController {
 
   async create({request}) {
     try {
-      const inputs = request.only(['wallet_address', 'firstname', 'lastname']);
+      const inputs = request.only(['wallet_address', 'role']);
       // inputs.password = request.input('password');
       console.log('Create Admin with params: ', inputs);
-
+      
       const adminService = new AdminService();
       const isExistUser = await adminService.findUser({
         wallet_address: inputs.wallet_address,

@@ -57,7 +57,7 @@ class AuthAdminService extends BaseService {
       // user.password = password;
       user.wallet_address = wallet_address;
       // user.signature = signature;
-      user.role = role || Const.USER_ROLE.ICO_OWNER;
+      user.role = role || Const.USER_ROLE.ADMIN;
       user.type = Const.USER_TYPE.WHITELISTED;  // Always whitelisted
       await user.save();
       return user;

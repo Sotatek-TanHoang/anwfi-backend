@@ -7,7 +7,7 @@ class CheckRole {
   async handle({ request, response, auth }, next, props) {
 
     // const role = Const.USER_ROLE.PUBLIC_USER;
-    const role = request.params.type == Const.USER_TYPE_PREFIX.ICO_OWNER ? Const.USER_ROLE.ICO_OWNER :  Const.USER_ROLE.PUBLIC_USER;
+    const role = request.params.type == Const.USER_TYPE_PREFIX.ADMIN ? Const.USER_ROLE.ADMIN :  Const.USER_ROLE.PUBLIC_USER;
     console.log('CheckRole', auth.user.role, role);
     console.log('props: ', props);
 

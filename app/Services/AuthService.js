@@ -73,7 +73,7 @@ class AuthService extends BaseService {
       // user.password = password;
       user.wallet_address = wallet_address;
       // user.signature = signature;
-      user.role = role || Const.USER_ROLE.ICO_OWNER;
+      user.role = role || Const.USER_ROLE.ADMIN;
       user.type = userType;
       await user.save();
       return user;
@@ -89,7 +89,7 @@ class AuthService extends BaseService {
     mailData.username = user.username;
     mailData.email = user.email;
 
-    const isAdmin = type === Const.USER_TYPE_PREFIX.ICO_OWNER;
+    const isAdmin = type === Const.USER_TYPE_PREFIX.ADMIN;
     const baseUrl = isAdmin ? Env.get('FRONTEND_ADMIN_APP_URL') : Env.get('FRONTEND_USER_APP_URL');
     mailData.url = baseUrl + '/confirm-email/' +
         (isAdmin ? 'admin/' : 'user/') +

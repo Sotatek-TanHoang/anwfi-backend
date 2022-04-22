@@ -5,7 +5,7 @@ const Const = use('App/Common/Const');
 
 class TypeAdmin {
   async handle({ request, params, args }, next) {
-    request.params.type = Const.USER_TYPE_PREFIX.ICO_OWNER;
+    request.params.type = Const.USER_TYPE_PREFIX.ADMIN;
     console.log('TypeAdmin', request.params);
 
     await next();

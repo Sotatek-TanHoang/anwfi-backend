@@ -11,7 +11,7 @@ class UserAuthController {
 
   async login({request, auth, params}) {
     const type = params.type;
-    if (type !== Const.USER_TYPE_PREFIX.ICO_OWNER && type !== Const.USER_TYPE_PREFIX.PUBLIC_USER) {
+    if (type !== Const.USER_TYPE_PREFIX.ADMIN && type !== Const.USER_TYPE_PREFIX.PUBLIC_USER) {
       return HelperUtils.responseNotFound('Not valid !');
     }
     const param = request.all();
@@ -42,7 +42,7 @@ class UserAuthController {
       const wallet_address = Web3.utils.toChecksumAddress(request.input('wallet_address'));
       console.log(111, wallet_address)
       const type = params.type;
-      const role = type === Const.USER_TYPE_PREFIX.ICO_OWNER ? Const.USER_ROLE.ICO_OWNER : Const.USER_ROLE.PUBLIC_USER;
+      const role = type === Const.USER_TYPE_PREFIX.ADMIN ? Const.USER_ROLE.ADMIN : Const.USER_ROLE.PUBLIC_USER;
 
       const authService = new AuthService();
       let user;
@@ -68,7 +68,7 @@ class UserAuthController {
       const wallet_address = Web3.utils.toChecksumAddress(request.input('wallet_address'));
       const authService = new AuthService();
       const type = params.type;
-      const role = type === Const.USER_TYPE_PREFIX.ICO_OWNER ? Const.USER_ROLE.ICO_OWNER : Const.USER_ROLE.PUBLIC_USER;
+      const role = type === Const.USER_TYPE_PREFIX.ADMIN ? Const.USER_ROLE.ADMIN : Const.USER_ROLE.PUBLIC_USER;
       let user = await authService.checkIssetUser({email: param.email, role});
       console.log(user)
 

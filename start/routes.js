@@ -22,10 +22,11 @@ Route.get('image/:fileName', 'FileController.getImage');
 
 Route.group(() => {
   // Auth
-  Route.post('/login', 'AuthAdminController.login').validator('Login').middleware('checkSignature');
+  Route.post('/login', 'AuthAdminController.login').validator('Login')
+  .middleware('checkSignature');
 
   // TODO: implement confirm email later
-}).prefix(Const.USER_TYPE_PREFIX.ICO_OWNER).middleware(['typeAdmin', 'checkPrefix', 'formatEmailAndWallet']);
+}).prefix(Const.USER_TYPE_PREFIX.ADMIN).middleware(['typeAdmin', 'checkPrefix', 'formatEmailAndWallet']);
 
 // Admin work route
 Route.group(() => {
@@ -38,7 +39,7 @@ Route.group(() => {
   Route.get('check-wallet-address', 'AuthAdminController.checkWalletAddress');
   Route.post('check-wallet-address', 'AuthAdminController.checkWalletAddress');
 
-}).prefix(Const.USER_TYPE_PREFIX.ICO_OWNER).middleware(['typeAdmin', 'checkPrefix', 'checkAdminJwtSecret',
+}).prefix(Const.USER_TYPE_PREFIX.ADMIN).middleware(['typeAdmin', 'checkPrefix', 'checkAdminJwtSecret',
  'auth:admin'
 ]);
 
