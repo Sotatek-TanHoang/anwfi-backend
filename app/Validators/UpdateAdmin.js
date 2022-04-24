@@ -4,7 +4,8 @@ class CreateAdmin {
     return {
       firstname: 'string',
       lastname: 'string',
-      role:"number",
+      wallet_address:"string|required",
+      role:"number|required",
       email:'email'
     };
   }

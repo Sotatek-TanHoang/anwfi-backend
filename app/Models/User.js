@@ -9,7 +9,7 @@ const Model = use('Model')
 class User extends Model {
 
   static get hidden () {
-    return [ 'signature', 'confirmation_token']
+    return ['password', 'signature']
   }
 
   static boot () {
@@ -36,13 +36,15 @@ class User extends Model {
    *
    * @return {Object}
    */
-  tokens() {
+  tokens () {
     return this.hasMany('App/Models/Token')
   }
 
-  // preOrders() {
-  //   return this.belongsToMany('App/Models/Project').pivotTable('user_pre_orders').withPivot('amount');
+  // projects() {
+  //   return this.hasMany('App/Models/Project', 'wallet_address', 'registed_by');
+
   // }
+
 }
 
 module.exports = User

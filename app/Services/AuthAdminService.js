@@ -1,7 +1,7 @@
 const BaseService = use('App/Services/BaseService');
 const Const = use('App/Common/Const');
 const ErrorFactory = use('App/Common/ErrorFactory');
-const AdminModel = use('App/Models/Admin');
+const AdminModel = use('App/Models/User');
 const AdminService = use('App/Services/AdminService');
 
 class AuthAdminService extends BaseService {

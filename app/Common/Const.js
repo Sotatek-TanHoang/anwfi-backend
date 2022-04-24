@@ -51,6 +51,7 @@ module.exports = Object.freeze({
   USER_ROLE: {
     // ICO_OWNER: 1,
     // PUBLIC_USER: 2,
+    SUPER_ADMIN:3,
     ADMIN: 2,
     GOVERNANCE:1,
     PUBLIC_USER: 0,

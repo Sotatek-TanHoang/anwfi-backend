@@ -2,7 +2,6 @@ const BaseService = use('App/Services/BaseService');
 const Const = use('App/Common/Const');
 const ErrorFactory = use('App/Common/ErrorFactory');
 const UserModel = use('App/Models/User');
-const WhitelistUser = use('App/Models/WhitelistUser');
 const UserService = use('App/Services/UserService')
 const Hash = use('Hash')
 const Env = use('Env')
@@ -10,28 +9,6 @@ const HelperUtils = use('App/Common/HelperUtils');
 const SendConfirmationEmailJob = use('App/Jobs/SendConfirmationEmailJob')
 
 class AuthService extends BaseService {
-
-  async checkIssetUser({ email, role }) {
-    const user = await UserModel.query()
-      .where('role', role)
-      .where('email', email)
-      .where('status', Const.USER_STATUS.ACTIVE)
-      .first();
-    return user;
-  }
-
-  async checkWalletUser({wallet_address, role}) {
-    const user = await UserModel.query()
-      .where('role', role)
-      .where('wallet_address', wallet_address)
-      .first();
-    return user;
-  }
-
-  async checkExistWhitelistUser({ email }) {
-      const whitelistUser = await WhitelistUser.query().where('email', email).first();
-      return whitelistUser;
-  }
 
   async login(params) {
     const userService = new UserService();

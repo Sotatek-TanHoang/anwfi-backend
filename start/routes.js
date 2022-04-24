@@ -24,7 +24,7 @@ Route.group(() => {
   // Auth
   Route.post('/login', 'AuthAdminController.login').validator('Login')
   // comment line below to bypass signature checking.
-  .middleware('checkSignature');
+  // .middleware('checkSignature');
 
   // TODO: implement confirm email later
 }).prefix(Const.USER_TYPE_PREFIX.ADMIN).middleware(['typeAdmin', 'checkPrefix', 'formatEmailAndWallet']);
@@ -47,17 +47,17 @@ Route.group(() => {
   Route.post('check-wallet-address', 'AuthAdminController.checkWalletAddress');
 
 }).prefix(Const.USER_TYPE_PREFIX.ADMIN)
-.middleware(['typeAdmin', 'checkPrefix', 'checkAdminJwtSecret', 'checkAdminOnly', 'auth:admin']);
+.middleware(['typeAdmin', 'checkPrefix', 'checkAdminJwtSecret', 'auth:admin','checkAdminOnly']);
 
 // Admin and Governance proposal routes
 Route.group(() => {
 
   // Route.post('create-proposal', '...handler');
   // Route.post('update-proposal/:id', '...handler');
-  Route.get('/test', () => 'It\'s working')
+  Route.get('/proposal', () => 'It\'s working')
 
-}).prefix(Const.USER_TYPE_PREFIX.ADMIN).middleware(['typeAdmin', 'checkPrefix', 'checkAdminJwtSecret',
-  'auth:admin'
+}).prefix(Const.USER_TYPE_PREFIX.ADMIN).middleware(['typeAdmin', 'checkPrefix', 'checkAdminJwtSecret','auth:admin',
+"CheckProposalModificationRole",
 ]);
 // Public API:
 Route.group(() => {

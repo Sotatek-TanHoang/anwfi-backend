@@ -1,7 +1,7 @@
 'use strict'
 
 const ErrorFactory = use('App/Common/ErrorFactory');
-const AdminModel = use('App/Models/Admin');
+const AdminModel = use('App/Models/User');
 const PasswordResetModel = use('App/Models/PasswordReset');
 const Const = use('App/Common/Const');
 
