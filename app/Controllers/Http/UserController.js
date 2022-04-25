@@ -59,14 +59,16 @@ class UserController {
         try {
           await UserModel.create(input,trx);      
           return { success: true, data: input, message: "user created" }
-        } catch (e) {
-          console.log(e.message);
-          throw new Error("one of user creation is failed")
+        } catch  {
+          return {error:true,data:input}
         }
       }))
+      if(bulk.some(result=>result.error)){
+        await trx.rollback();
+        return HelperUtils.responseErrorInternal({result:bulk,message:"create bulk failed."});
+      }
       await trx.commit()
-
-      return HelperUtils.responseSuccess(bulk);
+      return HelperUtils.responseSuccess({result:bulk,message:"success."});
     } catch (e) {
       console.log(e.message);
       await trx.rollback();
