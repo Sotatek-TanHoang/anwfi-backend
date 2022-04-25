@@ -1,28 +1,20 @@
 const ErrorFactory = use('App/Common/ErrorFactory');
 const ForbiddenException = use("App/Exceptions/ForbiddenException")
-const AdminService = use('App/Services/AdminService');
+const UserService = use('App/Services/UserService');
 
 class DeleteUser {
-    get rules() {
-        return {
-        };
-    }
+    get rules() {}
 
-    get messages() {
-        return {
-            'email.email': "You must provide a valid email"
-
-        };
-    }
+    get messages() { }
 
     get validateAll() {
-        return true;
+        return false;
     }
     async authorize() {
         const authRole = this.ctx.auth.user.role;
         const id = this.ctx.request.params.id;
 
-        const adminService = new AdminService();
+        const adminService = new UserService();
         const admin = await adminService.findUser({
             id
         });

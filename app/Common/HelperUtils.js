@@ -168,7 +168,19 @@ const toFixedNumber = function(x) {
   }
   return x;
 }
+const checkWhiteListRole=(role)=>{
+        //must match these roles.
+        switch (role) {
+            case Const.USER_ROLE.ADMIN:
+            case Const.USER_ROLE.GOVERNANCE:
+            case Const.USER_ROLE.SUPER_ADMIN:
+            case Const.USER_ROLE.PUBLIC_USER:
+                return true;
+            default:
+                return false;
 
+        }
+}
 module.exports = {
   randomString,
   doMask,
@@ -180,7 +192,7 @@ module.exports = {
   responseBadRequest,
   checkSumAddress,
   toFixedNumber,
-
+  checkWhiteListRole,
   seconds_since_epoch,
   escapeWildcards,
   hasSql

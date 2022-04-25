@@ -22,7 +22,7 @@ Route.get('image/:fileName', 'FileController.getImage');
 
 Route.group(() => {
   // Auth
-  Route.post('/login', 'AuthAdminController.login').validator('Login')
+  Route.post('/login', 'UserAuthController.login').validator('Login')
   // comment line below to bypass signature checking.
   // .middleware('checkSignature');
 
@@ -33,18 +33,20 @@ Route.group(() => {
 Route.group(() => {
 
   // create admin or governance by admin.
-  Route.post('/create-admin', 'AdminController.create').validator('CreateAdmin').middleware('checkParamRole');
+  Route.post('/create-user', 'UserController.createUser').validator('CreateUser');
+  // bulk create user.
+  Route.post('/bulk-create-user','UserController.bulkCreateUser')
   // get list of admins with pagination.
-  Route.get('admins', 'AdminController.adminList');
+  Route.get('/list', 'UserController.getUserList');
   // get single admin profile by id.
-  Route.get('admins/:id', 'AdminController.adminDetail');
+  Route.get('/profile/:id', 'UserController.getUserDetail');
   // update single admin by id.
-  Route.put('/update-admin/:id','AdminController.update').validator('UpdateAdmin').middleware('checkParamRole');
+  Route.put('/update-profile/:id','UserController.updateUserProfile').validator('UpdateUser');
   // delete single admin by id.
-  Route.delete('/delete-admin/:id','AdminController.delete').validator("DeleteUser")
-  // unused.
-  Route.get('check-wallet-address', 'AuthAdminController.checkWalletAddress');
-  Route.post('check-wallet-address', 'AuthAdminController.checkWalletAddress');
+  Route.delete('/delete-user/:id','UserController.deleteUser').validator("DeleteUser");
+  // check if a wallet_address is available.
+  Route.get('check-wallet-address', 'UserAuthController.checkWalletAddress');
+  Route.post('check-wallet-address', 'UserAuthController.checkWalletAddress');
 
 }).prefix(Const.USER_TYPE_PREFIX.ADMIN)
 .middleware(['typeAdmin', 'checkPrefix', 'checkAdminJwtSecret', 'auth:admin','checkAdminOnly']);
