@@ -1,12 +1,12 @@
 'use strict'
 
-const AuthAdminService = use('App/Services/AuthAdminService');
+const AuthUserService = use('App/Services/AuthUserService');
 const UserService = use('App/Services/UserService');
 const HelperUtils = use('App/Common/HelperUtils');
 const Const = use('App/Common/Const');
 const Web3 = require('web3');
 
-class AuthAdminController {
+class UserAuthController {
 
   async verifyJwtToken({request, auth}) {
     try {
@@ -73,7 +73,7 @@ class AuthAdminController {
     const param = request.all();
     const wallet_address = Web3.utils.toChecksumAddress(param.wallet_address)
     try {
-      const authService = new AuthAdminService();
+      const authService = new AuthUserService();
       const user = await authService.login({
         'wallet_address': wallet_address,
         //role: Const.USER_ROLE.ADMIN, // governance and admin have different role.
@@ -92,4 +92,4 @@ class AuthAdminController {
 
 }
 
-module.exports = AuthAdminController;
+module.exports = UserAuthController;

@@ -4,7 +4,7 @@ const ErrorFactory = use('App/Common/ErrorFactory');
 const UserModel = use('App/Models/User');
 const UserService = use('App/Services/UserService');
 
-class AuthAdminService extends BaseService {
+class AuthUserService extends BaseService {
 
   async login(params) {
     const userService = new UserService();
@@ -68,4 +68,4 @@ class AuthAdminService extends BaseService {
   }
 }
 
-module.exports = AuthAdminService;
+module.exports = AuthUserService;
