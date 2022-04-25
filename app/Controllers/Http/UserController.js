@@ -3,6 +3,8 @@ const UserService = use('App/Services/UserService');
 const UserModel = use('App/Models/User');
 const HelperUtils = use('App/Common/HelperUtils');
 const Const = use('App/Common/Const');
+const Database = use('Database')
+
 class UserController {
 
   async createUser({ request }) {
@@ -40,44 +42,34 @@ class UserController {
     }
   }
   async bulkCreateUser({ request }) {
+    // begin transaction.
+    const trx = await Database.beginTransaction()
     try {
       const { users } = request.only(['users']);
 
       const newUsers = users.map((data = {}) => ({
         wallet_address: HelperUtils.checkSumAddress(data.wallet_address),
-        role: HelperUtils.checkWhiteListRole(data.role) ? data.role : Const.USER_ROLE.PUBLIC_USER,
+        role:Const.USER_ROLE.PUBLIC_USER,
         firstname: data.fisrtname,
         lastname: data.lastname,
         email: data.email
       }))
-      const userService = new UserService();
+      
       const bulk = await Promise.all(newUsers.map(async (input) => {
         try {
-          const isExistUser = await userService.findUser({
-            wallet_address: input.wallet_address,
-          });
-
-          if (isExistUser) {
-            throw new Error('Wallet is used');
-          }
-
-          const user = new UserModel();
-          user.fill(input);
-          user.status = Const.USER_STATUS.ACTIVE;
-          await user.save();
-          return { success: true, data: user, message: "user created" }
+          await UserModel.create(input,trx);      
+          return { success: true, data: input, message: "user created" }
         } catch (e) {
-          return {
-            data: input,
-            message: e.message,
-            success: false
-          }
+          console.log(e.message);
+          throw new Error("one of user creation is failed")
         }
       }))
+      await trx.commit()
 
       return HelperUtils.responseSuccess(bulk);
     } catch (e) {
-      console.log(e);
+      console.log(e.message);
+      await trx.rollback();
       return HelperUtils.responseErrorInternal('ERROR: bulk create users fail !');
     }
   }

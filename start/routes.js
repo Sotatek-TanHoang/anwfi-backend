@@ -18,7 +18,7 @@ const Const = use('App/Common/Const');
 /** @type {typeof import('@adonisjs/framework/src/Route/Manager')} */
 const Route = use('Route')
 Route.get('/', () => 'It\'s working')
-Route.get('image/:fileName', 'FileController.getImage');
+//Route.get('image/:fileName', 'FileController.getImage');
 
 Route.group(() => {
   // Auth
