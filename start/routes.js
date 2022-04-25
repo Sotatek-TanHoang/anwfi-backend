@@ -29,12 +29,10 @@ Route.group(() => {
 
 // Admin work route
 Route.group(() => {
-
-
   Route.post('/create-admin', 'AdminController.create').validator('CreateAdmin');
   Route.get('admins', 'AdminController.adminList');
   Route.get('admins/:id', 'AdminController.adminDetail');
-
+  Route.post('proposal', 'ProposalController.create');
   Route.get('check-wallet-address', 'AuthAdminController.checkWalletAddress');
   Route.post('check-wallet-address', 'AuthAdminController.checkWalletAddress');
 
