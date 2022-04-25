@@ -41,7 +41,7 @@ Route.group(() => {
   // update single admin by id.
   Route.put('/update-admin/:id','AdminController.update').validator('UpdateAdmin').middleware('checkParamRole');
   // delete single admin by id.
-  Route.delete('/delete-admin/:id','AdminController.delete')
+  Route.delete('/delete-admin/:id','AdminController.delete').validator("DeleteUser")
   // unused.
   Route.get('check-wallet-address', 'AuthAdminController.checkWalletAddress');
   Route.post('check-wallet-address', 'AuthAdminController.checkWalletAddress');
@@ -57,7 +57,7 @@ Route.group(() => {
   Route.get('/proposal', () => 'It\'s working')
 
 }).prefix(Const.USER_TYPE_PREFIX.ADMIN).middleware(['typeAdmin', 'checkPrefix', 'checkAdminJwtSecret','auth:admin',
-"CheckProposalModificationRole",
+"checkGovernanceOnly",
 ]);
 // Public API:
 Route.group(() => {

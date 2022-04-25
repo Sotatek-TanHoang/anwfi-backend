@@ -6,13 +6,11 @@ const Const = use('App/Common/Const');
 const randomString = use('random-string');
 class AdminController {
 
-  async create({ request, auth }) {
+  async create({ request }) {
     try {
       const inputs = request.only(['wallet_address', 'role', 'firstname', 'lastname', 'email']);
-      const authRole = auth.user.role;
-      if (parseInt(authRole) < parseInt(inputs.role)) {
-        return HelperUtils.responseBadRequest('ERROR: you are now allowed to create this user!');
-      }
+      // convert wallet_address
+      inputs.wallet_address=HelperUtils.checkSumAddress(inputs.wallet_address)
       console.log('Create Admin with params: ', inputs);
 
       const adminService = new AdminService();
@@ -42,11 +40,11 @@ class AdminController {
       return HelperUtils.responseErrorInternal('ERROR: create admin fail !');
     }
   }
-  async update({ request, auth }) {
+  async update({ request }) {
     try {
       const inputs = request.only(['role', 'firstname', 'lastname', 'email', 'wallet_address']);
+      inputs.wallet_address=HelperUtils.checkSumAddress(inputs.wallet_address)
       const id = request.params.id;
-      const authRole = auth.user.role;
 
       console.log('Update Admin with params: ', inputs);
       const adminService = new AdminService();
@@ -54,14 +52,7 @@ class AdminController {
         id,
       });
 
-      if (admin) {
-        // check if auth.user has role to modify this profile.
-        if (parseInt(admin.role) > parseInt(authRole)) {
-          return HelperUtils.responseBadRequest('Error: you are not allowed to modify this user!');
-        }
-        if (parseInt(inputs.role) > parseInt(authRole)) {
-          return HelperUtils.responseBadRequest('ERROR: you are trying to change role of this user to a higher lever than your role!');
-        }
+      if (admin) {  
         // update.
         admin.merge(inputs)
         await admin.save();
@@ -74,20 +65,16 @@ class AdminController {
       return HelperUtils.responseErrorInternal('ERROR: udpate admin fail!');
     }
   }
-  async delete({ request, auth }) {
+  async delete({ request }) {
     try {
       const id = request.params.id;
-      const authRole = auth.user.role;
-
       console.log('delete Admin with params: ', id);
+      
       const adminService = new AdminService();
       const admin = await adminService.findUser({
         id
       });
       if (admin) {
-        if (parseInt(admin.role) > parseInt(authRole)) {
-          return HelperUtils.responseBadRequest("Error: you cannot delete this user!");
-        }
         await admin.delete()
         return HelperUtils.responseSuccess(admin);
       }

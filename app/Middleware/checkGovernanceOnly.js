@@ -1,7 +1,7 @@
 "use strict";
 const Const = use('App/Common/Const')
 const HelperUtils = use('App/Common/HelperUtils');
-class CheckProposalModificationRole {
+class checkGovernanceOnly {
   async handle({ response, auth }, next) {
 
     const authRole = auth.user.role;
@@ -16,4 +16,4 @@ class CheckProposalModificationRole {
   }
 }
 
-module.exports = CheckProposalModificationRole;
+module.exports = checkGovernanceOnly;

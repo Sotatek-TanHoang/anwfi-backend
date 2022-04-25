@@ -48,16 +48,17 @@ class AuthAdminController {
         wallet_address: walletAddress,
         // role: params.type === Const.USER_TYPE_PREFIX.ADMIN ? Const.USER_ROLE.ADMIN : Const.USER_ROLE.PUBLIC_USER,
       });
-
+      console.log(user.wallet_address===walletAddress,"=========");
       if (!user) {
-        return HelperUtils.responseNotFound('Not exist !')
+        return HelperUtils.responseSuccess({
+          walletAddress,
+          available:true
+        });
       }
 
       return HelperUtils.responseSuccess({
         walletAddress,
-        user: {
-          id: user.id
-        },
+        available:false
       });
     } catch (e) {
       console.log('ERROR: ', e);
