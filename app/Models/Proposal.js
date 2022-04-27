@@ -7,6 +7,9 @@ class Proposal extends Model {
   static get table() {
     return 'proposals';
   }
+  votes(){
+    return this.hasMany('App/Models/Vote','id','proposal_id')
+  }
 
 }
 
