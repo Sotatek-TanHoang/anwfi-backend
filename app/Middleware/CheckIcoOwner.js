@@ -9,7 +9,7 @@ class CheckIcoOwner {
       throw new ForbiddenException();
     }
     const role = auth.user.role;
-    if (!role || (role !== Const.USER_ROLE.ICO_OWNER)) {
+    if (!role || (role !== Const.USER_ROLE.ADMIN)) {
       throw new ForbiddenException();
     }
     await next();

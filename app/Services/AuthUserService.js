@@ -1,13 +1,13 @@
 const BaseService = use('App/Services/BaseService');
 const Const = use('App/Common/Const');
 const ErrorFactory = use('App/Common/ErrorFactory');
-const AdminModel = use('App/Models/Admin');
-const AdminService = use('App/Services/AdminService');
+const UserModel = use('App/Models/User');
+const UserService = use('App/Services/UserService');
 
-class AuthAdminService extends BaseService {
+class AuthUserService extends BaseService {
 
   async login(params) {
-    const userService = new AdminService();
+    const userService = new UserService();
     const filterParams = {
       wallet_address: params.wallet_address,
       role: params.role,
@@ -28,7 +28,7 @@ class AuthAdminService extends BaseService {
   }
 
   async checkIssetUser({ email, role }) {
-    const user = await AdminModel.query()
+    const user = await UserModel.query()
       .where('role', role)
       .where('email', email)
       .where('status', Const.USER_STATUS.ACTIVE)
@@ -37,7 +37,7 @@ class AuthAdminService extends BaseService {
   }
 
   async checkWalletUser({wallet_address, role}) {
-    const user = await AdminModel.query()
+    const user = await UserModel.query()
       .where('role', role)
       .where('wallet_address', wallet_address)
       .where('status', Const.USER_STATUS.ACTIVE)
@@ -49,7 +49,7 @@ class AuthAdminService extends BaseService {
     // const isExistWhitelistUser = await this.checkExistWhitelistUser({ email });
     // const userType = isExistWhitelistUser ? Const.USER_TYPE.WHITELISTED : Const.USER_TYPE.REGULAR;
     try {
-      const user = new AdminModel;
+      const user = new UserModel();
       user.email = email;
       user.username = email;
       user.firstname=firstname
@@ -57,7 +57,7 @@ class AuthAdminService extends BaseService {
       // user.password = password;
       user.wallet_address = wallet_address;
       // user.signature = signature;
-      user.role = role || Const.USER_ROLE.ICO_OWNER;
+      user.role = role || Const.USER_ROLE.ADMIN;
       user.type = Const.USER_TYPE.WHITELISTED;  // Always whitelisted
       await user.save();
       return user;
@@ -68,4 +68,4 @@ class AuthAdminService extends BaseService {
   }
 }
 
-module.exports = AuthAdminService;
+module.exports = AuthUserService;

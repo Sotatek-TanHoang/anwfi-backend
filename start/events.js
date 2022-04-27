@@ -1,6 +1,4 @@
 const Event = use('Event')
-const UserBuyCampaign = use('App/Models/UserBuyCampaign')
-const WhitelistUser = use('App/Models/WhitelistUser')
 const Const = use('App/Common/Const');
 const Moment = use('moment')
 const Bignumber = use('bignumber.js')

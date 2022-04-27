@@ -18,28 +18,52 @@ const Const = use('App/Common/Const');
 /** @type {typeof import('@adonisjs/framework/src/Route/Manager')} */
 const Route = use('Route')
 Route.get('/', () => 'It\'s working')
-Route.get('image/:fileName', 'FileController.getImage');
+//Route.get('image/:fileName', 'FileController.getImage');
 
 Route.group(() => {
   // Auth
-  Route.post('/login', 'AuthAdminController.login').validator('Login').middleware('checkSignature');
+  Route.post('/login', 'UserAuthController.login').validator('Login')
+  // comment line below to bypass signature checking.
+  // .middleware('checkSignature');
 
   // TODO: implement confirm email later
-}).prefix(Const.USER_TYPE_PREFIX.ICO_OWNER).middleware(['typeAdmin', 'checkPrefix', 'formatEmailAndWallet']);
+}).prefix(Const.USER_TYPE_PREFIX.ADMIN).middleware(['typeAdmin', 'checkPrefix', 'formatEmailAndWallet']);
 
-// Admin work route
+// Admin only work routes
 Route.group(() => {
-  Route.post('/create-admin', 'AdminController.create').validator('CreateAdmin');
-  Route.get('admins', 'AdminController.adminList');
-  Route.get('admins/:id', 'AdminController.adminDetail');
+
+  // create admin or governance by admin.
+  Route.post('/create-user', 'UserController.createUser').validator('CreateUser');
+  // bulk create user.
+  Route.post('/bulk-create-user','UserController.bulkCreateUser')
+  // get list of admins with pagination.
+  Route.get('/list', 'UserController.getUserList');
+  // get single admin profile by id.
+  Route.get('/profile/:id', 'UserController.getUserDetail');
+  // update single admin by id.
+  Route.put('/update-profile/:id','UserController.updateUserProfile').validator('UpdateUser');
+  // delete single admin by id.
+  Route.delete('/delete-user/:id','UserController.deleteUser').validator("DeleteUser");
+  // check if a wallet_address is available.
+  Route.get('check-wallet-address', 'UserAuthController.checkWalletAddress');
+  Route.post('check-wallet-address', 'UserAuthController.checkWalletAddress');
+  
+}).prefix(Const.USER_TYPE_PREFIX.ADMIN)
+.middleware(['typeAdmin', 'checkPrefix', 'checkAdminJwtSecret', 'auth:admin','checkAdminOnly']);
+
+// Admin and Governance proposal routes
+Route.group(() => {
+
+
+  // Route.post('create-proposal', '...handler');
+  // Route.post('update-proposal/:id', '...handler');
+  Route.get('/proposal', () => 'It\'s working');
+  // proposal
   Route.post('proposal', 'ProposalController.create');
-  Route.get('check-wallet-address', 'AuthAdminController.checkWalletAddress');
-  Route.post('check-wallet-address', 'AuthAdminController.checkWalletAddress');
 
-}).prefix(Const.USER_TYPE_PREFIX.ICO_OWNER).middleware(['typeAdmin', 'checkPrefix', 'checkAdminJwtSecret',
- 'auth:admin'
+}).prefix(Const.USER_TYPE_PREFIX.ADMIN).middleware(['typeAdmin', 'checkPrefix', 'checkAdminJwtSecret','auth:admin',
+"checkGovernanceOnly",
 ]);
-
 // Public API:
 Route.group(() => {
 

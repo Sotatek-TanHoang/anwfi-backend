@@ -49,15 +49,19 @@ module.exports = Object.freeze({
   ACTIVE: 0,
   FEATURE: 1,
   USER_ROLE: {
-    ICO_OWNER: 1,
-    PUBLIC_USER: 2,
+    // ICO_OWNER: 1,
+    // PUBLIC_USER: 2,
+    SUPER_ADMIN:3,
+    ADMIN: 2,
+    GOVERNANCE:1,
+    PUBLIC_USER: 0,
   },
   USER_TYPE: {
     WHITELISTED: 1,
     REGULAR: 2,
   },
   USER_TYPE_PREFIX: {
-    ICO_OWNER: 'admin',
+    ADMIN: 'admin',
     PUBLIC_USER: 'user',
   },
   USER_STATUS: {
