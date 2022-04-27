@@ -52,10 +52,10 @@ class ProposalService {
     })
   }
 
-//   async findUser(params) {
-//     let builder = this.buildQueryBuilder(params);
-//     return await builder.first();
-//   }
+  async findOne(params) {
+    let builder = this.buildQueryBuilder(params);
+    return await builder.first();
+  }
 
 }
 
