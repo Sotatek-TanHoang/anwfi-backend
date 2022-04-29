@@ -34,7 +34,7 @@ class ProposalController {
       const proposal = await (new ProposalService()).findOne({ id });
       if (proposal) {
         // Cannot modify proposal after it is active.
-        if (proposal.proposal_status > Const.PROPOSAL_STATUS.CREATED) {
+        if (proposal.proposal_status !== Const.PROPOSAL_STATUS.CREATED) {
           return HelperUtils.responseBadRequest('ERROR: you cannot modify the proposal right now!');
         }
         proposal.merge(inputs);
@@ -105,7 +105,7 @@ class ProposalController {
       const proposal = await (new ProposalService()).findOne({ id });
       if (proposal) {
         // Cannot modify proposal after it is active.
-        if (proposal.proposal_status > Const.PROPOSAL_STATUS.CREATED) {
+        if (proposal.proposal_status !== Const.PROPOSAL_STATUS.CREATED) {
           return HelperUtils.responseBadRequest('ERROR: you cannot modify the proposal right now!');
         }
         proposal.delete();
