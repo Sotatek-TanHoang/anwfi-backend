@@ -73,8 +73,8 @@ Route.group(() => {
 Route.group(() => {
 
   Route.get("/vote/:id", () => "get votes work"); // get proposal vote with pagination
-  Route.post("/vote/:id", () => "vote work") // vote off-chain
-}).prefix("public")
+  Route.post("/vote/:id", "VoteController.createVote").validator('CheckVote') // vote off-chain
+})
 
 // Public API:
 Route.group(() => {
