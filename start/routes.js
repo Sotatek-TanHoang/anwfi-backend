@@ -27,7 +27,7 @@ Route.group(() => {
   // .middleware('checkSignature');
 
   // TODO: implement confirm email later
-}).prefix(Const.USER_TYPE_PREFIX.ADMIN).middleware(['typeAdmin', 'checkPrefix', 'formatEmailAndWallet']);
+}).middleware(['typeAdmin', 'checkPrefix', 'formatEmailAndWallet']);
 
 // Admin only work routes
 Route.group(() => {
