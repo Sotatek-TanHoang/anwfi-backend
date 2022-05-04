@@ -11,11 +11,10 @@ class ProposalParams {
       end_time:"date",
       quorum:"number",
       min_anwfi:"number",
-      pass_percentage:"number",
+      pass_percentage:"range:-1,10001|integer",
       
     };
   }
-
 //   get messages() {
 //     return {
 //       'wallet_address.required': 'You must provide a wallet address.',

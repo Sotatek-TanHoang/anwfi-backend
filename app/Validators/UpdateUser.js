@@ -9,15 +9,15 @@ class UpdateAdmin {
       firstname: 'string',
       lastname: 'string',
       wallet_address: "string|required",
-      role: "number|required",
+      role: "integer|required|range:-1,5",
       email: 'email'
     };
   }
 
   get messages() {
     return {
-      'email.email': "You must provide a valid email"
-
+      'email.email': "You must provide a valid email",
+      "role.range":"Role not match any predefined roles."
     };
   }
 
@@ -29,11 +29,6 @@ class UpdateAdmin {
     const authUserId = this.ctx.auth.user.id;
     const authRole = this.ctx.auth.user.role;
     const inputs = this.ctx.request.only('role');
-    // check role whitelist.
-    const isNewRoleAccepted = HelperUtils.checkWhiteListRole(inputs.role)
-    if (!isNewRoleAccepted) {
-      throw new ForbiddenException("Error: you are trying to set a role that is not matched by any predefined role.")
-    }
     // user cannot modify his/her own role.
     if (parseInt(id) === parseInt(authUserId)) {
       if (parseInt(authRole) !== parseInt(inputs.role))

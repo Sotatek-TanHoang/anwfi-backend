@@ -11,7 +11,7 @@ class VoteSchema extends Schema {
       table.integer('proposal_id').notNullable();
       table.bool('vote').notNullable();
       table.timestamps();
-      table.unique(['wallet_address']);
+      table.unique(['wallet_address','proposal_id']);
     })
   }
 

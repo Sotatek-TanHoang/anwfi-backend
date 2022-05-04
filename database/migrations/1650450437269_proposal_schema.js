@@ -19,7 +19,7 @@ class ProposalSchema extends Schema {
       table.date('end_time').nullable();
       table.decimal('quorum',65,0).nullable().defaultTo(0); // min number awfi of all voted holding  to acept proposal 
       table.decimal('min_anwfi',65,0).nullable().defaultTo(0);// min number awfi of user to vote aception  
-      table.decimal('pass_percentage', 4);// min percent of yes vote to acept proposal
+      table.integer('pass_percentage', 6);// min percent of yes vote to acept proposal
       table.tinyint('proposal_status').notNullable().default(Const.PROPOSAL_STATUS.CREATED);
       table.timestamps()
     })
