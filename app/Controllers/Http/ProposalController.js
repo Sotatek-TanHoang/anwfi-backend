@@ -48,7 +48,7 @@ class ProposalController {
       return HelperUtils.responseErrorInternal('ERROR: update proposal fail !');
     }
   }
-  async updateProposalStatus({ request }) {
+  async pushProposalProcess({ request }) {
 
     try {
       const id = request.params.id
@@ -61,7 +61,13 @@ class ProposalController {
         // if(proposal.proposal_status > Const.PROPOSAL_STATUS.CREATED){
         //   return HelperUtils.responseBadRequest('ERROR: you cannot modify the proposal right now!');
         // }
-        proposal.proposal_status = new_status;
+        switch (proposal.proposal_status) {
+          case Const.PROPOSAL_STATUS.ACTIVE:
+          case Const.PROPOSAL_STATUS.FAILED:
+          case Const.PROPOSAL_STATUS.EXECUTED:
+            return HelperUtils.responseBadRequest('ERROR: you cannot update the!');
+        }
+        proposal.proposal_status++;
         proposal.save();
         return HelperUtils.responseSuccess({
           proposal_id: id,
@@ -170,18 +176,19 @@ class ProposalController {
       const proposalService = new ProposalService();
       const proposal = await proposalService.findOne({ id, count_vote: true });
 
-      if (proposal.proposal_status > Const.PROPOSAL_STATUS.CREATED) {
-
-        proposal.vote_data = {
-          up_vote: await proposal.votes().where('vote', '=', 1).limit(3).fetch(1),
-          down_vote: await proposal.votes().where('vote', '=', 0).limit(3).fetch(1),
-        }
-      } else {
-        proposal.vote_data = {
-          up_vote: [],
-          down_vote: [],
-        }
+      proposal.vote_data = {
+        up_vote: await proposal.votes().where('vote', '=', 1).limit(3).fetch(1),
+        down_vote: await proposal.votes().where('vote', '=', 0).limit(3).fetch(1),
       }
+      // if (proposal.proposal_status > Const.PROPOSAL_STATUS.CREATED) {
+
+        
+      // } else {
+      //   proposal.vote_data = {
+      //     up_vote: [],
+      //     down_vote: [],
+      //   }
+      // }
       return HelperUtils.responseSuccess(proposal);
     } catch (e) {
       console.log(e);

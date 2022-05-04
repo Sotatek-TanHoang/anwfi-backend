@@ -1,7 +1,7 @@
 "use strict";
 const Const = use('App/Common/Const')
 const HelperUtils = use('App/Common/HelperUtils');
-class checkAdminOnly {
+class checkAdminAbove {
   async handle({ response, auth }, next) {
 
     const authRole = auth.user.role;
@@ -15,4 +15,4 @@ class checkAdminOnly {
   }
 }
 
-module.exports = checkAdminOnly;
+module.exports = checkAdminAbove;

@@ -41,7 +41,7 @@ Route.group(() => {
   Route.delete('/:id', 'UserController.deleteUser').validator("DeleteUser");
 
   // create admin or governance by admin.
-  Route.post('/create-user', 'UserController.createUser').validator('CreateUser');
+  Route.post('/', 'UserController.createUser').validator('CreateUser');
   // bulk create user.
   Route.post('/bulk-create-user', 'UserController.bulkCreateUser')
   // check if a wallet_address is available.
@@ -49,7 +49,7 @@ Route.group(() => {
   Route.post('check-wallet-address', 'UserAuthController.checkWalletAddress');
 
 }).prefix(Const.USER_TYPE_PREFIX.ADMIN)
-  .middleware(['typeAdmin', 'checkPrefix', 'checkAdminJwtSecret', 'auth:admin', 'checkAdminOnly']);
+  .middleware(['typeAdmin', 'checkPrefix', 'checkAdminJwtSecret', 'auth:admin', 'checkAdminAbove']);
 
 // Proposals APIs for admin
 Route.group(() => {
@@ -62,12 +62,12 @@ Route.group(() => {
   // update single proposal basic information (except for status).
   Route.put('/proposal/:id', 'ProposalController.updateProposalBasic').validator('ProposalParams');
   // udpate single proposal status.
-  Route.put('/proposal/status/:id', 'ProposalController.updateProposalStatus')
+  Route.put('/proposal/status/:id', 'ProposalController.pushProposalProcess')
   // delete single proposal
   Route.delete('/proposal/:id', 'ProposalController.deleteProposal')
 
 }).middleware(['typeAdmin', 'checkPrefix', 'checkAdminJwtSecret', 'auth:admin',
-  "checkGovernanceOnly",
+  "checkGovernanceAbove",
 ]);
 // Voting APIs:
 Route.group(() => {
