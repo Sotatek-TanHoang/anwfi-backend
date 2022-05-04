@@ -9,7 +9,7 @@ class UserController {
 
   async createUser({ request }) {
     try {
-      const inputs = request.only(['wallet_address', 'role', 'firstname', 'lastname', 'email']);
+      const inputs = request.only(['wallet_address', 'role', 'username', 'email']);
       // convert wallet_address
       inputs.wallet_address = HelperUtils.checkSumAddress(inputs.wallet_address)
       console.log('Create User with params: ', inputs);
@@ -50,8 +50,7 @@ class UserController {
       const newUsers = users.map((data = {}) => ({
         wallet_address: HelperUtils.checkSumAddress(data.wallet_address),
         role:Const.USER_ROLE.PUBLIC_USER,
-        firstname: data.fisrtname,
-        lastname: data.lastname,
+        username: data.username,
         email: data.email
       }))
       const bulkUsers=await UserModel.createMany(newUsers)
@@ -77,7 +76,7 @@ class UserController {
   }
   async updateUserProfile({ request }) {
     try {
-      const inputs = request.only(['role', 'firstname', 'lastname', 'email', 'wallet_address']);
+      const inputs = request.only(['role', 'username', 'email', 'wallet_address']);
       inputs.wallet_address = HelperUtils.checkSumAddress(inputs.wallet_address)
       const id = request.params.id;
 

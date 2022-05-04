@@ -48,8 +48,8 @@ class UserService {
     return query.where((q) => {
       q.where('email', 'like', `%${searchQuery}%`)
         .orWhere('wallet_address', 'like', `%${searchQuery}%`)
-        .orWhere('lastname', 'like', `%${searchQuery}%`)
-        .orWhere('firstname', 'like', `%${searchQuery}%`);
+        .orWhere('username', 'like', `%${searchQuery}%`)
+        
     })
   }
 

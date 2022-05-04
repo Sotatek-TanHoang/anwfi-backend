@@ -55,8 +55,6 @@ class ProposalService {
     return query.where((q) => {
       q.where('wallet_address', 'like', `%${searchQuery}%`)
         .orWhere('proposal_type', 'like', `%${searchQuery}%`)
-      // .orWhere('lastname', 'like', `%${searchQuery}%`)
-      // .orWhere('firstname', 'like', `%${searchQuery}%`);
     })
   }
 
