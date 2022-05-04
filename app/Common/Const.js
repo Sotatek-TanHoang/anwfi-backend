@@ -49,15 +49,19 @@ module.exports = Object.freeze({
   ACTIVE: 0,
   FEATURE: 1,
   USER_ROLE: {
-    ICO_OWNER: 1,
-    PUBLIC_USER: 2,
+    // ICO_OWNER: 1,
+    // PUBLIC_USER: 2,
+    SUPER_ADMIN:3,
+    ADMIN: 2,
+    GOVERNANCE:1,
+    PUBLIC_USER: 0,
   },
   USER_TYPE: {
     WHITELISTED: 1,
     REGULAR: 2,
   },
   USER_TYPE_PREFIX: {
-    ICO_OWNER: 'admin',
+    ADMIN: 'admin',
     PUBLIC_USER: 'user',
   },
   USER_STATUS: {
@@ -90,31 +94,35 @@ module.exports = Object.freeze({
     USDC: 'usdc',
     BUSD: 'busd'
   },
-  POOL_TYPE: {
-    SWAP: 'swap',
-    CLAIMABLE: 'claimable',
+  PROPOSAL_TYPE: {
+    LIQUIDITY_PROVIDER_FEE: 'liquidity provider fee',
+    SWAP_FEE: 'swap fee',
+    STAKE_FEE:'stake fee',
+    ANWFI_REWARD_PER_BLOCK:'ANWFI reward per block',
+    OFFCHAIN_PROPOSAL:'offchain proposal'
   },
-  POOL_DISPLAY: {
-    DISPLAY: 1,
-    HIDDEN: 0,
-  },
+  // POOL_DISPLAY: {
+  //   DISPLAY: 1,
+  //   HIDDEN: 0,
+  // },
+
   NETWORK_AVAILABLE: {
     ETH: 'eth',
     BSC: 'bsc',
     POLYGON: 'polygon'
   },
-  DEPLOY_STATUS: {
-    DEPLOYED: 1,
-    NOT_DEPLOY: 0,
-  },
-  POOL_STATUS: {  // Pool Status for version 2
-    TBA: 'TBA',
-    UPCOMING: 'Upcoming',
-    FILLED: 'Filled',
-    SWAP: 'Swap',
-    CLAIMABLE: 'Claimable',
-    ENDED: 'Ended',
-    CLOSED: 'Ended',
+  // DEPLOY_STATUS: {
+  //   DEPLOYED: 1,
+  //   NOT_DEPLOY: 0,
+  // },
+  PROPOSAL_STATUS: {  // Pool Status for version 2
+    CREATED: 0, 
+    ACTIVE: 1,
+    SUCCESS: 2,
+    FAILED: -1,
+    QUEUE: 3,
+    EXECUTED: 4,
+    // CLOSED: 'Ended',
   },
   STAKE_USERS: {
     LIMIT: 5,

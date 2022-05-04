@@ -11,8 +11,8 @@
 */
 
 /** @type {import('@adonisjs/lucid/src/Factory')} */
-const AdminUser = use('App/Models/Admin')
-
+const AdminUser = use('App/Models/User')
+const Const=use('App/Common/Const')
 class AdminUserSeeder {
   async run () {
       const UserAdd = {
@@ -23,6 +23,7 @@ class AdminUserSeeder {
       let adminUser = new AdminUser();
       adminUser.wallet_address = UserAdd.wallet_address;
       adminUser.username = UserAdd.username;
+      adminUser.role=Const.USER_ROLE.SUPER_ADMIN
       await adminUser.save();
   }
 }

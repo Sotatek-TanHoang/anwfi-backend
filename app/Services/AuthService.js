@@ -2,7 +2,6 @@ const BaseService = use('App/Services/BaseService');
 const Const = use('App/Common/Const');
 const ErrorFactory = use('App/Common/ErrorFactory');
 const UserModel = use('App/Models/User');
-const WhitelistUser = use('App/Models/WhitelistUser');
 const UserService = use('App/Services/UserService')
 const Hash = use('Hash')
 const Env = use('Env')
@@ -10,28 +9,6 @@ const HelperUtils = use('App/Common/HelperUtils');
 const SendConfirmationEmailJob = use('App/Jobs/SendConfirmationEmailJob')
 
 class AuthService extends BaseService {
-
-  async checkIssetUser({ email, role }) {
-    const user = await UserModel.query()
-      .where('role', role)
-      .where('email', email)
-      .where('status', Const.USER_STATUS.ACTIVE)
-      .first();
-    return user;
-  }
-
-  async checkWalletUser({wallet_address, role}) {
-    const user = await UserModel.query()
-      .where('role', role)
-      .where('wallet_address', wallet_address)
-      .first();
-    return user;
-  }
-
-  async checkExistWhitelistUser({ email }) {
-      const whitelistUser = await WhitelistUser.query().where('email', email).first();
-      return whitelistUser;
-  }
 
   async login(params) {
     const userService = new UserService();
@@ -73,7 +50,7 @@ class AuthService extends BaseService {
       // user.password = password;
       user.wallet_address = wallet_address;
       // user.signature = signature;
-      user.role = role || Const.USER_ROLE.ICO_OWNER;
+      user.role = role || Const.USER_ROLE.ADMIN;
       user.type = userType;
       await user.save();
       return user;
@@ -89,7 +66,7 @@ class AuthService extends BaseService {
     mailData.username = user.username;
     mailData.email = user.email;
 
-    const isAdmin = type === Const.USER_TYPE_PREFIX.ICO_OWNER;
+    const isAdmin = type === Const.USER_TYPE_PREFIX.ADMIN;
     const baseUrl = isAdmin ? Env.get('FRONTEND_ADMIN_APP_URL') : Env.get('FRONTEND_USER_APP_URL');
     mailData.url = baseUrl + '/confirm-email/' +
         (isAdmin ? 'admin/' : 'user/') +

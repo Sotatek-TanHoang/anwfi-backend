@@ -18,29 +18,63 @@ const Const = use('App/Common/Const');
 /** @type {typeof import('@adonisjs/framework/src/Route/Manager')} */
 const Route = use('Route')
 Route.get('/', () => 'It\'s working')
-Route.get('image/:fileName', 'FileController.getImage');
+//Route.get('image/:fileName', 'FileController.getImage');
 
 Route.group(() => {
   // Auth
-  Route.post('/login', 'AuthAdminController.login').validator('Login').middleware('checkSignature');
+  Route.post('/login', 'UserAuthController.login').validator('Login')
+  // comment line below to bypass signature checking.
+  // .middleware('checkSignature');
 
   // TODO: implement confirm email later
-}).prefix(Const.USER_TYPE_PREFIX.ICO_OWNER).middleware(['typeAdmin', 'checkPrefix', 'formatEmailAndWallet']);
+}).prefix(Const.USER_TYPE_PREFIX.ADMIN).middleware(['typeAdmin', 'checkPrefix', 'formatEmailAndWallet']);
 
-// Admin work route
+// Admin only work routes
+Route.group(() => {
+  // get list of admins with pagination.
+  Route.get('/', 'UserController.getUserList');
+  // get single admin profile by id.
+  Route.get('/:id', 'UserController.getUserDetail');
+  // update single admin by id.
+  Route.put('/:id', 'UserController.updateUserProfile').validator('UpdateUser');
+  // delete single admin by id.
+  Route.delete('/:id', 'UserController.deleteUser').validator("DeleteUser");
+
+  // create admin or governance by admin.
+  Route.post('/', 'UserController.createUser').validator('CreateUser');
+  // bulk create user.
+  Route.post('/bulk-create-user', 'UserController.bulkCreateUser')
+  // check if a wallet_address is available.
+  Route.get('check-wallet-address', 'UserAuthController.checkWalletAddress');
+  Route.post('check-wallet-address', 'UserAuthController.checkWalletAddress');
+
+}).prefix(Const.USER_TYPE_PREFIX.ADMIN)
+  .middleware(['typeAdmin', 'checkPrefix', 'checkAdminJwtSecret', 'auth:admin', 'checkAdminAbove']);
+
+// Proposals APIs for admin
+Route.group(() => {
+  // get list of proposals.
+  Route.get('/proposal', 'ProposalController.getProposalList');
+  // get single proposals.
+  Route.get('/proposal/:id', 'ProposalController.getProposalDetail')
+  // create single proposal
+  Route.post('/proposal', 'ProposalController.createProposal').validator('ProposalParams');
+  // update single proposal basic information (except for status).
+  Route.put('/proposal/:id', 'ProposalController.updateProposalBasic').validator('ProposalParams');
+  // udpate single proposal status.
+  Route.put('/proposal/status/:id', 'ProposalController.pushProposalProcess')
+  // delete single proposal
+  Route.delete('/proposal/:id', 'ProposalController.deleteProposal')
+
+}).middleware(['typeAdmin', 'checkPrefix', 'checkAdminJwtSecret', 'auth:admin',
+  "checkGovernanceAbove",
+]);
+// Voting APIs:
 Route.group(() => {
 
-
-  Route.post('/create-admin', 'AdminController.create').validator('CreateAdmin');
-  Route.get('admins', 'AdminController.adminList');
-  Route.get('admins/:id', 'AdminController.adminDetail');
-
-  Route.get('check-wallet-address', 'AuthAdminController.checkWalletAddress');
-  Route.post('check-wallet-address', 'AuthAdminController.checkWalletAddress');
-
-}).prefix(Const.USER_TYPE_PREFIX.ICO_OWNER).middleware(['typeAdmin', 'checkPrefix', 'checkAdminJwtSecret',
- 'auth:admin'
-]);
+  Route.get("/vote/:id", () => "get votes work"); // get proposal vote with pagination
+  Route.post("/vote/:id", () => "vote work") // vote off-chain
+}).prefix("public")
 
 // Public API:
 Route.group(() => {

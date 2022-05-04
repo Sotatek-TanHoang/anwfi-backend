@@ -79,7 +79,7 @@ module.exports = {
 
   admin: {
     serializer: 'lucid',
-    model: 'App/Models/Admin',
+    model: 'App/Models/User',
     scheme: 'jwt',
     uid: 'email',
     password: 'password',
