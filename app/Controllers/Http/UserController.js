@@ -53,21 +53,21 @@ class UserController {
         username: data.username,
         email: data.email
       }))
-      const bulkUsers=await UserModel.createMany(newUsers)
-      // const bulk = await Promise.all(newUsers.map(async (input) => {
-      //   try {
-      //     await UserModel.create(input,trx);      
-      //     return { success: true, data: input, message: "user created" }
-      //   } catch  {
-      //     return {error:true,data:input}
-      //   }
-      // }))
-      // if(bulk.some(result=>result.error)){
-      //   await trx.rollback();
-      //   return HelperUtils.responseErrorInternal({result:bulk,message:"create bulk failed."});
-      // }
+      // const bulkUsers=await UserModel.createMany(newUsers)
+      const bulk = await Promise.all(newUsers.map(async (input) => {
+        try {
+          await UserModel.create(input,trx);      
+          return { success: true, data: input, message: "user created" }
+        } catch (e) {
+          return {success:false,data:input,message:e.message}
+        }
+      }))
+      if(bulk.some(result=>result.error)){
+        await trx.rollback();
+        return HelperUtils.responseErrorInternal({result:bulk,message:"create bulk failed."});
+      }
       await trx.commit()
-      return HelperUtils.responseSuccess({result:bulkUsers,message:"success."});
+      return HelperUtils.responseSuccess({result:bulk,message:"success."});
     } catch (e) {
       console.log(e.message);
       await trx.rollback();

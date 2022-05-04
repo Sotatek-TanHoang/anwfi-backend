@@ -43,7 +43,7 @@ Route.group(() => {
   // create admin or governance by admin.
   Route.post('/', 'UserController.createUser').validator('CreateUser');
   // bulk create user.
-  Route.post('/bulk-create-user', 'UserController.bulkCreateUser')
+  Route.post('/bulk-create', 'UserController.bulkCreateUser')
   // check if a wallet_address is available.
   Route.get('check-wallet-address', 'UserAuthController.checkWalletAddress');
   Route.post('check-wallet-address', 'UserAuthController.checkWalletAddress');
