@@ -36,15 +36,18 @@ Route.group(() => {
   // get single admin profile by id.
   Route.get('/:id', 'UserController.getUserDetail');
   // update single admin by id.
-  Route.put('/:id', 'UserController.updateUserProfile').validator('UpdateUser');
+  // Route.put('/:id', 'UserController.updateUserProfile').validator('UpdateUser');
   // delete single admin by id.
   Route.delete('/:id', 'UserController.deleteUser').validator("DeleteUser");
 
   // create admin or governance by admin.
   Route.post('/', 'UserController.createUser').validator('CreateUser');
   // bulk create user.
-  Route.post('/bulk-create', 'UserController.bulkCreateUser')
+  Route.post('/bulk-create', 'UserController.bulkCreateUser').validator('UserArray')
   // check if a wallet_address is available.
+
+  // Route.put('/bulk-update')
+
   Route.get('check-wallet-address', 'UserAuthController.checkWalletAddress');
   Route.post('check-wallet-address', 'UserAuthController.checkWalletAddress');
 

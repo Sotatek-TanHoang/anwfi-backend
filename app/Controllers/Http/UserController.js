@@ -27,14 +27,6 @@ class UserController {
       user.status = Const.USER_STATUS.ACTIVE;
       await user.save();
 
-      //TODO: Send mail to admin after create account
-
-      // const authService = new AuthService();
-      // await authService.sendAdminInfoEmail({
-      //   user: admin,
-      //   password: request.input('password'),
-      // });
-
       return HelperUtils.responseSuccess(user);
     } catch (e) {
       console.log(e);
@@ -47,14 +39,34 @@ class UserController {
     try {
       const { users } = request.only(['users']);
 
-      const newUsers = users.map((data = {}) => ({
-        wallet_address: HelperUtils.checkSumAddress(data.wallet_address),
-        role:Const.USER_ROLE.PUBLIC_USER,
-        username: data.username,
-        email: data.email
-      }))
       // const bulkUsers=await UserModel.createMany(newUsers)
-      const bulk = await Promise.all(newUsers.map(async (input) => {
+      const bulk = await Promise.all(users.map(async (input) => {
+        try {
+          await UserModel.create(input,trx);      
+          return { success: true, data: input, message: "user created" }
+        } catch (e) {
+          return {success:false,data:input,message:e.message}
+        }
+      }))
+      if(bulk.some(result=>!result.success)){
+        await trx.rollback();
+        return HelperUtils.responseSuccess({result:bulk},"ERROR: some users are failed to create.");
+      }
+      await trx.commit()
+      return HelperUtils.responseSuccess({result:bulk,message:"success."});
+    } catch (e) {
+      console.log(e.message);
+      await trx.rollback();
+      return HelperUtils.responseErrorInternal('ERROR: bulk create users fail !');
+    }
+  }
+  async bulkUpdateUser({request}){
+    // begin transaction.
+    const trx = await Database.beginTransaction()
+    try {
+      const { users } = request.only(['users']);
+
+      const bulk = await Promise.all(users.map(async (input) => {
         try {
           await UserModel.create(input,trx);      
           return { success: true, data: input, message: "user created" }
@@ -64,14 +76,14 @@ class UserController {
       }))
       if(bulk.some(result=>result.error)){
         await trx.rollback();
-        return HelperUtils.responseErrorInternal({result:bulk,message:"create bulk failed."});
+        return HelperUtils.responseSuccess({result:bulk},"ERROR: some users are failed to update.");
       }
       await trx.commit()
-      return HelperUtils.responseSuccess({result:bulk,message:"success."});
+      return HelperUtils.responseSuccess({result:bulk});
     } catch (e) {
       console.log(e.message);
       await trx.rollback();
-      return HelperUtils.responseErrorInternal('ERROR: bulk create users fail !');
+      return HelperUtils.responseErrorInternal('ERROR: bulk update users fail !');
     }
   }
   async updateUserProfile({ request }) {
