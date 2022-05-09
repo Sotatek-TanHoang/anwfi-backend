@@ -71,9 +71,9 @@ Route.group(() => {
 ]);
 // Voting APIs:
 Route.group(() => {
-
-  Route.get("/vote/:id", () => "get votes work"); // get proposal vote with pagination
-  Route.post("/vote/:id", () => "vote work") // vote off-chain
+  Route.post('/vote', 'VoteController.create')
+  // Route.get("/vote/:id", () => "get votes work"); // get proposal vote with pagination
+  // Route.post("/vote/:id", () => "vote work") // vote off-chain
 }).prefix("public")
 
 // Public API:
