@@ -42,46 +42,55 @@ class UserController {
       // const bulkUsers=await UserModel.createMany(newUsers)
       const bulk = await Promise.all(users.map(async (input) => {
         try {
-          await UserModel.create(input,trx);      
+          await UserModel.create(input, trx);
           return { success: true, data: input, message: "user created" }
         } catch (e) {
-          return {success:false,data:input,message:e.message}
+          return { success: false, data: input, message: e.message }
         }
       }))
-      if(bulk.some(result=>!result.success)){
+      if (bulk.some(result => !result.success)) {
         await trx.rollback();
-        return HelperUtils.responseSuccess({result:bulk},"ERROR: some users are failed to create.");
+        return HelperUtils.responseSuccess({ result: bulk }, "ERROR: some users are failed to create.");
       }
       await trx.commit()
-      return HelperUtils.responseSuccess({result:bulk,message:"success."});
+      return HelperUtils.responseSuccess({ result: bulk, message: "success." });
     } catch (e) {
       console.log(e.message);
       await trx.rollback();
       return HelperUtils.responseErrorInternal('ERROR: bulk create users fail !');
     }
   }
-  async bulkUpdateUser({request}){
+  async bulkUpdateUser({ request }) {
     // begin transaction.
     const trx = await Database.beginTransaction()
     try {
       const { users } = request.only(['users']);
+      const userService = new UserService()
+      // update all role to public except SUPER_ADMIN.
+      await trx.update({ role: Const.USER_ROLE.PUBLIC_USER }).into('users').where('role', '<', Const.USER_ROLE.SUPER_ADMIN)
+      // update user in the list, if not exist then create.
+      for (let input of users) {
 
-      const bulk = await Promise.all(users.map(async (input) => {
-        try {
-          await UserModel.create(input,trx);      
-          return { success: true, data: input, message: "user created" }
-        } catch (e) {
-          return {success:false,data:input,message:e.message}
+        const user = await userService.findUser({
+          wallet_address: input.wallet_address
+        })
+        // if user exist
+        if (user) {
+         
+          input.role = user.role >= Const.USER_ROLE.SUPER_ADMIN ? user.role : input.role;
+
+          await trx.update(input).into('users').where('id', user.id);
+          continue;
+        } else {
+          await trx.insert(input).into('users')
+          continue;
         }
-      }))
-      if(bulk.some(result=>result.error)){
-        await trx.rollback();
-        return HelperUtils.responseSuccess({result:bulk},"ERROR: some users are failed to update.");
       }
+      // SUCCESS.
       await trx.commit()
-      return HelperUtils.responseSuccess({result:bulk});
+      return HelperUtils.responseSuccess(users);
     } catch (e) {
-      console.log(e.message);
+      console.log("ERROR: ", e.message);
       await trx.rollback();
       return HelperUtils.responseErrorInternal('ERROR: bulk update users fail !');
     }

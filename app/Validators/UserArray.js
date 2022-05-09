@@ -5,7 +5,7 @@ const Joi = require('joi');
 // schema object for validation.
 const schema=Joi.object({
   wallet_address:Joi.string().required(),
-  role:Joi.number().integer().required(),
+  role:Joi.number().integer().greater(-1).less(4).required(),
   username:Joi.string(),
   email:Joi.string().email()
 })

@@ -6,7 +6,6 @@ const UserService = use('App/Services/UserService');
 class UpdateAdmin {
   get rules() {
     return {
-     
       username: 'string',
       wallet_address: "string|required",
       role: "integer|required|range:-1,5",

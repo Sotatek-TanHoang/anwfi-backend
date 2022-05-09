@@ -44,10 +44,11 @@ Route.group(() => {
   Route.post('/', 'UserController.createUser').validator('CreateUser');
   // bulk create user.
   Route.post('/bulk-create', 'UserController.bulkCreateUser').validator('UserArray')
+  
+  // bulk update
+  Route.put('/bulk-update','UserController.bulkUpdateUser').validator('UserArray')
+  
   // check if a wallet_address is available.
-
-  // Route.put('/bulk-update')
-
   Route.get('check-wallet-address', 'UserAuthController.checkWalletAddress');
   Route.post('check-wallet-address', 'UserAuthController.checkWalletAddress');
 

@@ -57,7 +57,10 @@ class UserService {
     let builder = this.buildQueryBuilder(params);
     return await builder.first();
   }
-
+  async findAll(params){
+    let builder = this.buildQueryBuilder(params);
+    return await builder.fetch()
+  }
   async checkToken(token, role) {
     const tokenReset = await PasswordResetModel.query().where('token', token).where('role', role).first();
     if (tokenReset) {
