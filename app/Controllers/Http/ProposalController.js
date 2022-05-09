@@ -3,6 +3,7 @@ const ProposalService = use('App/Services/ProposalService');
 const ProposalModel = use('App/Models/Proposal');
 const HelperUtils = use('App/Common/HelperUtils');
 const Const = use('App/Common/Const');
+const Database = use('Database')
 class ProposalController {
 
   async createProposal({ request, auth }) {
@@ -12,7 +13,7 @@ class ProposalController {
 
       const proposal = new ProposalModel();
       proposal.fill(inputs);
-
+      proposal.tmp_created = ProposalModel.formatDates('tmp_created', new Date().toISOString());
       proposal.is_deploy = 0;
       proposal.proposal_status = Const.PROPOSAL_STATUS.CREATED;
       proposal.wallet_address = auth.user.wallet_address;
@@ -36,6 +37,7 @@ class ProposalController {
         if (proposal.proposal_status !== Const.PROPOSAL_STATUS.CREATED) {
           return HelperUtils.responseBadRequest('ERROR: you cannot modify the proposal right now!');
         }
+        proposal.tmp_created = ProposalModel.formatDates('tmp_created', new Date().toISOString());
         proposal.merge(inputs);
         proposal.save();
         return HelperUtils.responseSuccess(proposal);
@@ -51,22 +53,35 @@ class ProposalController {
 
     try {
       const id = request.params.id
-      console.log('Update proposal status with params: ', inputs, id);
+      console.log('Update proposal status with params: ', id);
 
       const proposal = await (new ProposalService()).findOne({ id });
       if (proposal) {
 
-        switch (proposal.proposal_status) {
+        switch (parseInt(proposal.proposal_status)) {
           case Const.PROPOSAL_STATUS.ACTIVE:
           case Const.PROPOSAL_STATUS.FAILED:
           case Const.PROPOSAL_STATUS.EXECUTED:
             return HelperUtils.responseBadRequest('ERROR: you are not allowed to perform this action!');
         }
-        proposal.proposal_status++;
+
+
+        proposal.proposal_status = parseInt(proposal.proposal_status) + 1;
+        
+        if (parseInt(proposal.proposal_status) === Const.PROPOSAL_STATUS.ACTIVE) {
+          proposal.tmp_active = ProposalModel.formatDates('tmp_active', new Date().toISOString());
+        }
+        if (parseInt(proposal.proposal_status) === Const.PROPOSAL_STATUS.QUEUE) {
+          proposal.tmp_queue = ProposalModel.formatDates('tmp_queue', new Date().toISOString());
+        }
+        if (parseInt(proposal.proposal_status) === Const.PROPOSAL_STATUS.EXECUTED) {
+          proposal.tmp_executed = ProposalModel.formatDates('tmp_executed', new Date().toISOString());
+        }
+
         proposal.save();
         return HelperUtils.responseSuccess({
           proposal_id: id,
-          new_status:proposal.proposal_status
+          new_status: proposal.proposal_status
         });
       }
 
@@ -124,13 +139,24 @@ class ProposalController {
     try {
       const id = params.id;
       const proposalService = new ProposalService();
-      const proposal = await proposalService.findOne({ id, count_vote: true });
+      const proposal = await proposalService.findOne({ id, count_vote: true, count_anwfi: true });
+      const subQueries = [
+        proposal.votes().where('vote', '=', 1).limit(3).fetch(1),
+        proposal.votes().where('vote', '=', 0).limit(3).fetch(1),
+        Database.from('votes').where('vote', true).getSum('balance'),
+        Database.from('votes').where('vote', false).getSum('balance')
+      ]
+      const results = await Promise.all(subQueries)
 
       proposal.vote_data = {
-        up_vote: await proposal.votes().where('vote', '=', 1).limit(3).fetch(1),
-        down_vote: await proposal.votes().where('vote', '=', 0).limit(3).fetch(1),
+        up_vote: results[0] || [],
+        down_vote: results[1] || [],
+        up_vote_anwfi: results[2] || '0',
+        down_vote_anwfi: results[3] || '0',
       }
-      return HelperUtils.responseSuccess(proposal);
+
+      proposal.history = HelperUtils.getProposalHistory(proposal);
+      return HelperUtils.responseSuccess(proposal.toJSON());
     } catch (e) {
       console.log(e);
       return HelperUtils.responseErrorInternal('ERROR: get proposal detail fail !');

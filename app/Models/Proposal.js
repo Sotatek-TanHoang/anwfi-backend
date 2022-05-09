@@ -7,10 +7,20 @@ class Proposal extends Model {
   static get table() {
     return 'proposals';
   }
-  votes(){
-    return this.hasMany('App/Models/Vote','id','proposal_id')
+  static get hidden() {
+    return ["tmp_created",
+      "tmp_active",
+      "tmp_result",
+      "tmp_queue",
+      "tmp_executed",
+      "created_at",
+      "updated_at", 
+    ]
+  }
+  votes() {
+    return this.hasMany('App/Models/Vote', 'id', 'proposal_id')
   }
 
 }
 
-module.exports=Proposal
+module.exports = Proposal

@@ -168,7 +168,61 @@ const toFixedNumber = function(x) {
   }
   return x;
 }
+const getProposalHistory=(proposal)=>{
+  //   CREATED: 0, 
+  //   ACTIVE: 1,
+  //   SUCCESS: 2,
+  //   FAILED: -1,
+  //   QUEUE: 3,
+  //   EXECUTED: 4,
+  const history=[
+    {
+      status:Const.PROPOSAL_STATUS.CREATED,
+      timestamp:proposal.tmp_created
+    },
+    {
+      status:Const.PROPOSAL_STATUS.ACTIVE,
+      timestamp:proposal.tmp_active
+    },
+    {
+      status:Const.PROPOSAL_STATUS.SUCCESS,
+      timestamp:proposal.tmp_result
+    },
+    {
+      status:Const.PROPOSAL_STATUS.QUEUE,
+      timestamp:proposal.tmp_queue
+    },
+    {
+      status:Const.PROPOSAL_STATUS.EXECUTED,
+      timestamp:proposal.tmp_executed
+    }
+  ]
+   const status=proposal.proposal_status;
 
+  // if(status>=Const.PROPOSAL_STATUS.CREATED){
+  //   history[0].timestamp=proposal.tmp_created;
+  // }
+  // if(status>=Const.PROPOSAL_STATUS.ACTIVE){
+  //   history[1].timestamp=proposal.tmp_active;
+  // }
+  // if(status>=Const.PROPOSAL_STATUS.SUCCESS){
+  //   history[2].timestamp=proposal.tmp_result;
+  // }
+  
+  // if(status>=Const.PROPOSAL_STATUS.QUEUE){
+  //   history[3].timestamp=proposal.tmp_queue;
+  // }
+  // if(status>=Const.PROPOSAL_STATUS.QUEUE){
+  //   history[4].timestamp=proposal.tmp_executed;
+  // }
+  // if failed, skip queue and executed
+  if(status===Const.PROPOSAL_STATUS.FAILED){
+    history[2].status=Const.PROPOSAL_STATUS.FAILED;
+    return History;
+  }
+  return history;
+  
+}
 module.exports = {
   randomString,
   doMask,
@@ -182,5 +236,6 @@ module.exports = {
   toFixedNumber,
   seconds_since_epoch,
   escapeWildcards,
-  hasSql
+  hasSql,
+  getProposalHistory
 };
