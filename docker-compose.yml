@@ -10,8 +10,8 @@ services:
       MYSQL_PASSWORD: 'Sotatek2021'      
       MYSQL_ROOT_PASSWORD: 'Sotatek2021'
     ports:
-      - '3306:3306'
+      - '3366:3306'
     expose:
-      - '3306'
+      - '3366'
     volumes:
       - './.mysql-data/db:/var/lib/mysql'
