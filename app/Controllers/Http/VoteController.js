@@ -9,12 +9,16 @@ class ProposalController {
   async createVote({ request, auth }) {
     try {
 
-      const inputs = request.only(['wallet_address', 'vote'])
+      const inputs = request.only(['vote'])
       const proposal_id = request.params.id;
+
       const userVote = await VoteService.findOne({
         wallet_address: inputs.wallet_address,
         proposal_id
       })
+      inputs.balance=1
+      input.wallet_address=auth.user.wallet_address;
+      // TODO: get user balance
       // create if vote not exists
       if(!userVote){
         const newVote=new VoteModel();
@@ -37,7 +41,9 @@ class ProposalController {
 
   async getVote({ request }) {
     try {
-
+      const params=request.only(['limit','page'])
+      const proposal_id=request.params.id;
+      
       return HelperUtils.responseSuccess({
 
       });

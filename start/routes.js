@@ -78,7 +78,9 @@ Route.group(() => {
 
   Route.get("/vote/:id", () => "get votes work"); // get proposal vote with pagination
   Route.post("/vote/:id", "VoteController.createVote").validator('CheckVote') // vote off-chain
-})
+}).middleware(['typeUser', 'checkPrefix', 'checkAdminJwtSecret', 'auth:user',
+"checkGovernanceAbove",
+]);
 
 // Public API:
 Route.group(() => {
@@ -92,6 +94,6 @@ Route.group(() => {
   // Route.post('/register', 'UserAuthController.register').validator('Register').middleware('checkSignature');
   // Route.post('/register-email', 'UserAuthController.registerEmail').middleware('checkSignature');
   // Route.get('confirm-email/:token', 'UserController.confirmEmail'); // Confirm email when register 
-  // Route.post('/login', 'UserAuthController.login').validator('Login').middleware('checkSignature'); // login and register when login user not exist
+  Route.post('/login', 'UserAuthController.login').validator('Login').middleware('checkSignature'); // login and register when login user not exist
   // Route.get('/user-profile', 'UserController.profile');
 }).prefix(Const.USER_TYPE_PREFIX.PUBLIC_USER).middleware(['typeUser', 'checkPrefix', 'formatEmailAndWallet']);

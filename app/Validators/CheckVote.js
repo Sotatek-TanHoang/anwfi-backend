@@ -3,7 +3,6 @@ class CheckVote {
     get rules() {
 
         return {
-            wallet_address: 'required|string',
             vote: "boolean|required"
         };
     }
