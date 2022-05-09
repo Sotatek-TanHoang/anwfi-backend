@@ -17,3 +17,4 @@ database/*.sqlite
 .idea
 yarn.lock
 .mysql-data
+redis
