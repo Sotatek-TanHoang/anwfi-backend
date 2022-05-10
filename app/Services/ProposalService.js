@@ -1,7 +1,7 @@
 'use strict'
 
 const ErrorFactory = use('App/Common/ErrorFactory');
-const ProposalModel = use('App/Models/proposal');
+const ProposalModel = use('App/Models/Proposal');
 const Const = use('App/Common/Const');
 
 class ProposalService {
