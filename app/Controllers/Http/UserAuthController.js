@@ -66,7 +66,7 @@ class UserAuthController {
     }
   }
 
-  async login({ request, auth, params }) {
+  async login({ request, auth, params ,response}) {
     const type = params.type;
     if (type !== Const.USER_TYPE_PREFIX.ADMIN && type !== Const.USER_TYPE_PREFIX.PUBLIC_USER) {
       return HelperUtils.responseNotFound('Not valid !');
@@ -87,7 +87,7 @@ class UserAuthController {
       });
     } catch (e) {
       console.log('ERROR: ', e);
-      return HelperUtils.responseNotFound('ERROR: login fail !');
+      return response.notFound(HelperUtils.responseNotFound('ERROR: login fail !'));
     }
   }
   async loginPublicUser({ request, auth, params }) {

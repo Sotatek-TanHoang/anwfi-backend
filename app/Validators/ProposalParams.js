@@ -28,6 +28,7 @@ class ProposalParams {
   }
   async authorize() {
     const { proposal_type } = this.ctx.request.only(['proposal_type'])
+    
     // proposal_type must match those types:
     switch (proposal_type) {
       case Const.PROPOSAL_TYPE.LIQUIDITY_PROVIDER_FEE:
