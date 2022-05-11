@@ -1,30 +1,18 @@
 'use strict'
 
 const HelperUtils = use('App/Common/HelperUtils');
-const Web3 = require('web3')
-
 const Const = use('App/Common/Const');
-
 const VoteModel = use('App/Models/Vote')
 const VoteService = use('App/Services/VoteService')
-
-
-const rpcURL = "https://rinkeby.infura.io/v3/9340d0c9c93046fb817055e8ba9d3c15";
-const web3 = new Web3(rpcURL)
-
+const ContractService=use('App/Services/ContractService')
 const ProposalModel = use('App/Models/Proposal');
-
-const abi=  require("../../abi/awnfi.json");
-const AWNFIAddress="0x79E79B3EF77A9cE708A5218ddbD793807b2c4C33";
-
-// const randomString = use('random-string');
 class ProposalController {
 
   async create({ request, auth }) {
     const inputs = request.only(['wallet_address', 'vote', 'proposal_id']);
     inputs.wallet_address=auth.user.wallet_address;
-    const contract = new web3.eth.Contract(abi, AWNFIAddress)
-
+    // const contract = new web3.eth.Contract(abi, AWNFIAddress)
+    const contract=new ContractService()
     const proposal= await ProposalModel.query().where('id',inputs.proposal_id).first();
     if(!proposal) 
           return HelperUtils.responseBadRequest('Cannot find this proposal!');
@@ -40,13 +28,9 @@ class ProposalController {
     }
   
     // get user vote balance
-    await contract.methods.balanceOf(auth.user.wallet_address)
-    .call()
-    .then(function(result){
-      userVote.balance=result
-      userVote.status= proposal.toJSON().min_anwfi <= result
-    })
-
+    userVote.balance=await contract.balanceOf(auth.user.wallet_address)
+    userVote.status= HelperUtils.compareBigNumber(userVote.balance, proposal.toJSON().min_anwfi)
+  
     await userVote.save();
     return HelperUtils.responseSuccess(userVote);
     } catch (e) {

@@ -208,6 +208,11 @@ const getProposalHistory=(proposal)=>{
 function formatDecimal(value='0'){
   return BigNumber(value).toString()
 }
+function compareBigNumber(left,right){
+  let x=new BigNumber(left);
+  let y=new BigNumber(right);
+  return x.comparedTo(y);
+}
 module.exports = {
   randomString,
   doMask,
@@ -223,5 +228,6 @@ module.exports = {
   escapeWildcards,
   hasSql,
   getProposalHistory,
-  formatDecimal
+  formatDecimal,
+  compareBigNumber
 };
