@@ -143,7 +143,7 @@ class UserController {
   async getUserList({ request }) {
     try {
       const params = request.only(['limit', 'page']);
-      const searchQuery = request.input('searchQuery');
+      const searchQuery = request.input('query');
       const limit = params.limit || Const.DEFAULT_LIMIT;
       const page = params.page || 1;
 

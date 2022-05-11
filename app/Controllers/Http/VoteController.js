@@ -17,7 +17,7 @@ class ProposalController {
         proposal_id
       })
       inputs.balance=1
-      input.wallet_address=auth.user.wallet_address;
+      inputs.wallet_address=auth.user.wallet_address;
       // TODO: get user balance
       // create if vote not exists
       if(!userVote){

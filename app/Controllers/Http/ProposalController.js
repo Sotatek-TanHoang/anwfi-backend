@@ -116,9 +116,8 @@ class ProposalController {
   }
   async getProposalList({ request }) {
     try {
-      console.log('here');
       const params = request.only(['limit', 'page']);
-      const searchQuery = request.input('searchQuery');
+      const searchQuery = request.input('query');
       const limit = params.limit || Const.DEFAULT_LIMIT;
       const page = params.page || 1;
       params.count_vote = true
@@ -142,10 +141,10 @@ class ProposalController {
       const proposalService = new ProposalService();
       const proposal = await proposalService.findOne({ id, count_vote: true, count_anwfi: true });
       const subQueries = [
-        proposal.votes().where('vote', '=', 1).limit(3).fetch(1),
-        proposal.votes().where('vote', '=', 0).limit(3).fetch(1),
-        Database.from('votes').where('vote', true).getSum('balance'),
-        Database.from('votes').where('vote', false).getSum('balance')
+        proposal.votes().where('vote', '=', 1).limit(3).fetch(),
+        proposal.votes().where('vote', '=', 0).limit(3).fetch(),
+        Database.from('votes').where('vote', true).andWhere('proposal_id',id).getSum('balance'),
+        Database.from('votes').where('vote', false).andWhere('proposal_id',id).getSum('balance')
       ]
       const results = await Promise.all(subQueries)
 
