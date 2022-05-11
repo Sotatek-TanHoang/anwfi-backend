@@ -7,10 +7,12 @@ class ProposalParams {
   get rules() {
     return {
       proposal_type: "required|string",
-      current_value: "number",
-      new_value: "number",
+      name:"required|string",
+      current_value: "number|required",
+      new_value: "number|required",
       description: "string",
       start_time: [
+        rule('required'),
         rule('date'),
         rule('dateFormat', 'YYYY-MM-DD HH:mm:ss')
       ],
@@ -18,9 +20,9 @@ class ProposalParams {
         rule('date'),
         rule('dateFormat', 'YYYY-MM-DD HH:mm:ss')
       ],
-      quorum: "number",
-      min_anwfi: "number",
-      pass_percentage: "range:-1,10001|integer",
+      quorum: "number|required",
+      min_anwfi: "number|required",
+      pass_percentage: "range:-1,10001|integer|required",
 
     };
   }

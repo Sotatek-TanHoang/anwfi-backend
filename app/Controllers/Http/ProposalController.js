@@ -8,7 +8,7 @@ class ProposalController {
 
   async createProposal({ request, auth }) {
     try {
-      const inputs = request.only(['proposal_type', 'current_value', 'new_value', 'description', 'start_time', 'end_time', 'quorum', 'min_anwfi', 'pass_percentage']);
+      const inputs = request.only(['proposal_type','name', 'current_value', 'new_value', 'description', 'start_time', 'end_time', 'quorum', 'min_anwfi', 'pass_percentage']);
       console.log('Create proposal with params: ', inputs);
 
       const proposal = new ProposalModel();
@@ -29,7 +29,7 @@ class ProposalController {
   async updateProposalBasic({ request }) {
     try {
       const id = request.params.id
-      const inputs = request.only(['proposal_type', 'new_value', 'description', 'start_time', 'end_time', 'quorum', 'min_anwfi', 'pass_percentage']);
+      const inputs = request.only(['proposal_type','name', 'current_value','new_value', 'description', 'start_time', 'end_time', 'quorum', 'min_anwfi', 'pass_percentage']);
       console.log('Update proposal with params: ', inputs);
 
       const proposal = await (new ProposalService()).findOne({ id });

@@ -25,11 +25,25 @@ class VoteService {
         let builder = this.buildQueryBuilder(params);
         return await builder.first();
     }
-    static async calcBalance({proposal_id}){
+    static async calcBalance({ proposal_id }) {
         try {
+            const proposal=ProposalModel.query().where("id",proposal_id).first()
+            if(!proposal) throw new Error("ERROR: proposal'is is invalid!")
+            let votes = await VoteModel.query().where('proposal_id', proposal_id).fetch();
+
+            const contract = new web3.eth.Contract(abi, AWNFIAddress)
+
+            votes.forEach(async vote => {
+                const balance = await contract.methods
+                .balanceOf('0x866a4760CEb7F82D35e4e6C75e315098f18E0c81')
+                .call()
+                vote.balance = balance
+                vote.status = proposal.toJSON().min_anwfi <= result;
+                await vote.save();
+            })
             
         } catch (error) {
-            
+
         }
     }
 

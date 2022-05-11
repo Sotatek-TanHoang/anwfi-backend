@@ -76,9 +76,9 @@ Route.group(() => {
 // Voting APIs:
 Route.group(() => {
 
-Route.post('/vote', 'VoteController.create')
+  Route.post('/vote', 'VoteController.create')
   
-  Route.post("/vote/:id", "VoteController.createVote").validator('CheckVote') // vote off-chain
+  // Route.post("/vote/:id", "VoteController.createVote").validator('CheckVote') // vote off-chain
 }).prefix("public").middleware(['typeUser', 'checkPrefix', 'checkAdminJwtSecret', 'auth:user',
 "checkGovernanceAbove",
 ]);
@@ -103,5 +103,5 @@ Route.group(() => {
   // get proposals list for public
   Route.get('/proposal',"ProposalController.getProposalList")
   // get votes list for public
-  Route.get("/vote/:id", () => "get votes work"); // get proposal vote with pagination
+  Route.get("/vote/:id", "VoteController.getVote"); // get proposal vote with pagination
 }).prefix(Const.USER_TYPE_PREFIX.PUBLIC_USER).middleware(['typeUser', 'checkPrefix']);

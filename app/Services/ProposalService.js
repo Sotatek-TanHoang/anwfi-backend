@@ -39,6 +39,7 @@ class ProposalService {
     return query.where((q) => {
       q.where('wallet_address', 'like', `%${searchQuery}%`)
         .orWhere('proposal_type', 'like', `%${searchQuery}%`)
+        .orWhere('name', 'like', `%${searchQuery}%`)
     })
   }
 

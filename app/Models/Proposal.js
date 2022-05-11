@@ -15,6 +15,8 @@ class Proposal extends Model {
       "tmp_executed",
       "created_at",
       "updated_at", 
+      'is_display',
+      'is_deploy'
     ]
   }
   votes() {
