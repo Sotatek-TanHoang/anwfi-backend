@@ -11,12 +11,10 @@ class ProposalParams {
       new_value: "number",
       description: "string",
       start_time: [
-        rule('required'),
         rule('date'),
         rule('dateFormat', 'YYYY-MM-DD HH:mm:ss')
       ],
       end_time: [
-        rule('required'),
         rule('date'),
         rule('dateFormat', 'YYYY-MM-DD HH:mm:ss')
       ],
