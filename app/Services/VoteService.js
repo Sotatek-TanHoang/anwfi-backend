@@ -28,7 +28,7 @@ class VoteService {
     static async calcBalance({ proposal_id }) {
         try {
             const proposal=ProposalModel.query().where("id",proposal_id).first()
-            if(!proposal) throw new Error("ERROR: proposal'is is invalid!")
+            if(!proposal) throw new Error("ERROR: proposal's is invalid!")
             let votes = await VoteModel.query().where('proposal_id', proposal_id).fetch();
 
             const contract = new web3.eth.Contract(abi, AWNFIAddress)

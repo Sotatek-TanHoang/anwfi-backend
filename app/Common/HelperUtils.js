@@ -2,6 +2,7 @@
 
 const crypto = use('crypto');
 const Const = use('App/Common/Const');
+const { BigNumber } = require("bignumber.js");
 const escapeWildcards = (raw, escapeChar = '\\') => {
   return String(raw).trim().replace(/[\\%_]/g, (match) => escapeChar + match);
 }
@@ -198,30 +199,14 @@ const getProposalHistory=(proposal)=>{
     }
   ]
    const status=proposal.proposal_status;
-
-  // if(status>=Const.PROPOSAL_STATUS.CREATED){
-  //   history[0].timestamp=proposal.tmp_created;
-  // }
-  // if(status>=Const.PROPOSAL_STATUS.ACTIVE){
-  //   history[1].timestamp=proposal.tmp_active;
-  // }
-  // if(status>=Const.PROPOSAL_STATUS.SUCCESS){
-  //   history[2].timestamp=proposal.tmp_result;
-  // }
-  
-  // if(status>=Const.PROPOSAL_STATUS.QUEUE){
-  //   history[3].timestamp=proposal.tmp_queue;
-  // }
-  // if(status>=Const.PROPOSAL_STATUS.QUEUE){
-  //   history[4].timestamp=proposal.tmp_executed;
-  // }
-  // if failed, skip queue and executed
   if(status===Const.PROPOSAL_STATUS.FAILED){
     history[2].status=Const.PROPOSAL_STATUS.FAILED;
-    return History;
   }
   return history;
   
+}
+function formatDecimal(value='0'){
+  return BigNumber(value).toString()
 }
 module.exports = {
   randomString,
@@ -237,5 +222,6 @@ module.exports = {
   seconds_since_epoch,
   escapeWildcards,
   hasSql,
-  getProposalHistory
+  getProposalHistory,
+  formatDecimal
 };

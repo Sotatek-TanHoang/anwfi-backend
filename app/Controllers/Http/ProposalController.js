@@ -18,6 +18,7 @@ class ProposalController {
       proposal.is_display = 0;
       proposal.proposal_status = Const.PROPOSAL_STATUS.CREATED;
       proposal.wallet_address = auth.user.wallet_address;
+
       await proposal.save();
 
       return HelperUtils.responseSuccess(proposal);
@@ -30,6 +31,7 @@ class ProposalController {
     try {
       const id = request.params.id
       const inputs = request.only(['proposal_type','name', 'current_value','new_value', 'description', 'start_time', 'end_time', 'quorum', 'min_anwfi', 'pass_percentage']);
+      
       console.log('Update proposal with params: ', inputs);
 
       const proposal = await (new ProposalService()).findOne({ id });
@@ -40,6 +42,7 @@ class ProposalController {
         }
         proposal.tmp_created = ProposalModel.formatDates('tmp_created', new Date().toISOString());
         proposal.merge(inputs);
+        
         proposal.save();
         return HelperUtils.responseSuccess(proposal);
       }

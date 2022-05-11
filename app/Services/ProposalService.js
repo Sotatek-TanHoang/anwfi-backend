@@ -51,7 +51,9 @@ class ProposalService {
     let builder = this.buildQueryBuilder(params);
     return await builder.first();
   }
-
+  async calcVoteResult(){
+    // TODO: calc vote result after user vote.
+  }
 }
 
 module.exports = ProposalService
