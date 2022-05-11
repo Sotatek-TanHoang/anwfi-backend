@@ -17,7 +17,7 @@ class VoteService {
         if (params.proposal_id) {
             builder = builder.where('proposal_id', params.proposal_id);
         }
-
+        builder=builder.orderBy("id",'desc')
         return builder;
     }
 

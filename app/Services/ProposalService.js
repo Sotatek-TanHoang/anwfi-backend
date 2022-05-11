@@ -31,11 +31,12 @@ class ProposalService {
     }
     if (params.status) {
       const filter = params.status.split(',')
-      .filter(el => el !== '')
-      .map(e => parseInt(e))
-      .filter(e => !(e === Const.PROPOSAL_STATUS.CREATED && params.is_public));
+        .filter(el => el !== '')
+        .map(e => parseInt(e))
+        .filter(e => !(e === Const.PROPOSAL_STATUS.CREATED && params.is_public));
       builder = builder.whereRaw(filter.map(() => 'proposal_status=?').join(' or '), filter)
     }
+    builder=builder.orderBy("id",'desc')
 
     return builder;
   }
@@ -51,8 +52,32 @@ class ProposalService {
     let builder = this.buildQueryBuilder(params);
     return await builder.first();
   }
-  async calcVoteResult(){
+  async calcVoteResult(id) {
     // TODO: calc vote result after user vote.
+    try{
+      const proposal = await this.findOne({ id })
+    if (!proposal) throw new Error("ERROR: not found")
+
+    const subQueries = await Promise.all([
+      Database.from('votes').where('vote', true).andWhere('proposal_id', id).getSum('balance'),
+      Database.from('votes').where('vote', false).andWhere('proposal_id', id).getSum('balance'),
+      Database.from('votes').where('vote', true).andWhere('proposal_id', id).getCount(),
+      Database.from('votes').where('vote', false).andWhere('proposal_id', id).getCount()
+    ])
+    // anwfi vote balance
+    const up_vote_anwfi = subQueries[0]
+    const down_vote_anwfi = subQueries[1]
+
+    // vote count;
+    const up_vote = subQueries[2]
+    const down_Vote = subQueries[3]
+
+    proposal.merge({ up_vote, down_Vote, up_vote_anwfi, down_vote_anwfi });
+    await proposal.save();
+    }catch(e){
+      console.log(e.message);
+      throw new Error("ERROR: cannot update proposal ",id)
+    }
   }
 }
 
