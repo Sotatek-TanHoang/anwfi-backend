@@ -33,7 +33,7 @@ class ProposalService {
       const filter = params.status.split(',')
       .filter(el => el !== '')
       .map(e => parseInt(e))
-      .filter(e => !(e === Const.PROPOSAL_STATUS.CREATED && !params.is_public));
+      .filter(e => !(e === Const.PROPOSAL_STATUS.CREATED && params.is_public));
       builder = builder.whereRaw(filter.map(() => 'proposal_status=?').join(' or '), filter)
     }
 
