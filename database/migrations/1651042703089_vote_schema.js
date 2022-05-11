@@ -10,6 +10,7 @@ class VoteSchema extends Schema {
       table.string('wallet_address', 255).notNullable();
       table.integer('proposal_id').notNullable();
       table.bool('vote').notNullable();
+      table.decimal("balance",65,0).notNullable();
       table.timestamps();
       table.unique(['wallet_address','proposal_id']);
     })

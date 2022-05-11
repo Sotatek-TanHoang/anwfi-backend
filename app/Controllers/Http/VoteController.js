@@ -4,6 +4,11 @@ const HelperUtils = use('App/Common/HelperUtils');
 const Web3 = require('web3')
 
 const Const = use('App/Common/Const');
+
+const VoteModel = use('App/Models/Vote')
+const VoteService = use('App/Services/VoteService')
+
+
 const rpcURL = "https://rinkeby.infura.io/v3/9340d0c9c93046fb817055e8ba9d3c15";
 const web3 = new Web3(rpcURL)
 const VoteModel = use('App/Models/Vote');
@@ -31,20 +36,18 @@ class ProposalController {
       vote.status= proposal.toJSON().min_anwfi <= result
     })
     await vote.save();
-    try {
-    
 
-      return HelperUtils.responseSuccess({
-
-      });
+      return HelperUtils.responseSuccess(vote);
     } catch (e) {
       console.log(e);
       return HelperUtils.responseErrorInternal('ERROR: vote proposal fail !');
     }
   }
- 
+
   async getVote({ request }) {
     try {
+      const params=request.only(['limit','page'])
+      const proposal_id=request.params.id;
       
       return HelperUtils.responseSuccess({
 

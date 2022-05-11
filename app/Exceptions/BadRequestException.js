@@ -1,20 +1,17 @@
 const { LogicalException } = require('@adonisjs/generic-exceptions');
 
 class BadRequestException extends LogicalException {
-  constructor(attribute, message, status) {
-    super();
-    this.attribute = attribute || null;
-    this.message = message || 'Bad Request';
-    this.status = status || 400;
-  }
-
+  /**
+   * Handle this exception by itself
+   */
   handle(error, { response }) {
-    const message = {
-      message: this.message,
-      msgCode: this.msgCode,
-      attribute: this.attribute
-    };
-    return response.badRequest(message);
+    return response.json({
+      status: 400,
+      data: null,
+      message: error.message || 'ERROR: Bad request!'
+    })
+
+    // response.forbidden({ error: error.message });
   }
 }
 

@@ -1,13 +1,12 @@
 const ErrorFactory = use('App/Common/ErrorFactory');
 const ForbiddenException = use("App/Exceptions/ForbiddenException")
 const UserService = use('App/Services/UserService');
-const HelperUtils = use('App/Common/HelperUtils');
+
 
 class UpdateAdmin {
   get rules() {
     return {
-      firstname: 'string',
-      lastname: 'string',
+      username: 'string',
       wallet_address: "string|required",
       role: "integer|required|range:-1,5",
       email: 'email'

@@ -27,7 +27,7 @@ Route.group(() => {
   // .middleware('checkSignature');
 
   // TODO: implement confirm email later
-}).prefix(Const.USER_TYPE_PREFIX.ADMIN).middleware(['typeAdmin', 'checkPrefix', 'formatEmailAndWallet']);
+}).middleware(['typeAdmin', 'checkPrefix', 'formatEmailAndWallet']);
 
 // Admin only work routes
 Route.group(() => {
@@ -36,14 +36,18 @@ Route.group(() => {
   // get single admin profile by id.
   Route.get('/:id', 'UserController.getUserDetail');
   // update single admin by id.
-  Route.put('/:id', 'UserController.updateUserProfile').validator('UpdateUser');
+  // Route.put('/:id', 'UserController.updateUserProfile').validator('UpdateUser');
   // delete single admin by id.
   Route.delete('/:id', 'UserController.deleteUser').validator("DeleteUser");
 
   // create admin or governance by admin.
   Route.post('/', 'UserController.createUser').validator('CreateUser');
   // bulk create user.
-  Route.post('/bulk-create-user', 'UserController.bulkCreateUser')
+  Route.post('/bulk-create', 'UserController.bulkCreateUser').validator('UserArray')
+  
+  // bulk update
+  Route.put('/bulk-update','UserController.bulkUpdateUser').validator('UserArray')
+  
   // check if a wallet_address is available.
   Route.get('check-wallet-address', 'UserAuthController.checkWalletAddress');
   Route.post('check-wallet-address', 'UserAuthController.checkWalletAddress');
@@ -71,10 +75,17 @@ Route.group(() => {
 ]);
 // Voting APIs:
 Route.group(() => {
-  Route.post('/vote', 'VoteController.create')
-  // Route.get("/vote/:id", () => "get votes work"); // get proposal vote with pagination
-  // Route.post("/vote/:id", () => "vote work") // vote off-chain
-}).prefix("public")
+
+Route.post('/vote', 'VoteController.create')
+  
+  Route.post("/vote/:id", "VoteController.createVote").validator('CheckVote') // vote off-chain
+}).prefix("public").middleware(['typeUser', 'checkPrefix', 'checkAdminJwtSecret', 'auth:user',
+"checkGovernanceAbove",
+]);
+
+ 
+
+
 
 // Public API:
 Route.group(() => {
@@ -83,11 +94,14 @@ Route.group(() => {
 
 }).middleware(['maskEmailAndWallet']);
 
+// public routes
 Route.group(() => {
-
-  // Route.post('/register', 'UserAuthController.register').validator('Register').middleware('checkSignature');
-  // Route.post('/register-email', 'UserAuthController.registerEmail').middleware('checkSignature');
-  // Route.get('confirm-email/:token', 'UserController.confirmEmail'); // Confirm email when register 
-  Route.post('/login', 'UserAuthController.login').validator('Login').middleware('checkSignature'); // login and register when login user not exist
-  // Route.get('/user-profile', 'UserController.profile');
-}).prefix(Const.USER_TYPE_PREFIX.PUBLIC_USER).middleware(['typeUser', 'checkPrefix', 'formatEmailAndWallet']);
+  // login public user, if account not exists then create
+  Route.post('/login', 'UserAuthController.loginPublicUser').validator('Login').middleware('checkSignature'); // login and register when login user not exist
+  // get proposal detail for public
+  Route.get('/proposal/:id',"ProposalController.getProposalDetail")
+  // get proposals list for public
+  Route.get('/proposal',"ProposalController.getProposalList")
+  // get votes list for public
+  Route.get("/vote/:id", () => "get votes work"); // get proposal vote with pagination
+}).prefix(Const.USER_TYPE_PREFIX.PUBLIC_USER).middleware(['typeUser', 'checkPrefix']);
