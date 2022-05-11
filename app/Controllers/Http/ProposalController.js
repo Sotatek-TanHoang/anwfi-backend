@@ -8,13 +8,14 @@ class ProposalController {
 
   async createProposal({ request, auth }) {
     try {
-      const inputs = request.only(['proposal_type', 'current_value', 'new_value', 'description', 'is_display', 'start_time', 'end_time', 'quorum', 'min_anwfi', 'pass_percentage']);
+      const inputs = request.only(['proposal_type', 'current_value', 'new_value', 'description', 'start_time', 'end_time', 'quorum', 'min_anwfi', 'pass_percentage']);
       console.log('Create proposal with params: ', inputs);
 
       const proposal = new ProposalModel();
       proposal.fill(inputs);
       proposal.tmp_created = ProposalModel.formatDates('tmp_created', new Date().toISOString());
       proposal.is_deploy = 0;
+      proposal.is_display= 0;
       proposal.proposal_status = Const.PROPOSAL_STATUS.CREATED;
       proposal.wallet_address = auth.user.wallet_address;
       await proposal.save();
@@ -28,7 +29,7 @@ class ProposalController {
   async updateProposalBasic({ request }) {
     try {
       const id = request.params.id
-      const inputs = request.only(['proposal_type', 'new_value', 'description', 'is_display', 'start_time', 'end_time', 'quorum', 'min_anwfi', 'pass_percentage']);
+      const inputs = request.only(['proposal_type', 'new_value', 'description', 'start_time', 'end_time', 'quorum', 'min_anwfi', 'pass_percentage']);
       console.log('Update proposal with params: ', inputs);
 
       const proposal = await (new ProposalService()).findOne({ id });

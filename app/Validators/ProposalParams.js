@@ -6,7 +6,6 @@ class ProposalParams {
       current_value:"number",
       new_value:"number",
       description:"string",
-      is_display:"required|boolean",
       start_time:"date",
       end_time:"date",
       quorum:"number",
