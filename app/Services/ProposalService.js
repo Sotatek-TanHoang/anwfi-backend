@@ -56,7 +56,7 @@ class ProposalService {
     // TODO: calc vote result after user vote.
     try{
       const proposal = await this.findOne({ id })
-    if (!proposal) throw new Error("ERROR: not found")
+    if (!proposal) throw new Error()
 
     const subQueries = await Promise.all([
       Database.from('votes').where('vote', true).andWhere('proposal_id', id).getSum('balance'),

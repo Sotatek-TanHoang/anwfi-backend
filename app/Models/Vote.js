@@ -7,6 +7,9 @@ class Vote extends Model {
     static get table() {
         return 'votes';
     }
+    static get hidden () {
+        return ['status']
+      }
 }
 
 module.exports = Vote

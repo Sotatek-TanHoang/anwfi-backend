@@ -22,28 +22,33 @@ class ProposalController {
 
   async create({ request, auth }) {
     const inputs = request.only(['wallet_address', 'vote', 'proposal_id']);
+    inputs.wallet_address=auth.user.wallet_address;
     const contract = new web3.eth.Contract(abi, AWNFIAddress)
-    const existVote= await VoteModel.query().where('wallet_address',inputs.wallet_address).where('proposal_id',inputs.proposal_id).first();
-    if(existVote) {
-      existVote.merge(inputs)
-      await existVote.save();
-      return HelperUtils.responseSuccess(existVote);
-    }
-    // if vote not exist
-    const vote = new VoteModel();
-    vote.fill(inputs);
+
     const proposal= await ProposalModel.query().where('id',inputs.proposal_id).first();
-    if(!proposal)  return HelperUtils.responseBadRequest('Cannot find this proposal!');
+    if(!proposal) 
+          return HelperUtils.responseBadRequest('Cannot find this proposal!');
+    
+    let userVote;
+    // check if exist
+    userVote= await VoteModel.query().where('wallet_address',auth.user.wallet_address).andWhere('proposal_id',inputs.proposal_id).first();
+    if(userVote) {
+      userVote.merge(inputs)
+    }else{
+      userVote = new VoteModel();
+      userVote.fill(inputs);
+    }
+  
     // get user vote balance
-    await contract.methods.balanceOf('0x866a4760CEb7F82D35e4e6C75e315098f18E0c81')
+    await contract.methods.balanceOf(auth.user.wallet_address)
     .call()
     .then(function(result){
-      vote.balance=result
-      vote.status= proposal.toJSON().min_anwfi <= result
+      userVote.balance=result
+      userVote.status= proposal.toJSON().min_anwfi <= result
     })
 
-    await vote.save();
-    return HelperUtils.responseSuccess(vote);
+    await userVote.save();
+    return HelperUtils.responseSuccess(userVote);
     } catch (e) {
       console.log(e);
       return HelperUtils.responseErrorInternal('ERROR: vote proposal fail !');
@@ -56,8 +61,7 @@ class ProposalController {
       params.proposal_id=request.params.id;
       const limit = params.limit || Const.DEFAULT_LIMIT;
       const page = params.page || 1;
-    
-     
+  
       const voteQuery = VoteService.buildQueryBuilder(params);
       
       const proposal = await voteQuery.paginate(page, limit);
