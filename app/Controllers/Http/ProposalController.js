@@ -15,7 +15,7 @@ class ProposalController {
       proposal.fill(inputs);
       proposal.tmp_created = ProposalModel.formatDates('tmp_created', new Date().toISOString());
       proposal.is_deploy = 0;
-      proposal.is_display= 0;
+      proposal.is_display = 0;
       proposal.proposal_status = Const.PROPOSAL_STATUS.CREATED;
       proposal.wallet_address = auth.user.wallet_address;
       await proposal.save();
@@ -68,7 +68,7 @@ class ProposalController {
 
 
         proposal.proposal_status = parseInt(proposal.proposal_status) + 1;
-        
+
         if (parseInt(proposal.proposal_status) === Const.PROPOSAL_STATUS.ACTIVE) {
           proposal.tmp_active = ProposalModel.formatDates('tmp_active', new Date().toISOString());
         }
@@ -92,7 +92,7 @@ class ProposalController {
       return HelperUtils.responseErrorInternal('ERROR: update proposal fail !');
     }
   }
-  async deleteProposal({request}) {
+  async deleteProposal({ request }) {
     try {
       const id = request.params.id
       console.log('Delete proposal with id: ', id);
@@ -114,14 +114,18 @@ class ProposalController {
       return HelperUtils.responseErrorInternal('ERROR: delete proposal fail !');
     }
   }
-  async getProposalList({ request }) {
+  async getProposalList({ request, auth }) {
     try {
-      const params = request.only(['limit', 'page']);
+      const params = request.only(['limit', 'page', 'status']);
       const searchQuery = request.input('query');
       const limit = params.limit || Const.DEFAULT_LIMIT;
       const page = params.page || 1;
       params.count_vote = true
-
+      // check if req is public
+      if (!auth?.user || auth?.user?.role <= Const.USER_ROLE.PUBLIC_USER) {
+        params.is_public=true
+      }
+      console.log(params);
       const proposalService = new ProposalService();
       let proposalQuery = proposalService.buildQueryBuilder(params);
       if (searchQuery) {
@@ -134,17 +138,19 @@ class ProposalController {
       return HelperUtils.responseErrorInternal('ERROR: get proposal list fail !');
     }
   }
-
-  async getProposalDetail({ request, params }) {
+  async getProposalDetail({ request, params, auth }) {
     try {
       const id = params.id;
       const proposalService = new ProposalService();
-      const proposal = await proposalService.findOne({ id, count_vote: true, count_anwfi: true });
+      // check if req is public
+      const is_public = !auth.user || auth?.user?.role <= Const.USER_ROLE.PUBLIC_USER
+      const proposal = await proposalService.findOne({ id, count_vote: true, count_anwfi: true, is_public });
+      if (!proposal) throw new Error("ERROR: not found")
       const subQueries = [
         proposal.votes().where('vote', '=', 1).limit(3).fetch(),
         proposal.votes().where('vote', '=', 0).limit(3).fetch(),
-        Database.from('votes').where('vote', true).andWhere('proposal_id',id).getSum('balance'),
-        Database.from('votes').where('vote', false).andWhere('proposal_id',id).getSum('balance')
+        Database.from('votes').where('vote', true).andWhere('proposal_id', id).getSum('balance'),
+        Database.from('votes').where('vote', false).andWhere('proposal_id', id).getSum('balance')
       ]
       const results = await Promise.all(subQueries)
 

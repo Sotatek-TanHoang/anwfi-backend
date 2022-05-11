@@ -25,6 +25,13 @@ class VoteService {
         let builder = this.buildQueryBuilder(params);
         return await builder.first();
     }
+    static async calcBalance({proposal_id}){
+        try {
+            
+        } catch (error) {
+            
+        }
+    }
 
 }
 

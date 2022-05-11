@@ -60,7 +60,7 @@ module.exports = Object.freeze({
   },
   USER_TYPE_PREFIX: {
     ADMIN: 'admin',
-    PUBLIC_USER: 'user',
+    PUBLIC_USER: 'public',
   },
   USER_STATUS: {
     UNVERIFIED: 0,

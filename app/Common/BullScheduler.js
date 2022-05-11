@@ -17,4 +17,4 @@ const proposalProcessQueue = new Queue('proposalProcess', {
 // };
 // // 2. Adding a Job to the Queue
 // sendMailQueue.add(data, options);
-module.exports=proposalJobQueue
+module.exports=proposalProcessQueue
