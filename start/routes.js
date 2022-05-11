@@ -76,11 +76,16 @@ Route.group(() => {
 // Voting APIs:
 Route.group(() => {
 
+Route.post('/vote', 'VoteController.create')
   
   Route.post("/vote/:id", "VoteController.createVote").validator('CheckVote') // vote off-chain
-}).middleware(['typeUser', 'checkPrefix', 'checkAdminJwtSecret', 'auth:user',
+}).prefix("public").middleware(['typeUser', 'checkPrefix', 'checkAdminJwtSecret', 'auth:user',
 "checkGovernanceAbove",
 ]);
+
+ 
+
+
 
 // Public API:
 Route.group(() => {
