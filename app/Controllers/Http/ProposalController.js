@@ -92,7 +92,7 @@ class ProposalController {
       return HelperUtils.responseErrorInternal('ERROR: update proposal fail !');
     }
   }
-  async deleteProposal() {
+  async deleteProposal({request}) {
     try {
       const id = request.params.id
       console.log('Delete proposal with id: ', id);
