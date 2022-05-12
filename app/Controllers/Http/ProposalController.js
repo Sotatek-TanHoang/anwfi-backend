@@ -138,7 +138,7 @@ class ProposalController {
       return HelperUtils.responseSuccess(proposal);
     } catch (e) {
       console.log(e.message);
-      return HelperUtils.responseErrorInternal('ERROR: get proposal list fail !');
+      return HelperUtils.responseErrorInternal('ERROR: Get proposals list fail!');
     }
   }
   async getProposalDetail({ request, params, auth }) {
