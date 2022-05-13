@@ -106,8 +106,8 @@ class ProposalController {
         if (proposal.proposal_status !== Const.PROPOSAL_STATUS.CREATED) {
           return HelperUtils.responseBadRequest('ERROR: you cannot modify the proposal right now!');
         }
-        proposal.delete();
-        proposal.save();
+        await proposal.delete();
+        await proposal.save();
         return HelperUtils.responseSuccess(proposal);
       }
 
