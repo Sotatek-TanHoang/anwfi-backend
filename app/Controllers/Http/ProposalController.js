@@ -107,7 +107,6 @@ class ProposalController {
           return HelperUtils.responseBadRequest('ERROR: you cannot modify the proposal right now!');
         }
         await proposal.delete();
-        await proposal.save();
         return HelperUtils.responseSuccess(proposal);
       }
 

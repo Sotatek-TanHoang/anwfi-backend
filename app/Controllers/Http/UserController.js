@@ -132,7 +132,6 @@ class UserController {
       if (admin) {
         admin.status = Const.USER_STATUS.DELETED;
         await admin.delete();
-        await admin.save()
         return HelperUtils.responseSuccess(admin);
       }
       return HelperUtils.responseBadRequest("Error: Delete non-existing user!");
