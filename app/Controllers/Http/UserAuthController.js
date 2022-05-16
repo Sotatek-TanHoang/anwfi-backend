@@ -96,7 +96,8 @@ class UserAuthController {
       return HelperUtils.responseNotFound('ERROR: this api is not properly called!');
     }
     const param = request.only("wallet_address");
-    const wallet_address = Web3.utils.toChecksumAddress(param.wallet_address)
+    const wallet_address = param.wallet_address
+    //  Web3.utils.toChecksumAddress(param.wallet_address)
     let user
     try {
       const authService = new AuthUserService();

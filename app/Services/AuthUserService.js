@@ -15,9 +15,9 @@ class AuthUserService extends BaseService {
     console.log('Login with filterParams: ', filterParams);
 
     const user = await userService.findUser(filterParams);
-    if (!user) {
-      ErrorFactory.unauthorizedInputException('The current ethereum address has not been signed up on the system !', Const.ERROR_CODE.AUTH_ERROR.ADDRESS_NOT_EXIST);
-    }
+    // if (!user) {
+    //   ErrorFactory.unauthorizedInputException('The current ethereum address has not been signed up on the system !', Const.ERROR_CODE.AUTH_ERROR.ADDRESS_NOT_EXIST);
+    // }
 
     // const isMatchPassword = await Hash.verify(params.password, user.password);
 
