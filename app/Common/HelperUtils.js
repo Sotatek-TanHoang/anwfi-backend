@@ -2,6 +2,7 @@
 
 const crypto = use('crypto');
 const Const = use('App/Common/Const');
+const { BigNumber } = require("bignumber.js");
 const escapeWildcards = (raw, escapeChar = '\\') => {
   return String(raw).trim().replace(/[\\%_]/g, (match) => escapeChar + match);
 }
@@ -11,30 +12,30 @@ const Web3 = require('web3');
 const hasSql = (value) => {
 
   if (value === null || value === undefined) {
-      return false;
+    return false;
   }
-  
+
   // sql regex reference: http://www.symantec.com/connect/articles/detection-sql-injection-and-cross-site-scripting-attacks
   var sql_meta = new RegExp('(%27)|(\')|(--)|(%23)|(#)', 'i');
-  if(sql_meta.test(value)){
-      return true;
+  if (sql_meta.test(value)) {
+    return true;
   }
-  
+
   var sql_meta2 = new RegExp('((%3D)|(=))[^\n]*((%27)|(\')|(--)|(%3B)|(;))', 'i');
-  if(sql_meta2.test(value)){
-      return true;
+  if (sql_meta2.test(value)) {
+    return true;
   }
-  
+
   var sql_typical = new RegExp('w*((%27)|(\'))((%6F)|o|(%4F))((%72)|r|(%52))', 'i');
-  if(sql_typical.test(value)){
-      return true;
+  if (sql_typical.test(value)) {
+    return true;
   }
-  
+
   var sql_union = new RegExp('((%27)|(\'))union', 'i');
-  if(sql_union.test(value)){
-      return true;
+  if (sql_union.test(value)) {
+    return true;
   }
-  
+
   return false;
 }
 
@@ -148,80 +149,69 @@ const checkSumAddress = (address) => {
   return addressVerified;
 };
 
-const seconds_since_epoch = (d) => { 
-  return Math.floor( d / 1000 ); 
+const seconds_since_epoch = (d) => {
+  return Math.floor(d / 1000);
 }
-const toFixedNumber = function(x) {
+const toFixedNumber = function (x) {
   if (Math.abs(x) < 1.0) {
     var e = parseInt(x.toString().split('e-')[1]);
     if (e) {
-        x *= Math.pow(10,e-1);
-        x = '0.' + (new Array(e)).join('0') + x.toString().substring(2);
+      x *= Math.pow(10, e - 1);
+      x = '0.' + (new Array(e)).join('0') + x.toString().substring(2);
     }
   } else {
     var e = parseInt(x.toString().split('+')[1]);
     if (e > 17) {
-        e -= 17;
-        x /= Math.pow(10,e);
-        x += (new Array(e+1)).join('0');
+      e -= 17;
+      x /= Math.pow(10, e);
+      x += (new Array(e + 1)).join('0');
     }
   }
   return x;
 }
-const getProposalHistory=(proposal)=>{
+const getProposalHistory = (proposal) => {
   //   CREATED: 0, 
   //   ACTIVE: 1,
   //   SUCCESS: 2,
   //   FAILED: -1,
   //   QUEUE: 3,
   //   EXECUTED: 4,
-  const history=[
+  const history = [
     {
-      status:Const.PROPOSAL_STATUS.CREATED,
-      timestamp:proposal.tmp_created
+      status: Const.PROPOSAL_STATUS.CREATED,
+      timestamp: proposal.tmp_created
     },
     {
-      status:Const.PROPOSAL_STATUS.ACTIVE,
-      timestamp:proposal.tmp_active
+      status: Const.PROPOSAL_STATUS.ACTIVE,
+      timestamp: proposal.tmp_active
     },
     {
-      status:Const.PROPOSAL_STATUS.SUCCESS,
-      timestamp:proposal.tmp_result
+      status: Const.PROPOSAL_STATUS.SUCCESS,
+      timestamp: proposal.tmp_result
     },
     {
-      status:Const.PROPOSAL_STATUS.QUEUE,
-      timestamp:proposal.tmp_queue
+      status: Const.PROPOSAL_STATUS.QUEUE,
+      timestamp: proposal.tmp_queue
     },
     {
-      status:Const.PROPOSAL_STATUS.EXECUTED,
-      timestamp:proposal.tmp_executed
+      status: Const.PROPOSAL_STATUS.EXECUTED,
+      timestamp: proposal.tmp_executed
     }
   ]
-   const status=proposal.proposal_status;
-
-  // if(status>=Const.PROPOSAL_STATUS.CREATED){
-  //   history[0].timestamp=proposal.tmp_created;
-  // }
-  // if(status>=Const.PROPOSAL_STATUS.ACTIVE){
-  //   history[1].timestamp=proposal.tmp_active;
-  // }
-  // if(status>=Const.PROPOSAL_STATUS.SUCCESS){
-  //   history[2].timestamp=proposal.tmp_result;
-  // }
-  
-  // if(status>=Const.PROPOSAL_STATUS.QUEUE){
-  //   history[3].timestamp=proposal.tmp_queue;
-  // }
-  // if(status>=Const.PROPOSAL_STATUS.QUEUE){
-  //   history[4].timestamp=proposal.tmp_executed;
-  // }
-  // if failed, skip queue and executed
-  if(status===Const.PROPOSAL_STATUS.FAILED){
-    history[2].status=Const.PROPOSAL_STATUS.FAILED;
-    return History;
+  const status = proposal.proposal_status;
+  if (status === Const.PROPOSAL_STATUS.FAILED) {
+    history[2].status = Const.PROPOSAL_STATUS.FAILED;
   }
   return history;
-  
+
+}
+function formatDecimal(value = '0') {
+  return BigNumber(value).toString()
+}
+function compareBigNumber(left, right) {
+  let x = new BigNumber(left);
+  let y = new BigNumber(right);
+  return x.comparedTo(y) ? true : false;
 }
 module.exports = {
   randomString,
@@ -237,5 +227,7 @@ module.exports = {
   seconds_since_epoch,
   escapeWildcards,
   hasSql,
-  getProposalHistory
+  getProposalHistory,
+  formatDecimal,
+  compareBigNumber
 };

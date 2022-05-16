@@ -24,7 +24,7 @@ Route.group(() => {
   // Auth
   Route.post('/login', 'UserAuthController.login').validator('Login')
   // comment line below to bypass signature checking.
-  // .middleware('checkSignature');
+  .middleware('checkSignature');
 
   // TODO: implement confirm email later
 }).middleware(['typeAdmin', 'checkPrefix', 'formatEmailAndWallet']);
@@ -32,7 +32,7 @@ Route.group(() => {
 // Admin only work routes
 Route.group(() => {
   // get list of admins with pagination.
-  Route.get('/', 'UserController.getUserList');
+  Route.get('/', 'UserController.getAdminList');
   // get single admin profile by id.
   Route.get('/:id', 'UserController.getUserDetail');
   // update single admin by id.
@@ -76,12 +76,10 @@ Route.group(() => {
 // Voting APIs:
 Route.group(() => {
 
-Route.post('/vote', 'VoteController.create')
+  Route.post('/vote/:id', 'VoteController.create').validator("CheckVote")
   
-  Route.post("/vote/:id", "VoteController.createVote").validator('CheckVote') // vote off-chain
-}).prefix("public").middleware(['typeUser', 'checkPrefix', 'checkAdminJwtSecret', 'auth:user',
-"checkGovernanceAbove",
-]);
+  // Route.post("/vote/:id", "VoteController.createVote").validator('CheckVote') // vote off-chain
+}).middleware(['typeUser', 'checkPrefix', 'checkAdminJwtSecret', 'auth:user']);
 
  
 
@@ -103,5 +101,5 @@ Route.group(() => {
   // get proposals list for public
   Route.get('/proposal',"ProposalController.getProposalList")
   // get votes list for public
-  Route.get("/vote/:id", () => "get votes work"); // get proposal vote with pagination
+  Route.get("/vote/:id", "VoteController.getVote"); // get proposal vote with pagination
 }).prefix(Const.USER_TYPE_PREFIX.PUBLIC_USER).middleware(['typeUser', 'checkPrefix']);

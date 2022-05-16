@@ -8,7 +8,7 @@ class ProposalController {
 
   async createProposal({ request, auth }) {
     try {
-      const inputs = request.only(['proposal_type', 'current_value', 'new_value', 'description', 'start_time', 'end_time', 'quorum', 'min_anwfi', 'pass_percentage']);
+      const inputs = request.only(['proposal_type','name', 'current_value', 'new_value', 'description', 'start_time', 'end_time', 'quorum', 'min_anwfi', 'pass_percentage']);
       console.log('Create proposal with params: ', inputs);
 
       const proposal = new ProposalModel();
@@ -18,6 +18,7 @@ class ProposalController {
       proposal.is_display = 0;
       proposal.proposal_status = Const.PROPOSAL_STATUS.CREATED;
       proposal.wallet_address = auth.user.wallet_address;
+
       await proposal.save();
 
       return HelperUtils.responseSuccess(proposal);
@@ -29,7 +30,8 @@ class ProposalController {
   async updateProposalBasic({ request }) {
     try {
       const id = request.params.id
-      const inputs = request.only(['proposal_type', 'new_value', 'description', 'start_time', 'end_time', 'quorum', 'min_anwfi', 'pass_percentage']);
+      const inputs = request.only(['proposal_type','name', 'current_value','new_value', 'description', 'start_time', 'end_time', 'quorum', 'min_anwfi', 'pass_percentage']);
+      
       console.log('Update proposal with params: ', inputs);
 
       const proposal = await (new ProposalService()).findOne({ id });
@@ -40,6 +42,7 @@ class ProposalController {
         }
         proposal.tmp_created = ProposalModel.formatDates('tmp_created', new Date().toISOString());
         proposal.merge(inputs);
+        
         proposal.save();
         return HelperUtils.responseSuccess(proposal);
       }
@@ -103,8 +106,7 @@ class ProposalController {
         if (proposal.proposal_status !== Const.PROPOSAL_STATUS.CREATED) {
           return HelperUtils.responseBadRequest('ERROR: you cannot modify the proposal right now!');
         }
-        proposal.delete();
-        proposal.save();
+        await proposal.delete();
         return HelperUtils.responseSuccess(proposal);
       }
 
@@ -135,7 +137,7 @@ class ProposalController {
       return HelperUtils.responseSuccess(proposal);
     } catch (e) {
       console.log(e.message);
-      return HelperUtils.responseErrorInternal('ERROR: get proposal list fail !');
+      return HelperUtils.responseErrorInternal('ERROR: Get proposals list fail!');
     }
   }
   async getProposalDetail({ request, params, auth }) {

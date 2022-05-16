@@ -66,20 +66,21 @@ class UserAuthController {
     }
   }
 
-  async login({ request, auth, params }) {
+  async login({ request, auth, params ,response}) {
     const type = params.type;
     if (type !== Const.USER_TYPE_PREFIX.ADMIN && type !== Const.USER_TYPE_PREFIX.PUBLIC_USER) {
-      return HelperUtils.responseNotFound('Not valid !');
+      return HelperUtils.responseNotFound('ERROR: this api is not properly called!');
     }
     const param = request.all();
     const wallet_address = Web3.utils.toChecksumAddress(param.wallet_address)
     try {
       const authService = new AuthUserService();
       const user = await authService.login({
-        'wallet_address': wallet_address,
-        //role: Const.USER_ROLE.ADMIN, // governance and admin have different role.
+        'wallet_address': wallet_address
       });
-
+      if(!user){
+        throw new Error("Error: User not exist.")
+      }
       const token = await auth.authenticator('admin').generate(user, true);
       return HelperUtils.responseSuccess({
         user,
@@ -87,16 +88,17 @@ class UserAuthController {
       });
     } catch (e) {
       console.log('ERROR: ', e);
-      return HelperUtils.responseNotFound('ERROR: login fail !');
+      return response.notFound(HelperUtils.responseNotFound('ERROR: Login failed!'));
     }
   }
   async loginPublicUser({ request, auth, params }) {
     const type = params.type;
     if (type !== Const.USER_TYPE_PREFIX.ADMIN && type !== Const.USER_TYPE_PREFIX.PUBLIC_USER) {
-      return HelperUtils.responseNotFound('Not valid !');
+      return HelperUtils.responseNotFound('ERROR: this api is not properly called!');
     }
     const param = request.only("wallet_address");
-    const wallet_address = Web3.utils.toChecksumAddress(param.wallet_address)
+    const wallet_address = param.wallet_address
+    //  Web3.utils.toChecksumAddress(param.wallet_address)
     let user
     try {
       const authService = new AuthUserService();
@@ -117,7 +119,7 @@ class UserAuthController {
       });
     } catch (e) {
       console.log('ERROR: ', e);
-      return HelperUtils.responseNotFound('ERROR: login fail !');
+      return HelperUtils.responseNotFound('ERROR:Login attempt is failed! Call administrators if you have this problem again.');
     }
   }
 }

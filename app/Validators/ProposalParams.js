@@ -7,10 +7,12 @@ class ProposalParams {
   get rules() {
     return {
       proposal_type: "required|string",
-      current_value: "number",
-      new_value: "number",
+      name:"required|string",
+      current_value: "number|required",
+      new_value: "number|required",
       description: "string",
       start_time: [
+        rule('required'),
         rule('date'),
         rule('dateFormat', 'YYYY-MM-DD HH:mm:ss')
       ],
@@ -18,14 +20,15 @@ class ProposalParams {
         rule('date'),
         rule('dateFormat', 'YYYY-MM-DD HH:mm:ss')
       ],
-      quorum: "number",
-      min_anwfi: "number",
-      pass_percentage: "range:-1,10001|integer",
+      quorum: "number|required",
+      min_anwfi: "number|required",
+      pass_percentage: "range:-1,10001|integer|required",
 
     };
   }
   async authorize() {
     const { proposal_type } = this.ctx.request.only(['proposal_type'])
+    
     // proposal_type must match those types:
     switch (proposal_type) {
       case Const.PROPOSAL_TYPE.LIQUIDITY_PROVIDER_FEE:

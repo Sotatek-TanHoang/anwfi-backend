@@ -38,6 +38,9 @@ class UserService {
     } else {
       builder = builder.where('status', Const.USER_STATUS.ACTIVE);
     }
+    if(params.only_admin){
+      builder = builder.where('role','>=', Const.USER_ROLE.GOVERNANCE);
+    }
 
     // get number of projects that each admin created
     // builder.withCount('projects as projects_created');

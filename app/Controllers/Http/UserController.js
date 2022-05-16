@@ -131,7 +131,7 @@ class UserController {
       });
       if (admin) {
         admin.status = Const.USER_STATUS.DELETED;
-        await admin.save()
+        await admin.delete();
         return HelperUtils.responseSuccess(admin);
       }
       return HelperUtils.responseBadRequest("Error: Delete non-existing user!");
@@ -140,9 +140,10 @@ class UserController {
       return HelperUtils.responseErrorInternal('ERROR: delete user fail!');
     }
   }
-  async getUserList({ request }) {
+  async getAdminList({ request }) {
     try {
       const params = request.only(['limit', 'page']);
+      params.only_admin=true
       const searchQuery = request.input('query');
       const limit = params.limit || Const.DEFAULT_LIMIT;
       const page = params.page || 1;
