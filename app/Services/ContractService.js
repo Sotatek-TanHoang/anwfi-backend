@@ -15,7 +15,8 @@ class ContractService {
         this.contract = new web3.eth.Contract(abi, AWNFIAddress)
     }
     async balanceOf(address){
-        return await this.contract.methods.balanceOf(address).call()
+        const target=Web3.utils.toChecksumAddress(address)
+        return await this.contract.methods.balanceOf(target).call()
     }
   
 }

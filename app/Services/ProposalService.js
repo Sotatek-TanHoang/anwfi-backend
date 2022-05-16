@@ -3,7 +3,7 @@
 const ErrorFactory = use('App/Common/ErrorFactory');
 const ProposalModel = use('App/Models/Proposal');
 const Const = use('App/Common/Const');
-
+const Database = use('Database')
 class ProposalService {
 
   buildQueryBuilder(params) {
@@ -36,7 +36,7 @@ class ProposalService {
         .filter(e => !(e === Const.PROPOSAL_STATUS.CREATED && params.is_public));
       builder = builder.whereRaw(filter.map(() => 'proposal_status=?').join(' or '), filter)
     }
-    builder=builder.orderBy("id",'desc')
+    builder = builder.orderBy("id", 'desc')
 
     return builder;
   }
@@ -52,31 +52,46 @@ class ProposalService {
     let builder = this.buildQueryBuilder(params);
     return await builder.first();
   }
+  async findMany(params) {
+    let builder = this.buildQueryBuilder(params);
+    return await builder.fetch().then(res => res.rows)
+  }
   async calcVoteResult(id) {
     // TODO: calc vote result after user vote.
-    try{
+    try {
       const proposal = await this.findOne({ id })
-    if (!proposal) throw new Error()
 
-    const subQueries = await Promise.all([
-      Database.from('votes').where('vote', true).andWhere('proposal_id', id).getSum('balance'),
-      Database.from('votes').where('vote', false).andWhere('proposal_id', id).getSum('balance'),
-      Database.from('votes').where('vote', true).andWhere('proposal_id', id).getCount(),
-      Database.from('votes').where('vote', false).andWhere('proposal_id', id).getCount()
-    ])
-    // anwfi vote balance
-    const up_vote_anwfi = subQueries[0]
-    const down_vote_anwfi = subQueries[1]
+      if (!proposal) throw new Error()
 
-    // vote count;
-    const up_vote = subQueries[2]
-    const down_Vote = subQueries[3]
+      const subQueries = await Promise.all([
+        Database
+          .from('votes')
+          .where('vote', true)
+          .where('proposal_id', id)
+          .where('status', true)
+          .getSum('balance')
+        ,
+        Database
+          .from('votes')
+          .where('vote', false)
+          .where('proposal_id', id)
+          .where('status', true)
+          .getSum('balance'),
+        Database.from('votes').where('vote', true).andWhere('proposal_id', id).andWhere('status', true).getCount(),
+        Database.from('votes').where('vote', false).andWhere('proposal_id', id).andWhere('status', true).getCount()
+      ])
+      // anwfi vote balance
+      const up_vote_anwfi = subQueries[0] ?? 0
+      const down_vote_anwfi = subQueries[1] ?? 0
 
-    proposal.merge({ up_vote, down_Vote, up_vote_anwfi, down_vote_anwfi });
-    await proposal.save();
-    }catch(e){
+      // vote count;
+      const up_vote = subQueries[2] ?? 0
+      const down_vote = subQueries[3] ?? 0
+      proposal.merge({ up_vote, down_vote, up_vote_anwfi, down_vote_anwfi });
+      await proposal.save();
+    } catch (e) {
       console.log(e.message);
-      throw new Error("ERROR: cannot update proposal ",id)
+      return;
     }
   }
 }

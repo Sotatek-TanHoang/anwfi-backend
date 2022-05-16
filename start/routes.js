@@ -32,7 +32,7 @@ Route.group(() => {
 // Admin only work routes
 Route.group(() => {
   // get list of admins with pagination.
-  Route.get('/', 'UserController.getUserList');
+  Route.get('/', 'UserController.getAdminList');
   // get single admin profile by id.
   Route.get('/:id', 'UserController.getUserDetail');
   // update single admin by id.
@@ -79,9 +79,7 @@ Route.group(() => {
   Route.post('/vote/:id', 'VoteController.create').validator("CheckVote")
   
   // Route.post("/vote/:id", "VoteController.createVote").validator('CheckVote') // vote off-chain
-}).middleware(['typeUser', 'checkPrefix', 'checkAdminJwtSecret', 'auth:user',
-"checkGovernanceAbove",
-]);
+}).middleware(['typeUser', 'checkPrefix', 'checkAdminJwtSecret', 'auth:user']);
 
  
 
