@@ -1,14 +1,15 @@
 "use strict";
 
 const ForbiddenException = use('App/Exceptions/ForbiddenException');
-const sigUtil = require('eth-sig-util')
 const Web3 = require('web3')
-const Const = use('App/Common/Const');
 const web3 = new Web3();
-
+const Env = use('Env')
 class CheckSignature {
   async handle({ request, }, next) {
     try {
+      if (Env.get('NODE_ENV', 'production') === 'development') {
+        return await next();
+      }
       // const type = request.params.type;
       // const isAdmin = type == Const.USER_TYPE_PREFIX.ADMIN;
       // const message = isAdmin ? process.env.MESSAGE_SIGNATURE : process.env.MESSAGE_INVESTOR_SIGNATURE;

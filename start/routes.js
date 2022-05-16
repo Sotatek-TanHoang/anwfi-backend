@@ -24,7 +24,7 @@ Route.group(() => {
   // Auth
   Route.post('/login', 'UserAuthController.login').validator('Login')
   // comment line below to bypass signature checking.
-  // .middleware('checkSignature');
+  .middleware('checkSignature');
 
   // TODO: implement confirm email later
 }).middleware(['typeAdmin', 'checkPrefix', 'formatEmailAndWallet']);

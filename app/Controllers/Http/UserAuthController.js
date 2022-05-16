@@ -76,10 +76,11 @@ class UserAuthController {
     try {
       const authService = new AuthUserService();
       const user = await authService.login({
-        'wallet_address': wallet_address,
-        //role: Const.USER_ROLE.ADMIN, // governance and admin have different role.
+        'wallet_address': wallet_address
       });
-
+      if(!user){
+        throw new Error("Error: User not exist.")
+      }
       const token = await auth.authenticator('admin').generate(user, true);
       return HelperUtils.responseSuccess({
         user,
@@ -87,7 +88,7 @@ class UserAuthController {
       });
     } catch (e) {
       console.log('ERROR: ', e);
-      return response.notFound(HelperUtils.responseNotFound('ERROR:Login attempt is failed! Call administrators if you have this problem again.'));
+      return response.notFound(HelperUtils.responseNotFound('ERROR: Login failed!'));
     }
   }
   async loginPublicUser({ request, auth, params }) {
