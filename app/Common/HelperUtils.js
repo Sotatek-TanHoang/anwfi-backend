@@ -208,10 +208,10 @@ const getProposalHistory = (proposal) => {
 function formatDecimal(value = '0') {
   return BigNumber(value).toString()
 }
-function compareBigNumber(left, right) {
-  let x = new BigNumber(left);
-  let y = new BigNumber(right);
-  return x.comparedTo(y) ? true : false;
+function compareBigNumber(balance, min_anwfi) {
+  let b = new BigNumber(balance);
+  let anwfi = new BigNumber(min_anwfi);
+  return b.comparedTo(anwfi) >= 0 ? true : false;
 }
 module.exports = {
   randomString,

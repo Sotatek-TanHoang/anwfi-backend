@@ -1,0 +1,437 @@
+[33mcommit 6042872ca3068f11fcf6ba3f33eace2608c106a6[m[33m ([m[1;36mHEAD -> [m[1;32mdevelop[m[33m, [m[1;31morigin/feature/bulk-admin-sc[m[33m, [m[1;32mfeature/bulk-admin-sc[m[33m)[m
+Author: Sotatek-TanHoang <tan.hoang@sotatek.com>
+Date:   Mon May 16 16:37:45 2022 +0700
+
+    fix vote balance metrics
+
+[33mcommit f022d787eb57f47d30f1c581c2dff41777daa04b[m
+Author: Sotatek-TanHoang <tan.hoang@sotatek.com>
+Date:   Mon May 16 13:43:34 2022 +0700
+
+    working on vote cron job
+
+[33mcommit 970e5b76e72b98f1f279e74ece9d866b541b003f[m
+Author: Sotatek-TanHoang <tan.hoang@sotatek.com>
+Date:   Mon May 16 08:52:33 2022 +0700
+
+    fix user login route
+    add signature disable on dev mode
+
+[33mcommit af9953421a8501b5f45d17f7c0921b862a530ea5[m
+Author: Sotatek-TanHoang <tan.hoang@sotatek.com>
+Date:   Mon May 16 08:37:37 2022 +0700
+
+    hot fix public user
+
+[33mcommit 25236e3794fc2e5df6b31c4c61aff1b0530bd9b8[m
+Author: Sotatek-TanHoang <tan.hoang@sotatek.com>
+Date:   Fri May 13 11:39:06 2022 +0700
+
+    fix delete bugs
+
+[33mcommit a78c3085de4572f04cf505fc75a9289defbe2b95[m
+Author: Sotatek-TanHoang <tan.hoang@sotatek.com>
+Date:   Fri May 13 11:35:08 2022 +0700
+
+    fix delete
+
+[33mcommit d2b58e4870a1c8782b19f9d0fd30673213260aa6[m
+Author: Sotatek-TanHoang <tan.hoang@sotatek.com>
+Date:   Thu May 12 17:56:27 2022 +0700
+
+    fix proposal filter
+    filter by: name, description, wallet_address
+
+[33mcommit 7655813575c0446d672cc4bc516f730d4ab0fd8b[m
+Author: Sotatek-TanHoang <tan.hoang@sotatek.com>
+Date:   Thu May 12 17:17:02 2022 +0700
+
+    update vote controller
+
+[33mcommit 2d69ceb91e30896384ddeaac86e3f45fc90b45e5[m
+Author: Sotatek-TanHoang <tan.hoang@sotatek.com>
+Date:   Wed May 11 17:40:42 2022 +0700
+
+    create ContractService
+    remove redundant code
+
+[33mcommit 145495c16aa5e1bf9f34671e0c1b65dce321c860[m
+Author: Sotatek-TanHoang <tan.hoang@sotatek.com>
+Date:   Wed May 11 17:21:50 2022 +0700
+
+    edit create vote api
+    using auth.user.wallet_address
+
+[33mcommit a706872c5960906ac1f4904c9ae3feb82019a888[m
+Author: Sotatek-TanHoang <tan.hoang@sotatek.com>
+Date:   Wed May 11 16:54:44 2022 +0700
+
+    fix delete user
+    create calc vote result on proposal service
+
+[33mcommit ff9bb1dcd73a37ac5320219d4a11416a4ccc8ca3[m
+Author: Sotatek-TanHoang <tan.hoang@sotatek.com>
+Date:   Wed May 11 16:27:09 2022 +0700
+
+    edit proposal model
+    working on vote
+
+[33mcommit 8c4de2619a7d2ab0f9989a6f551e81d165fbc0ef[m
+Author: Sotatek-TanHoang <tan.hoang@sotatek.com>
+Date:   Wed May 11 15:32:58 2022 +0700
+
+    hot fix filter
+
+[33mcommit dd7b1662e8dadaccc12ce8ff303bbe9bccfb1bfc[m
+Author: Sotatek-TanHoang <tan.hoang@sotatek.com>
+Date:   Wed May 11 15:27:53 2022 +0700
+
+    fix proposal filter
+
+[33mcommit 730638e65dfc761b82cc4c86093715cf51e0ae8f[m
+Author: Sotatek-TanHoang <tan.hoang@sotatek.com>
+Date:   Wed May 11 14:03:27 2022 +0700
+
+    fix vote api
+
+[33mcommit 2422a4d3bd9dc148948a9231be94f1921343e618[m
+Merge: ad88d7b 9092296
+Author: Sotatek-TanHoang <100083240+Sotatek-TanHoang@users.noreply.github.com>
+Date:   Wed May 11 11:48:27 2022 +0700
+
+    Merge branch 'develop' into feature/bulk-admin-sc
+
+[33mcommit ad88d7b39bb42336034ae22ad48b0c012fcd3ee6[m
+Author: Sotatek-TanHoang <tan.hoang@sotatek.com>
+Date:   Wed May 11 11:42:51 2022 +0700
+
+    woking on vote api
+
+[33mcommit 9092296a9057c95690edbdd9ef9e9516eebf771b[m
+Merge: 0d87b4f e068305
+Author: Sotatek-TanHoang <100083240+Sotatek-TanHoang@users.noreply.github.com>
+Date:   Wed May 11 11:14:28 2022 +0700
+
+    Merge pull request #6 from Sotatek-TanHoang/vote_balance
+    
+    feature get balance of usser vote
+
+[33mcommit b4c17cc43f556fdb373bf71819bf40b95760eb4c[m
+Author: Sotatek-TanHoang <tan.hoang@sotatek.com>
+Date:   Wed May 11 10:39:51 2022 +0700
+
+    fix date validation
+
+[33mcommit b95fe98d7581b803f7cdee6d3e3b3eda0ee27694[m
+Author: Sotatek-TanHoang <tan.hoang@sotatek.com>
+Date:   Wed May 11 10:32:45 2022 +0700
+
+    fix proposal validator data format, add validation for proposal_type
+
+[33mcommit dac712391bdf5b374f02e4b6bf43b532908b70a3[m
+Author: Sotatek-TanHoang <tan.hoang@sotatek.com>
+Date:   Wed May 11 09:58:50 2022 +0700
+
+    fix delete proposal
+
+[33mcommit 5256dc56f3ba993dba04be4665dfc018033e60a3[m
+Author: Sotatek-TanHoang <tan.hoang@sotatek.com>
+Date:   Wed May 11 09:21:36 2022 +0700
+
+    fix query params on user and proposal api
+
+[33mcommit eaa5a16637e531af123b21e18b98403d381829ee[m
+Author: Sotatek-TanHoang <tan.hoang@sotatek.com>
+Date:   Wed May 11 08:57:37 2022 +0700
+
+    fix proposal api validator
+
+[33mcommit 9ae53bfafb387386a7d288ebdd9c2c2e878e1292[m
+Author: Sotatek-TanHoang <tan.hoang@sotatek.com>
+Date:   Tue May 10 10:04:39 2022 +0700
+
+    fix typo on proposal
+
+[33mcommit d1ec313e22cb44ebf51eb66b2752a31231029cae[m
+Author: Sotatek-TanHoang <tan.hoang@sotatek.com>
+Date:   Tue May 10 10:00:08 2022 +0700
+
+    fix middleware name
+
+[33mcommit 885f04fb9a37fd91d4a66b27f28ce4b8473273ca[m
+Author: Sotatek-TanHoang <tan.hoang@sotatek.com>
+Date:   Tue May 10 09:57:50 2022 +0700
+
+    fix typo continue
+
+[33mcommit 670a438eacaf862ae8cf446ed3323bdbcd09f81c[m
+Author: Sotatek-TanHoang <tan.hoang@sotatek.com>
+Date:   Tue May 10 09:54:48 2022 +0700
+
+    fix typo
+
+[33mcommit b0e2001372aefcb0f95748e70df3b6e82a5c103f[m
+Author: Sotatek-TanHoang <tan.hoang@sotatek.com>
+Date:   Mon May 9 22:43:15 2022 +0700
+
+    working on vote api
+
+[33mcommit e37622a8257cfb86522b0e200d931d482677b111[m
+Author: Sotatek-TanHoang <tan.hoang@sotatek.com>
+Date:   Mon May 9 17:32:50 2022 +0700
+
+    edit get proposal detail
+    get sum of anwfi
+
+[33mcommit e0683057fdb2072e9f0ac3de901159beb867f940[m[33m ([m[1;31morigin/vote_balance[m[33m)[m
+Author: Sotatek-TaiNguyen <tai.nguyen@sotatek.com>
+Date:   Mon May 9 16:40:43 2022 +0700
+
+    feature get balance of usser vote
+
+[33mcommit 9c4ca1d94818aa91bbc29b2ffe34abd20bf7b56f[m
+Author: Sotatek-TanHoang <tan.hoang@sotatek.com>
+Date:   Mon May 9 14:58:24 2022 +0700
+
+    add redis for env
+
+[33mcommit bfe2bad1b8641e0626c31f501549607eac7003c3[m
+Author: Sotatek-TanHoang <tan.hoang@sotatek.com>
+Date:   Mon May 9 12:54:30 2022 +0700
+
+    edit user schema
+
+[33mcommit af7385c8ed014c3e2104d3dd070f389e3abd40c3[m
+Author: Sotatek-TanHoang <tan.hoang@sotatek.com>
+Date:   Mon May 9 10:58:13 2022 +0700
+
+    change example env
+
+[33mcommit 3457e7fddbcf3f40177435fd17dab460bda08131[m
+Author: Sotatek-TanHoang <tan.hoang@sotatek.com>
+Date:   Mon May 9 10:39:20 2022 +0700
+
+    edit docker file
+
+[33mcommit b776adce9ff46401ff377734a0de2dbce6ecc1a0[m
+Author: Sotatek-TanHoang <tan.hoang@sotatek.com>
+Date:   Mon May 9 09:41:25 2022 +0700
+
+    format code
+
+[33mcommit a14b7099915e71fa1907784271251fd534efd073[m[33m ([m[1;31morigin/feature/proposal[m[33m, [m[1;32mfeature/proposal[m[33m)[m
+Author: Sotatek-TanHoang <tan.hoang@sotatek.com>
+Date:   Fri May 6 16:28:23 2022 +0700
+
+    create user array validator for bulk action
+    working on bulk update
+
+[33mcommit 3a010cb3963a1deb17df10448459def7ad37b7d0[m[33m ([m[1;32mtest[m[33m)[m
+Author: Sotatek-TanHoang <tan.hoang@sotatek.com>
+Date:   Wed May 4 15:36:33 2022 +0700
+
+    remove redundant code
+
+[33mcommit 0909479c52b3d57da4e750a9bff61ba36e649707[m
+Author: Sotatek-TanHoang <tan.hoang@sotatek.com>
+Date:   Wed May 4 14:35:39 2022 +0700
+
+    update route prefix on /login
+
+[33mcommit 5f9195686f35b39b66b866eacf916053589b1486[m
+Author: Sotatek-TanHoang <tan.hoang@sotatek.com>
+Date:   Wed May 4 14:15:38 2022 +0700
+
+    update admin/bulk-create
+    add error logging
+
+[33mcommit 8a15bd851c8052639132033161ab7c21b45922f0[m
+Author: Sotatek-TanHoang <tan.hoang@sotatek.com>
+Date:   Wed May 4 14:06:48 2022 +0700
+
+    rename User model name field
+    change firstname, lastname to username
+
+[33mcommit 55d034921858bfeccafd6d263bd3e69b18eb3c6b[m
+Author: Sotatek-TanHoang <tan.hoang@sotatek.com>
+Date:   Wed May 4 11:54:48 2022 +0700
+
+    create vote controlller
+    create or update vote
+
+[33mcommit 0d87b4f0562112235ba0958cbb5010535911485b[m
+Merge: 6b397a9 ef29a4f
+Author: Sotatek-TanHoang <100083240+Sotatek-TanHoang@users.noreply.github.com>
+Date:   Wed May 4 11:03:35 2022 +0700
+
+    Merge pull request #4 from Sotatek-TanHoang/hotfix/remove-redundant
+    
+    Hotfix/remove redundant
+
+[33mcommit ef29a4f2e9e010ad7812f7467bee886f28a14999[m[33m ([m[1;31morigin/hotfix/remove-redundant[m[33m, [m[1;32mhotfix/remove-redundant[m[33m)[m
+Author: Sotatek-TanHoang <tan.hoang@sotatek.com>
+Date:   Wed May 4 10:51:01 2022 +0700
+
+    rename middleware
+
+[33mcommit d69701cec5ac521569d252128e5b6bf6a305a3d8[m[33m ([m[1;32mtest-proposal[m[33m)[m
+Author: Sotatek-TanHoang <tan.hoang@sotatek.com>
+Date:   Wed May 4 09:25:30 2022 +0700
+
+    edit proposal, vote schema
+    update valiation on user, proposal
+
+[33mcommit 24075b5d6776f30b52900094d1362c04618e6ccb[m[33m ([m[1;31morigin/test-proposal[m[33m)[m
+Author: Sotatek-TanHoang <tan.hoang@sotatek.com>
+Date:   Fri Apr 29 09:26:51 2022 +0700
+
+    update proposal.status condition to perform update and delete
+
+[33mcommit 7ee737e374e716c78fbe0dcf65cd11875951f5e4[m
+Author: Sotatek-TanHoang <tan.hoang@sotatek.com>
+Date:   Wed Apr 27 17:43:44 2022 +0700
+
+    fix typo in VoteSchema
+
+[33mcommit 40d7ad0166b4472f1dee16e3e6b5a79f3a4b865f[m
+Author: Sotatek-TanHoang <tan.hoang@sotatek.com>
+Date:   Wed Apr 27 17:40:15 2022 +0700
+
+    add unique constrant for vote model
+
+[33mcommit 4e92b24860d9260b97606e63e8e594ad4eda57ef[m
+Author: Sotatek-TanHoang <tan.hoang@sotatek.com>
+Date:   Wed Apr 27 17:31:35 2022 +0700
+
+    add Vote model
+    show up_vote and down_vote count in get single proposal and get many proposal
+    get some vote data on get single proposal
+
+[33mcommit 4ecbd1b738cf77eb76041ad922a693044b1a2eb4[m
+Author: Sotatek-TanHoang <tan.hoang@sotatek.com>
+Date:   Wed Apr 27 13:57:46 2022 +0700
+
+    working on proposal api
+
+[33mcommit 0c19f24c12aca7e08c17fc152d52b0e95c00c37f[m
+Merge: 174e982 4663a8f
+Author: Sotatek-TanHoang <100083240+Sotatek-TanHoang@users.noreply.github.com>
+Date:   Wed Apr 27 09:08:04 2022 +0700
+
+    Merge pull request #2 from Sotatek-TanHoang/proposal
+    
+    add Proposal module
+
+[33mcommit 4663a8fca6661857772b929d1e7bfc542a608c47[m[33m ([m[1;31morigin/proposal[m[33m, [m[1;32mproposal[m[33m)[m
+Merge: 5dda2eb 174e982
+Author: Sotatek-TanHoang <100083240+Sotatek-TanHoang@users.noreply.github.com>
+Date:   Wed Apr 27 09:07:56 2022 +0700
+
+    Merge branch 'hotfix/remove-redundant' into proposal
+
+[33mcommit 5dda2ebc4b6db4492626915f00d684c3785c10d2[m
+Author: Sotatek-TanHoang <tan.hoang@sotatek.com>
+Date:   Wed Apr 27 09:04:30 2022 +0700
+
+    fix typo
+
+[33mcommit 174e982447a99a1702a67f6b8d4175c67f5e5cda[m
+Author: Sotatek-TanHoang <100083240+Sotatek-TanHoang@users.noreply.github.com>
+Date:   Mon Apr 25 17:55:14 2022 +0700
+
+    add response error for bulk-create
+    still missing validation on bulk-create
+
+[33mcommit 7bdde3ae30516c6e1c9ac31584a455ea6d8f7847[m
+Author: Sotatek-TanHoang <100083240+Sotatek-TanHoang@users.noreply.github.com>
+Date:   Mon Apr 25 17:45:29 2022 +0700
+
+    wrapp bulkcreate in a transaction
+
+[33mcommit 44fdc008f1267659b360f6e8c155defcbcba91fa[m
+Author: Sotatek-TanHoang <100083240+Sotatek-TanHoang@users.noreply.github.com>
+Date:   Mon Apr 25 17:14:17 2022 +0700
+
+    hotfix naming
+
+[33mcommit cf75e4720a603ecb95259456c02e21c98cecc3a9[m
+Author: Sotatek-TanHoang <100083240+Sotatek-TanHoang@users.noreply.github.com>
+Date:   Mon Apr 25 17:06:50 2022 +0700
+
+    add bulk create users, rename some file from admin to user
+    missing validation on bulk-create
+
+[33mcommit f228f378bf80221a033bbda505cd42ff8b14b424[m
+Author: Sotatek-TaiNguyen <tai.nguyen@sotatek.com>
+Date:   Mon Apr 25 14:16:30 2022 +0700
+
+    proposal module init
+
+[33mcommit 5bf5c762b988918b24cbcb1f4884ca47c6b8c8aa[m
+Author: Sotatek-TanHoang <100083240+Sotatek-TanHoang@users.noreply.github.com>
+Date:   Mon Apr 25 11:32:51 2022 +0700
+
+    move validate role from controllers to validators
+
+[33mcommit 3523b8d44bf64b7c2138dc74341d155656306890[m
+Author: Sotatek-TanHoang <100083240+Sotatek-TanHoang@users.noreply.github.com>
+Date:   Sun Apr 24 23:17:19 2022 +0700
+
+    update db migration, schema
+    remove unneccesary files, models..
+    add role: super admin, admin, governance, public_user
+    add middleware to verify admin routes
+
+[33mcommit 5e9af854d8368d5a6cf8941d1f442ceb3a3e88f9[m
+Author: Sotatek-TanHoang <100083240+Sotatek-TanHoang@users.noreply.github.com>
+Date:   Fri Apr 22 16:58:04 2022 +0700
+
+    fix get admin detail return null
+
+[33mcommit 1a236599313677b90953cfd43d15dc3b5c58044d[m
+Author: Sotatek-TanHoang <100083240+Sotatek-TanHoang@users.noreply.github.com>
+Date:   Fri Apr 22 16:25:47 2022 +0700
+
+    comment on admin routes
+
+[33mcommit 03da11af15311b3945c7b48b502d5006d685843c[m
+Author: Sotatek-TanHoang <100083240+Sotatek-TanHoang@users.noreply.github.com>
+Date:   Fri Apr 22 16:16:07 2022 +0700
+
+    user create, login, update, delete working untested
+
+[33mcommit 37badf7dfe021a2da6ee408fe5656b9594e25823[m
+Author: Sotatek-TanHoang <100083240+Sotatek-TanHoang@users.noreply.github.com>
+Date:   Fri Apr 22 14:15:12 2022 +0700
+
+    change user role constant
+
+[33mcommit 6b397a910f3d0686c5683923c8e738797e056ad7[m
+Author: Sotatek-TanHoang <100083240+Sotatek-TanHoang@users.noreply.github.com>
+Date:   Wed Apr 20 14:43:36 2022 +0700
+
+    remove redundant files
+
+[33mcommit a1af11e43a380b8cc94989ba988368087bc9475d[m
+Author: Sotatek-TanHoang <100083240+Sotatek-TanHoang@users.noreply.github.com>
+Date:   Wed Apr 20 10:54:52 2022 +0700
+
+    rename app
+
+[33mcommit 1c93cb6df197250d9348126327f33db4ec18d086[m
+Author: Sotatek-TanHoang <100083240+Sotatek-TanHoang@users.noreply.github.com>
+Date:   Wed Apr 20 10:36:29 2022 +0700
+
+    format project
+
+[33mcommit a6b1144ecd585f44939356e2fa4421e45a3a934a[m[33m ([m[1;31morigin/master[m[33m, [m[1;32mmaster[m[33m)[m
+Author: Sotatek-TanHoang <100083240+Sotatek-TanHoang@users.noreply.github.com>
+Date:   Tue Apr 19 15:38:40 2022 +0700
+
+    modify package.json
+
+[33mcommit fb0431e54afbd922990461dfaa268347a0e1980e[m
+Author: Sotatek-TanHoang <100083240+Sotatek-TanHoang@users.noreply.github.com>
+Date:   Tue Apr 19 15:33:04 2022 +0700
+
+    init project
