@@ -1,9 +1,9 @@
 'use strict'
 
 const ErrorFactory = use('App/Common/ErrorFactory');
-const ProposalModel = use('App/Models/proposal');
+const ProposalModel = use('App/Models/Proposal');
 const Const = use('App/Common/Const');
-
+const Database = use('Database')
 class ProposalService {
 
   buildQueryBuilder(params) {
@@ -11,20 +11,15 @@ class ProposalService {
     if (params.id) {
       builder = builder.where('id', params.id);
     }
-    // if (params.username) {
-    //   builder = builder.where('username', params.username);
-    // }
-    // if (params.email) {
-    //   builder = builder.where('email', params.email);
-    // }
-    // if (params.signature) {
-    //   builder = builder.where('signature', params.signature);
-    // }
+
     if (params.wallet_address) {
       builder = builder.where('wallet_address', params.wallet_address);
     }
     if (params.proposal_type) {
       builder = builder.where('proposal_type', params.proposal_type);
+    }
+    if (params.is_public) {
+      builder = builder.where('proposal_status', '!=', Const.PROPOSAL_STATUS.CREATED);
     }
     if (params.count_vote) {
       builder.withCount('votes as up_vote', (builder) => {
@@ -34,29 +29,22 @@ class ProposalService {
         builder.where('vote', false)
       })
     }
-    // if (params.role) {
-    //   builder = builder.where('role', params.role);
-    // }
-    // if (params.confirmation_token) {
-    //   builder = builder.where('confirmation_token', params.confirmation_token);
-    // }
-    // if (params.status !== undefined) {
-    //   builder = builder.where('status', params.status);
-    // } else {
-    //   builder = builder.where('status', Const.USER_STATUS.ACTIVE);
-    // }
+    if (params.status) {
+      const filter = params.status.split(',')
+        .filter(el => el !== '')
+        .map(e => parseInt(e))
+        .filter(e => !(e === Const.PROPOSAL_STATUS.CREATED && params.is_public));
+      builder = builder.whereRaw(filter.map(() => 'proposal_status=?').join(' or '), filter)
+    }
+    builder = builder.orderBy("id", 'desc')
 
-    // get number of projects that each admin created
-    // builder.withCount('projects as projects_created');
     return builder;
   }
-
   buildSearchQuery(query, searchQuery) {
     return query.where((q) => {
       q.where('wallet_address', 'like', `%${searchQuery}%`)
-        .orWhere('proposal_type', 'like', `%${searchQuery}%`)
-      // .orWhere('lastname', 'like', `%${searchQuery}%`)
-      // .orWhere('firstname', 'like', `%${searchQuery}%`);
+        .orWhere('name', 'like', `%${searchQuery}%`)
+        .orWhere('description', 'like', `%${searchQuery}%`)
     })
   }
 
@@ -64,22 +52,48 @@ class ProposalService {
     let builder = this.buildQueryBuilder(params);
     return await builder.first();
   }
-  async findByProjectId(proposalId){
-    return findOne({id:proposalId});
+  async findMany(params) {
+    let builder = this.buildQueryBuilder(params);
+    return await builder.fetch().then(res => res.rows)
   }
-  // async findOneWithVotes(params) {
-  //   console.time('a')
-  //   const posts = await ProposalModel
-  //     .query()
-  //     .withCount('votes as yes_count', (builder) => {
-  //       builder.where('vote', true)
-  //     }).withCount('votes as no_count', (builder) => {
-  //       builder.where('vote', false)
-  //     })
-  //     .first()
-  //   return posts
-  // }
+  async calcVoteResult(id) {
+    // TODO: calc vote result after user vote.
+    try {
+      const proposal = await this.findOne({ id })
 
+      if (!proposal) throw new Error()
+
+      const subQueries = await Promise.all([
+        Database
+          .from('votes')
+          .where('vote', true)
+          .where('proposal_id', id)
+          .where('status', true)
+          .getSum('balance')
+        ,
+        Database
+          .from('votes')
+          .where('vote', false)
+          .where('proposal_id', id)
+          .where('status', true)
+          .getSum('balance'),
+        Database.from('votes').where('vote', true).andWhere('proposal_id', id).andWhere('status', true).getCount(),
+        Database.from('votes').where('vote', false).andWhere('proposal_id', id).andWhere('status', true).getCount()
+      ])
+      // anwfi vote balance
+      const up_vote_anwfi = subQueries[0] ?? 0
+      const down_vote_anwfi = subQueries[1] ?? 0
+
+      // vote count;
+      const up_vote = subQueries[2] ?? 0
+      const down_vote = subQueries[3] ?? 0
+      proposal.merge({ up_vote, down_vote, up_vote_anwfi, down_vote_anwfi });
+      await proposal.save();
+    } catch (e) {
+      console.log(e.message);
+      return;
+    }
+  }
 }
 
 module.exports = ProposalService

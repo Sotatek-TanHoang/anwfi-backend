@@ -9,37 +9,21 @@ const web3 = new Web3(rpcURL)
 const VoteModel = use('App/Models/Vote');
 const ProposalModel = use('App/Models/Proposal');
 
+const ContractService = use('App/Services/ContractService')
 const abi=  require("../../abi/pools.json");
 const PoolsAddress="0xC472DD48E8ad269ae174892B523e246BF26287cE";
 
-// const randomString = use('random-string');
 class ProposalController {
 
-  async create({ request }) {
-    // const inputs = request.only(['wallet_address', 'vote', 'proposal_id']);
-    // const contract = new web3.eth.Contract(abi, AWNFIAddress)
-    // const isVoted= await VoteModel.query().where('wallet_address',inputs.wallet_address).where('proposal_id',inputs.proposal_id).first();
-    // if(isVoted) return HelperUtils.responseBadRequest('your have already voted  this proposal!');
-    // const vote = new VoteModel();
-    // vote.fill(inputs);
-    // const proposal= await ProposalModel.query().where('id',inputs.proposal_id).first();
-    // if(!proposal)  return HelperUtils.responseBadRequest('Cannot find this proposal!');
-    // await contract.methods.balanceOf('0x866a4760CEb7F82D35e4e6C75e315098f18E0c81')
-    // .call()
-    // .then(function(result){
-    //   vote.balance=result
-    //   vote.status= proposal.toJSON().min_anwfi <= result
-    // })
-    // await vote.save();
+  async createOrUpdate({ request }) {
     try {
-    
+        const contract = new ContractService()
+        const data = await contract.getPoolInfo()
+        // console.log(data)
 
-      return HelperUtils.responseSuccess({
-
-      });
     } catch (e) {
       console.log(e);
-      return HelperUtils.responseErrorInternal('ERROR: vote proposal fail !');
+      return HelperUtils.responseErrorInternal('ERROR: get pool info  fail !');
     }
   }
  

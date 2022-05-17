@@ -9,7 +9,7 @@ class UserController {
 
   async createUser({ request }) {
     try {
-      const inputs = request.only(['wallet_address', 'role', 'firstname', 'lastname', 'email']);
+      const inputs = request.only(['wallet_address', 'role', 'username', 'email']);
       // convert wallet_address
       inputs.wallet_address = HelperUtils.checkSumAddress(inputs.wallet_address)
       console.log('Create User with params: ', inputs);
@@ -27,14 +27,6 @@ class UserController {
       user.status = Const.USER_STATUS.ACTIVE;
       await user.save();
 
-      //TODO: Send mail to admin after create account
-
-      // const authService = new AuthService();
-      // await authService.sendAdminInfoEmail({
-      //   user: admin,
-      //   password: request.input('password'),
-      // });
-
       return HelperUtils.responseSuccess(user);
     } catch (e) {
       console.log(e);
@@ -47,37 +39,65 @@ class UserController {
     try {
       const { users } = request.only(['users']);
 
-      const newUsers = users.map((data = {}) => ({
-        wallet_address: HelperUtils.checkSumAddress(data.wallet_address),
-        role:Const.USER_ROLE.PUBLIC_USER,
-        firstname: data.fisrtname,
-        lastname: data.lastname,
-        email: data.email
+      // const bulkUsers=await UserModel.createMany(newUsers)
+      const bulk = await Promise.all(users.map(async (input) => {
+        try {
+          await UserModel.create(input, trx);
+          return { success: true, data: input, message: "user created" }
+        } catch (e) {
+          return { success: false, data: input, message: e.message }
+        }
       }))
-      const bulkUsers=await UserModel.createMany(newUsers)
-      // const bulk = await Promise.all(newUsers.map(async (input) => {
-      //   try {
-      //     await UserModel.create(input,trx);      
-      //     return { success: true, data: input, message: "user created" }
-      //   } catch  {
-      //     return {error:true,data:input}
-      //   }
-      // }))
-      // if(bulk.some(result=>result.error)){
-      //   await trx.rollback();
-      //   return HelperUtils.responseErrorInternal({result:bulk,message:"create bulk failed."});
-      // }
+      if (bulk.some(result => !result.success)) {
+        await trx.rollback();
+        return HelperUtils.responseSuccess({ result: bulk }, "ERROR: some users are failed to create.");
+      }
       await trx.commit()
-      return HelperUtils.responseSuccess({result:bulkUsers,message:"success."});
+      return HelperUtils.responseSuccess({ result: bulk, message: "success." });
     } catch (e) {
       console.log(e.message);
       await trx.rollback();
       return HelperUtils.responseErrorInternal('ERROR: bulk create users fail !');
     }
   }
+  async bulkUpdateUser({ request }) {
+    // begin transaction.
+    const trx = await Database.beginTransaction()
+    try {
+      const { users } = request.only(['users']);
+      const userService = new UserService()
+      // update all role to public except SUPER_ADMIN.
+      await trx.update({ role: Const.USER_ROLE.PUBLIC_USER }).into('users').where('role', '<', Const.USER_ROLE.SUPER_ADMIN)
+      // update user in the list, if not exist then create.
+      for (let input of users) {
+
+        const user = await userService.findUser({
+          wallet_address: input.wallet_address
+        })
+        // if user exist
+        if (user) {
+         
+          input.role = user.role >= Const.USER_ROLE.SUPER_ADMIN ? user.role : input.role;
+
+          await trx.update(input).into('users').where('id', user.id);
+          continue;
+        } else {
+          await trx.insert(input).into('users')
+          continue;
+        }
+      }
+      // SUCCESS.
+      await trx.commit()
+      return HelperUtils.responseSuccess(users);
+    } catch (e) {
+      console.log("ERROR: ", e.message);
+      await trx.rollback();
+      return HelperUtils.responseErrorInternal('ERROR: bulk update users fail !');
+    }
+  }
   async updateUserProfile({ request }) {
     try {
-      const inputs = request.only(['role', 'firstname', 'lastname', 'email', 'wallet_address']);
+      const inputs = request.only(['role', 'username', 'email', 'wallet_address']);
       inputs.wallet_address = HelperUtils.checkSumAddress(inputs.wallet_address)
       const id = request.params.id;
 
@@ -111,7 +131,7 @@ class UserController {
       });
       if (admin) {
         admin.status = Const.USER_STATUS.DELETED;
-        await admin.save()
+        await admin.delete();
         return HelperUtils.responseSuccess(admin);
       }
       return HelperUtils.responseBadRequest("Error: Delete non-existing user!");
@@ -120,10 +140,11 @@ class UserController {
       return HelperUtils.responseErrorInternal('ERROR: delete user fail!');
     }
   }
-  async getUserList({ request }) {
+  async getAdminList({ request }) {
     try {
       const params = request.only(['limit', 'page']);
-      const searchQuery = request.input('searchQuery');
+      params.only_admin=true
+      const searchQuery = request.input('query');
       const limit = params.limit || Const.DEFAULT_LIMIT;
       const page = params.page || 1;
 

@@ -15,8 +15,6 @@ class UserSchema extends Schema {
       table.tinyint('role').notNullable();
       table.tinyint('type').notNullable().default(Const.USER_TYPE.REGULAR);
       table.string('wallet_address').notNullable();
-      table.string('firstname', 255).nullable();
-      table.string('lastname', 255).nullable();
       table.unique(['wallet_address']);
       table.timestamps();
     })

@@ -38,6 +38,9 @@ class UserService {
     } else {
       builder = builder.where('status', Const.USER_STATUS.ACTIVE);
     }
+    if(params.only_admin){
+      builder = builder.where('role','>=', Const.USER_ROLE.GOVERNANCE);
+    }
 
     // get number of projects that each admin created
     // builder.withCount('projects as projects_created');
@@ -48,8 +51,8 @@ class UserService {
     return query.where((q) => {
       q.where('email', 'like', `%${searchQuery}%`)
         .orWhere('wallet_address', 'like', `%${searchQuery}%`)
-        .orWhere('lastname', 'like', `%${searchQuery}%`)
-        .orWhere('firstname', 'like', `%${searchQuery}%`);
+        .orWhere('username', 'like', `%${searchQuery}%`)
+        
     })
   }
 
@@ -57,7 +60,10 @@ class UserService {
     let builder = this.buildQueryBuilder(params);
     return await builder.first();
   }
-
+  async findAll(params){
+    let builder = this.buildQueryBuilder(params);
+    return await builder.fetch()
+  }
   async checkToken(token, role) {
     const tokenReset = await PasswordResetModel.query().where('token', token).where('role', role).first();
     if (tokenReset) {
