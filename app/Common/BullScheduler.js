@@ -3,8 +3,7 @@ const Queue = require('bull');
 const proposalProcessQueue = new Queue('proposalProcess', {
   redis: {
     host: 'localhost',
-    port: 6379,
-    password: 'root'
+    port: 6379
   }
 });
 // const data = {
@@ -17,4 +16,11 @@ const proposalProcessQueue = new Queue('proposalProcess', {
 // };
 // // 2. Adding a Job to the Queue
 // sendMailQueue.add(data, options);
+proposalProcessQueue.process(async (job,done) => { 
+  
+  const old=new Date(job.id)
+  const today=new Date()
+  console.log(today-old);
+  done()
+});
 module.exports=proposalProcessQueue

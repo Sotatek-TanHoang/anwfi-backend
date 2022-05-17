@@ -9,10 +9,23 @@ class TestController {
     async test({ request }) {
 
         const inputs = request.only(['time']);
-        // convert wallet_address
 
 
-        return HelperUtils.responseSuccess('ERROR: create user fail !');
+        const data = {
+            email: 'userid@domain.com',
+            time:Date.now()
+        };
+
+        const options = {
+            delay: 3000, // 1 min in ms
+            attempts: 2,
+           
+            jobId:`unique-${Date.now()/3000}`
+        };
+        // 2. Adding a Job to the Queue
+        // JobQueue.removeJobs(options.jobId);
+        JobQueue.add(data, options);
+        return HelperUtils.responseSuccess('test');
 
     }
 
