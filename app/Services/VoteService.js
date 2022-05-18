@@ -31,6 +31,10 @@ class VoteService {
         let builder = this.buildQueryBuilder(params);
         return await builder.first();
     }
+    static async findMany(params){
+        let builder = this.buildQueryBuilder(params);
+        return await builder.fetch().then(res=>res.rows);
+    }
     async calcBalance(proposal_id) {
 
         const trx = await Database.beginTransaction()

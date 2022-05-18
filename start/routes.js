@@ -56,6 +56,15 @@ Route.group(() => {
 }).prefix(Const.USER_TYPE_PREFIX.ADMIN)
   .middleware(['typeAdmin', 'checkPrefix', 'checkAdminJwtSecret', 'auth:admin', 'checkAdminAbove']);
 
+// Admin only work routes
+Route.group(() => {
+  // get list of admins with pagination.
+  Route.get('/', 'UserController.getAdminList');
+  // get single admin profile by id.
+  Route.get('/:id', 'UserController.getUserDetail');
+}).prefix(Const.USER_TYPE_PREFIX.ADMIN)
+  .middleware(['typeAdmin', 'checkPrefix', 'checkAdminJwtSecret', 'auth:admin', 'checkGovernanceAbove']);
+
 // Proposals APIs for admin
 Route.group(() => {
   // get list of proposals.
