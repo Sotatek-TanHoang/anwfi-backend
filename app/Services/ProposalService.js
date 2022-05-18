@@ -88,6 +88,7 @@ class ProposalService {
       const down_vote = subQueries[3] ?? 0
       proposal.merge({ up_vote, down_vote, up_vote_anwfi, down_vote_anwfi });
       await proposal.save();
+      return proposal;
     } catch (e) {
       console.log(e.message);
       return;

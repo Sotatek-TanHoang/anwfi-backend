@@ -213,6 +213,13 @@ function compareBigNumber(balance, min_anwfi) {
   let anwfi = new BigNumber(min_anwfi);
   return b.comparedTo(anwfi) >= 0 ? true : false;
 }
+function calcPassPercentage(yes_count, _total) {
+  let vote_y = new BigNumber(yes_count);
+  let total = new BigNumber(_total);
+
+  let result = vote_y.dividedBy(total).multipliedBy(BigNumber(10000)).decimalPlaces(0);
+  return result;
+}
 module.exports = {
   randomString,
   doMask,
@@ -229,5 +236,6 @@ module.exports = {
   hasSql,
   getProposalHistory,
   formatDecimal,
-  compareBigNumber
+  compareBigNumber,
+  calcPassPercentage
 };

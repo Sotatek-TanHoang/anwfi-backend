@@ -2,7 +2,7 @@
 
 const HelperUtils = use('App/Common/HelperUtils');
 
-const TestCalcJob=use('App/Cron-Jobs/CalculateVoteBalanceJob')
+const UpdateVoteBalanceJob=use('App/Cron-Jobs/UpdateVoteBalanceJob')
 class TestController {
 
     async test() {
@@ -15,11 +15,11 @@ class TestController {
         };
 
         const options = {
-            delay: 3000, // 1 min in ms
+            
             attempts: 2,
             id:Date.now()
         };
-        TestCalcJob.add(data, options);
+        UpdateVoteBalanceJob.add(data, options);
         return HelperUtils.responseSuccess('test');
 
     }
