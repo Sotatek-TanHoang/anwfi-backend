@@ -37,7 +37,7 @@ Route.group(() => {
   // get single admin profile by id.
   Route.get('/:id', 'UserController.getUserDetail');
   // update single admin by id.
-  // Route.put('/:id', 'UserController.updateUserProfile').validator('UpdateUser');
+  Route.put('/:id', 'UserController.updateUserProfile').validator('UpdateUser');
   // delete single admin by id.
   Route.delete('/:id', 'UserController.deleteUser').validator("DeleteUser");
 
