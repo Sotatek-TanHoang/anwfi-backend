@@ -23,10 +23,10 @@ class ProposalSchema extends Schema {
       table.integer('pass_percentage', 6).notNullable();// min percent of yes vote to acept proposal
       table.tinyint('proposal_status').notNullable().default(Const.PROPOSAL_STATUS.CREATED);
      // vote tracking
-     table.decimal('up_vote',20,10).notNullable().defaultTo(0);
-     table.decimal('down_vote',20,10).notNullable().defaultTo(0);
-     table.decimal('up_vote_anwfi',20,10).notNullable().defaultTo(0);
-     table.decimal('down_vote_anwfi',20,10).notNullable().defaultTo(0);
+     table.decimal('up_vote',20,0).notNullable().defaultTo(0);
+     table.decimal('down_vote',20,0).notNullable().defaultTo(0);
+     table.decimal('up_vote_anwfi',60,18).notNullable().defaultTo(0);
+     table.decimal('down_vote_anwfi',60,18).notNullable().defaultTo(0);
       // history tracking
       table.datetime('tmp_created').nullable();
       table.datetime('tmp_active').nullable();

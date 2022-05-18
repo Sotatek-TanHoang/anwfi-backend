@@ -23,10 +23,10 @@ class ProposalService {
     }
     if (params.count_vote) {
       builder.withCount('votes as up_vote', (builder) => {
-        builder.where('vote', true)
+        builder.where('vote', true).andWhere('status',true)
       })
       builder.withCount('votes as down_vote', (builder) => {
-        builder.where('vote', false)
+        builder.where('vote', false).andWhere('status',true)
       })
     }
     if (params.status) {

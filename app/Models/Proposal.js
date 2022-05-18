@@ -17,8 +17,8 @@ class Proposal extends Model {
       "updated_at", 
       'is_display',
       'is_deploy',
-      'up_vote_count',
-      'down_vote_count',
+      'up_vote',
+      'down_vote',
       "up_vote_anwfi",
       'down_vote_anwfi'
     ]
