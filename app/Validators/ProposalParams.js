@@ -20,8 +20,8 @@ class ProposalParams {
         rule('date'),
         rule('dateFormat', 'YYYY-MM-DD HH:mm:ss')
       ],
-      quorum: "number|required",
       min_anwfi: "number|required",
+      quorum: "range:-1,10001|integer|required",
       pass_percentage: "range:-1,10001|integer|required",
 
     };

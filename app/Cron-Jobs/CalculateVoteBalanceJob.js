@@ -57,17 +57,19 @@ caculateVoteResultQueue.process(async (job) => {
 
     proposal = await proposalService.calcVoteResult(proposal.id);
 
-    // const v_yes_count = new BigNumber(proposal.up_vote).plus(BigNumber(proposal.down_vote)).toString();
-    // const v_count = proposal.up_vote;
-
-    const passPercentage = calcPassPercentage({
+    const passPercentage = calcPercentage({
       up_vote: proposal.up_vote,
       down_vote: proposal.down_vote
     });
 
+    const quorumPercentage=calcPercentage({
+      up_vote:proposal.up_vote_anwfi,
+      down_vote:proposal.down_vote_anwfi
+    })
+
     const isProposalPass =
-      // up vote anwfi >= proposal.quorum
-      HelperUtils.compareBigNumber(proposal.up_vote_anwfi, proposal.quorum)
+      // up vote anwfi % >= proposal.quorum
+      HelperUtils.compareBigNumber(quorumPercentage, proposal.quorum)
       &&
       // pass percentages is equal proposal.pass_percentage
       HelperUtils.compareBigNumber(passPercentage, proposal.pass_percentage);
@@ -92,11 +94,11 @@ caculateVoteResultQueue.on('completed', async (job) => await job.remove())
 // helper
 
 
-function calcPassPercentage({ up_vote, down_vote }) {
+function calcPercentage({ up_vote, down_vote }) {
 
   let vote_yes = new BigNumber(up_vote);
   let total = new BigNumber(vote_yes.plus(BigNumber(down_vote)));
-
+  // range from 0 to 10000
   let result = vote_yes.dividedBy(total).multipliedBy(BigNumber(10000)).decimalPlaces(0);
   return result.toString();
 }
