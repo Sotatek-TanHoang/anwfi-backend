@@ -12,7 +12,7 @@ const ProposalModel = use("App/Models/Proposal")
 const pLimit = require("../Common/ProcessLimit");
 const limit = pLimit(Const.LIMIT_PROCESS_NUMBER);
 
-const updateVoteResultQueue = new Queue(Const.ALLOCATION_CACULATION_QUEUE, {
+const updateVoteResultQueue = new Queue(Const.UPDATE_VOTE_QUEUE, {
     redis: {
         host: process.env.REDIS_HOST,
         port: +process.env.REDIS_PORT,

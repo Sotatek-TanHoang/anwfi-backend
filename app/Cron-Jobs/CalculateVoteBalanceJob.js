@@ -11,7 +11,7 @@ const ProposalModel = use("App/Models/Proposal")
 const pLimit = require("../Common/ProcessLimit");
 const limit = pLimit(Const.LIMIT_PROCESS_NUMBER);
 
-const caculateVoteResultQueue = new Queue(Const.ALLOCATION_CACULATION_QUEUE, {
+const caculateVoteResultQueue = new Queue(Const.CALCULATE_VOTE_QUEUE, {
   redis: {
     host: process.env.REDIS_HOST,
     port: +process.env.REDIS_PORT,
@@ -27,7 +27,7 @@ caculateVoteResultQueue.process(async (job) => {
     console.log("Process Job id: ", job.id);
     const proposal_id = job.data.proposal_id;
     // init services
-    
+
     const proposalService = new ProposalService()
     const contractService = new ContractService()
 
@@ -37,7 +37,7 @@ caculateVoteResultQueue.process(async (job) => {
     })
 
     if (!proposal) {
-      console.log('Error: proposal not exist');
+      console.log('Error: proposal not exist, Job terminated.');
       return;
     }
     // get proposal's votes
@@ -57,17 +57,20 @@ caculateVoteResultQueue.process(async (job) => {
 
     proposal = await proposalService.calcVoteResult(proposal.id);
 
-    const v_yes_count = new BigNumber(proposal.up_vote).plus(BigNumber(proposal.down_vote)).toString();
-    const v_count = proposal.up_vote;
+    // const v_yes_count = new BigNumber(proposal.up_vote).plus(BigNumber(proposal.down_vote)).toString();
+    // const v_count = proposal.up_vote;
 
-    const passPercentage = HelperUtils.calcPassPercentage(v_yes_count, v_count);
+    const passPercentage = calcPassPercentage({
+      up_vote: proposal.up_vote,
+      down_vote: proposal.down_vote
+    });
 
-    const isProposalPass = 
-          // up vote anwfi >= proposal.quorum
-          HelperUtils.compareBigNumber(proposal.up_vote_anwfi, proposal.quorum) 
-          && 
-          // pass percentages is equal proposal.pass_percentage
-          HelperUtils.compareBigNumber(passPercentage, proposal.pass_percentage);
+    const isProposalPass =
+      // up vote anwfi >= proposal.quorum
+      HelperUtils.compareBigNumber(proposal.up_vote_anwfi, proposal.quorum)
+      &&
+      // pass percentages is equal proposal.pass_percentage
+      HelperUtils.compareBigNumber(passPercentage, proposal.pass_percentage);
     // determine proposal status
     if (isProposalPass) {
       proposal.proposal_status = Const.PROPOSAL_STATUS.SUCCESS;
@@ -85,4 +88,16 @@ caculateVoteResultQueue.process(async (job) => {
 
 caculateVoteResultQueue.on('completed', async (job) => await job.remove())
 
+
+// helper
+
+
+function calcPassPercentage({ up_vote, down_vote }) {
+
+  let vote_yes = new BigNumber(up_vote);
+  let total = new BigNumber(vote_yes.plus(BigNumber(down_vote)));
+
+  let result = vote_yes.dividedBy(total).multipliedBy(BigNumber(10000)).decimalPlaces(0);
+  return result.toString();
+}
 module.exports = caculateVoteResultQueue;
