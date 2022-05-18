@@ -32,10 +32,6 @@ Route.group(() => {
 
 // Admin only work routes
 Route.group(() => {
-  // get list of admins with pagination.
-  Route.get('/', 'UserController.getAdminList');
-  // get single admin profile by id.
-  Route.get('/:id', 'UserController.getUserDetail');
   // update single admin by id.
   Route.put('/:id', 'UserController.updateUserProfile').validator('UpdateUser');
   // delete single admin by id.
@@ -56,7 +52,7 @@ Route.group(() => {
 }).prefix(Const.USER_TYPE_PREFIX.ADMIN)
   .middleware(['typeAdmin', 'checkPrefix', 'checkAdminJwtSecret', 'auth:admin', 'checkAdminAbove']);
 
-// Admin only work routes
+// Admin and Governance only work routes
 Route.group(() => {
   // get list of admins with pagination.
   Route.get('/', 'UserController.getAdminList');

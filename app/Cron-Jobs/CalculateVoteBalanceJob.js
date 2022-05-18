@@ -39,6 +39,7 @@ caculateVoteResultQueue.process(async (job) => {
     })
 
     if (!proposal){
+      console.log('done');
       await job.finished();
       throw new Error("Error: proposal not exist")
     }
