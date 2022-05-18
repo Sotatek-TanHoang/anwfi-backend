@@ -62,9 +62,9 @@ caculateVoteResultQueue.process(async (job) => {
       down_vote: proposal.down_vote
     });
 
-    const quorumPercentage=calcPercentage({
-      up_vote:proposal.up_vote_anwfi,
-      down_vote:proposal.down_vote_anwfi
+    const quorumPercentage = calcPercentage({
+      up_vote: proposal.up_vote_anwfi,
+      down_vote: proposal.down_vote_anwfi
     })
 
     const isProposalPass =
@@ -95,9 +95,14 @@ caculateVoteResultQueue.on('completed', async (job) => await job.remove())
 
 
 function calcPercentage({ up_vote, down_vote }) {
+  let zero = new BigNumber(0)
 
   let vote_yes = new BigNumber(up_vote);
   let total = new BigNumber(vote_yes.plus(BigNumber(down_vote)));
+  // if there is no vote, set result to zero percentage
+  if (total.isEqualTo(zero)) {
+    return '0'
+  }
   // range from 0 to 10000
   let result = vote_yes.dividedBy(total).multipliedBy(BigNumber(10000)).decimalPlaces(0);
   return result.toString();
