@@ -28,7 +28,8 @@ class CheckVote {
             }
             throw new ForbiddenException("ERROR: you cannot vote for this proposal right now!")
         } catch (e) {
-            throw new Error("ERROR: Internal Server Error!")
+            console.log(e.message);
+            throw new ForbiddenException(e.message)
         }
 
     }

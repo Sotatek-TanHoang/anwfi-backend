@@ -218,7 +218,7 @@ function calcPassPercentage(yes_count, _total) {
   let total = new BigNumber(_total);
 
   let result = vote_y.dividedBy(total).multipliedBy(BigNumber(10000)).decimalPlaces(0);
-  return result;
+  return result.toString();
 }
 module.exports = {
   randomString,
