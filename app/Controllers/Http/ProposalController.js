@@ -27,6 +27,19 @@ class ProposalController {
       return HelperUtils.responseErrorInternal('ERROR: create proposal fail !');
     }
   }
+  async finish({ request, auth }) {
+    const inputs = request.only([ 'id']);
+
+    try {
+      const proposal = await (new ProposalService()).finishVoteResult( inputs.id );
+
+      return HelperUtils.responseSuccess(proposal);
+    } catch (e) {
+      console.log(e);
+      return HelperUtils.responseErrorInternal('ERROR: create proposal fail !');
+    }
+  }
+
   async updateProposalBasic({ request }) {
     try {
       const id = request.params.id
@@ -127,7 +140,6 @@ class ProposalController {
       if (!auth?.user || auth?.user?.role <= Const.USER_ROLE.PUBLIC_USER) {
         params.is_public=true
       }
-      console.log(params);
       const proposalService = new ProposalService();
       let proposalQuery = proposalService.buildQueryBuilder(params);
       if (searchQuery) {
@@ -146,25 +158,28 @@ class ProposalController {
       const proposalService = new ProposalService();
       // check if req is public
       const is_public = !auth.user || auth?.user?.role <= Const.USER_ROLE.PUBLIC_USER
-      const proposal = await proposalService.findOne({ id, count_vote: true, count_anwfi: true, is_public });
+      const proposal = await proposalService.findOne({ id, is_public });
       if (!proposal) throw new Error("ERROR: not found")
       const subQueries = [
-        proposal.votes().where('vote', '=', 1).limit(3).fetch(),
-        proposal.votes().where('vote', '=', 0).limit(3).fetch(),
-        Database.from('votes').where('vote', true).andWhere('proposal_id', id).getSum('balance'),
-        Database.from('votes').where('vote', false).andWhere('proposal_id', id).getSum('balance')
+        proposal.votes().where('vote', '=', 1).where('status',true).limit(3).fetch(),
+        proposal.votes().where('vote', '=', 0).where('status',true).limit(3).fetch(),
+        // Database.from('votes').where('vote', true).andWhere('proposal_id', id).getSum('balance'),
+        // Database.from('votes').where('vote', false).andWhere('proposal_id', id).getSum('balance')
       ]
       const results = await Promise.all(subQueries)
 
       proposal.vote_data = {
         up_vote: results[0] || [],
         down_vote: results[1] || [],
-        up_vote_anwfi: results[2] || '0',
-        down_vote_anwfi: results[3] || '0',
+        up_vote_anwfi: HelperUtils.formatDecimal(proposal.up_vote_anwfi),
+        down_vote_anwfi: HelperUtils.formatDecimal(proposal.down_vote_anwfi),
       }
-
+      proposal.__meta__={
+        up_vote:HelperUtils.formatDecimal(proposal.up_vote),
+        down_vote:HelperUtils.formatDecimal(proposal.down_vote)
+      }
       proposal.history = HelperUtils.getProposalHistory(proposal);
-      return HelperUtils.responseSuccess(proposal.toJSON());
+      return HelperUtils.responseSuccess(proposal);
     } catch (e) {
       console.log(e);
       return HelperUtils.responseErrorInternal('ERROR: get proposal detail fail !');

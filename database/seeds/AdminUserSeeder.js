@@ -27,9 +27,9 @@ class AdminUserSeeder {
       "description": "some description",
       "start_time": "2022-10-05 21:22:50",
       "end_time": "2022-10-05 21:22:50",
-      "quorum": "10000000000",
+      "quorum": 2000,
       "min_anwfi": "10000000000",
-      "pass_percentage": 0,
+      "pass_percentage": 1000,
       name: "sample",
       wallet_address: '0x9f1F81479c696E358D790d0a848B41e0DED698e0'
     }

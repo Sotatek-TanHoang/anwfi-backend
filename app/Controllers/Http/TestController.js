@@ -1,18 +1,26 @@
 'use strict'
-const UserService = use('App/Services/UserService');
-const UserModel = use('App/Models/User');
+
 const HelperUtils = use('App/Common/HelperUtils');
-const Const = use('App/Common/Const');
-const JobQueue = use('App/Common/BullScheduler')
+
+const TestCalcJob=use('App/Cron-Jobs/CalculateVoteBalanceJob')
 class TestController {
 
-    async test({ request }) {
+    async test() {
 
-        const inputs = request.only(['time']);
-        // convert wallet_address
+    
 
 
-        return HelperUtils.responseSuccess('ERROR: create user fail !');
+        const data = {
+            proposal_id: 1,
+        };
+
+        const options = {
+            
+            attempts: 2,
+            id:Date.now()
+        };
+        TestCalcJob.add(data, options);
+        return HelperUtils.responseSuccess('test');
 
     }
 

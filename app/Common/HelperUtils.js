@@ -208,11 +208,32 @@ const getProposalHistory = (proposal) => {
 function formatDecimal(value = '0') {
   return BigNumber(value).toString()
 }
-function compareBigNumber(left, right) {
-  let x = new BigNumber(left);
-  let y = new BigNumber(right);
-  return x.comparedTo(y) ? true : false;
+function compareBigNumber(balance, min_anwfi) {
+  let b = new BigNumber(balance);
+  let anwfi = new BigNumber(min_anwfi);
+  return b.comparedTo(anwfi) >= 0 ? true : false;
 }
+function calcPassPercentage(yes_count, _total) {
+  let vote_y = new BigNumber(yes_count);
+  let total = new BigNumber(_total);
+
+  let result = vote_y.dividedBy(total).multipliedBy(BigNumber(10000)).decimalPlaces(0);
+  return result;
+}
+function calcPercentage({ up_vote, down_vote }) {
+  let zero = new BigNumber(0)
+
+  let vote_yes = new BigNumber(up_vote);
+  let total = new BigNumber(vote_yes.plus(BigNumber(down_vote)));
+  // if there is no vote, set result to zero percentage
+  if (total.isEqualTo(zero)) {
+    return '0'
+  }
+  // range from 0 to 10000
+  let result = vote_yes.dividedBy(total).multipliedBy(BigNumber(10000)).decimalPlaces(0);
+  return result.toString();
+}
+
 module.exports = {
   randomString,
   doMask,
@@ -229,5 +250,7 @@ module.exports = {
   hasSql,
   getProposalHistory,
   formatDecimal,
-  compareBigNumber
+  compareBigNumber,
+  calcPassPercentage,
+  calcPercentage,
 };
