@@ -90,6 +90,8 @@ Route.group(() => {
   Route.get('/pool-token', 'PoolTokenController.getPoolTokneInfo')  
   Route.get('/token-price', 'PoolTokenController.fetchTokenPrice')  
   Route.get('/pool', 'PoolController.getPoolInfo')  
+  Route.get('/pool/:poolId', 'PoolController.getPoolDetail')  
+
   // Route.post("/vote/:id", "VoteController.createVote").validator('CheckVote') // vote off-chain
 })
 

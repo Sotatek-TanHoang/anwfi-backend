@@ -37,6 +37,18 @@ class PoolService {
     let builder = this.buildQueryBuilder(params);
     return await builder.first();
   }
+  async poolDetail(poolId) {
+    let pool= await PoolModel.query()
+    .where('id', poolId)
+    .first();
+    const token= await TokenInfoModel.query()
+    .where('token_address',pool.stake_token)
+    .first();
+    pool.token=token
+    return pool
+    }
+
+
   async findMany(params) {
     let builder = this.buildQueryBuilder(params);
     return await builder.fetch().then(res => res.rows)

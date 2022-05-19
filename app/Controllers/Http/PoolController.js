@@ -50,7 +50,19 @@ class PoolController {
       return HelperUtils.responseErrorInternal('ERROR: get proposal list fail !');
     }
   }
-  
+  async getPoolDetail({ params} ) {
+    try {
+      const poolId = params.poolId
+      const poolService = new PoolService()
+      const pool =  await poolService.poolDetail(poolId)
+
+      return HelperUtils.responseSuccess(pool);
+    } catch (e) {
+      console.log(e.message);
+      return HelperUtils.responseErrorInternal('ERROR: get proposal list fail !');
+    }
+  }
+
   async getPoolLiquidity({ request }) {
     try {
       const poolService = new PoolService()
