@@ -6,8 +6,8 @@ const ProposalService = use('App/Services/ProposalService')
 const Const = use('App/Common/Const')
 class CalculateVoteBalance extends Task {
   static get schedule() {
-    // return '0 0 */12 ? * *'
-    return '* * * * * '
+    return '0 0 */12 ? * *'
+    // return '* * * * * '
   }
 
   async handle() {
