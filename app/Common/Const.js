@@ -122,6 +122,12 @@ module.exports = Object.freeze({
     EXECUTED: 4,
     // CLOSED: 'Ended',
   },
+  CONTRACT_ADDRESS : {
+    POOL : "0xC472DD48E8ad269ae174892B523e246BF26287cE",
+    AWNFI :"0x79E79B3EF77A9cE708A5218ddbD793807b2c4C33",// address awnfi token 
+  },
+  COINMARKETCAP_API_KEY:"adc30f62-ab80-4363-92fa-f42aabb037b2",
+  RPCURL : "https://rinkeby.infura.io/v3/9340d0c9c93046fb817055e8ba9d3c15",
   STAKE_USERS: {
     LIMIT: 5,
     PAGE: 1
