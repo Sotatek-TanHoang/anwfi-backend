@@ -3,7 +3,6 @@
 const { baToJSON, TWO_POW256 } = require("ethereumjs-util");
 
 const ErrorFactory = use('App/Common/ErrorFactory');
-// const PoolModel = use('App/Models/Pools');
 const Const = use('App/Common/Const');
 const TokenInfoModel = use('App/Models/PoolTokenInfo');
 const PoolModel = use('App/Models/Pools');
@@ -13,8 +12,8 @@ class PoolService {
 
   buildQueryBuilder(params) {
     let builder = PoolModel.query();
-    if (params.id) {
-      builder = builder.where('id', params.id);
+    if (params.pool_index) {
+      builder = builder.where('pool_index', params.pool_index);
     }
     // if (params.username) {
     //   builder = builder.where('username', params.username);
@@ -25,49 +24,22 @@ class PoolService {
     // if (params.signature) {
     //   builder = builder.where('signature', params.signature);
     // }
-    if (params.wallet_address) {
-      builder = builder.where('wallet_address', params.wallet_address);
+    if (params.is_lp_token) {
+      builder = builder.where('is_lp_token', params.is_lp_token);
     }
-    if (params.proposal_type) {
-      builder = builder.where('proposal_type', params.proposal_type);
-    }
-    if (params.count_vote) {
-      builder.withCount('votes as up_vote', (builder) => {
-        builder.where('vote', true)
-      })
-      builder.withCount('votes as down_vote', (builder) => {
-        builder.where('vote', false)
-      })
-    }
-    // if (params.role) {
-    //   builder = builder.where('role', params.role);
-    // }
-    // if (params.confirmation_token) {
-    //   builder = builder.where('confirmation_token', params.confirmation_token);
-    // }
-    // if (params.status !== undefined) {
-    //   builder = builder.where('status', params.status);
-    // } else {
-    //   builder = builder.where('status', Const.USER_STATUS.ACTIVE);
-    // }
 
     // get number of projects that each admin created
     // builder.withCount('projects as projects_created');
     return builder;
   }
 
-  buildSearchQuery(query, searchQuery) {
-    return query.where((q) => {
-      q.where('wallet_address', 'like', `%${searchQuery}%`)
-        .orWhere('proposal_type', 'like', `%${searchQuery}%`)
-      // .orWhere('lastname', 'like', `%${searchQuery}%`)
-      // .orWhere('firstname', 'like', `%${searchQuery}%`);
-    })
-  }
-
   async findOne(params) {
     let builder = this.buildQueryBuilder(params);
     return await builder.first();
+  }
+  async findMany(params) {
+    let builder = this.buildQueryBuilder(params);
+    return await builder.fetch().then(res => res.rows)
   }
 
   async caculatorLiquidity(pool){
@@ -125,21 +97,9 @@ class PoolService {
     }
   }
 
-  async findByProjectId(proposalId){
-    return findOne({id:proposalId});
+  async findByProjectId(poolId){
+    return findOne({id:poolId});
   }
-  // async findOneWithVotes(params) {
-  //   console.time('a')
-  //   const posts = await ProposalModel
-  //     .query()
-  //     .withCount('votes as yes_count', (builder) => {
-  //       builder.where('vote', true)
-  //     }).withCount('votes as no_count', (builder) => {
-  //       builder.where('vote', false)
-  //     })
-  //     .first()
-  //   return posts
-  // }
 
 }
 

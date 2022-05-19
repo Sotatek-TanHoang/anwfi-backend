@@ -33,17 +33,23 @@ class PoolController {
   // }
  
 
-  // async getPoolInfo({ request }) {
-  //   try {
-      
-  //     return HelperUtils.responseSuccess({
+  async getPoolInfo({ request} ) {
+    try {
+      const params = request.only(['limit', 'page', 'is_lp_token','pool_index']);
+      // const searchQuery = request.input('query');
+      const limit = params.limit || Const.DEFAULT_LIMIT;
+      const page = params.page || 1;
+      console.log(params);
+      const poolService = new PoolService()
+      const poolQuery =  poolService.buildQueryBuilder(params)
+      const pool = await poolQuery.paginate(page, limit);
 
-  //     });
-  //   } catch (e) {
-  //     console.log(e.message);
-  //     return HelperUtils.responseErrorInternal('ERROR: get proposal list fail !');
-  //   }
-  // }
+      return HelperUtils.responseSuccess(pool);
+    } catch (e) {
+      console.log(e.message);
+      return HelperUtils.responseErrorInternal('ERROR: get proposal list fail !');
+    }
+  }
   
   async getPoolLiquidity({ request }) {
     try {

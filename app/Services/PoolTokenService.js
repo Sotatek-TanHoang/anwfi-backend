@@ -10,6 +10,30 @@ const rpcURL = Const.RPCURL;
 const web3 = new Web3(rpcURL)
 
 class PoolTokenService {
+
+  buildQueryBuilder(params) {
+    let builder = TokenInfoModel.query();
+    if (params.token_address) {
+      builder = builder.where('token_address', params.token_address);
+    }
+    if (params.symbol) {
+      builder = builder.where('symbol', params.symbol);
+    }
+    // if (params.email) {
+    //   builder = builder.where('email', params.email);
+    // }
+    // if (params.signature) {
+    //   builder = builder.where('signature', params.signature);
+    // }
+    if (params.is_lp_token) {
+      builder = builder.where('is_lp_token', params.is_lp_token);
+    }
+
+    // get number of projects that each admin created
+    // builder.withCount('projects as projects_created');
+    return builder;
+  }
+
   async getNormalTokenInfoFromSC(token){
     const abi= require(`../abi/erc20Token.json`)
     const contract = new web3.eth.Contract(abi, token.token_address)
@@ -127,6 +151,7 @@ class PoolTokenService {
         })
     }
    }
+
 }
 
 module.exports = PoolTokenService

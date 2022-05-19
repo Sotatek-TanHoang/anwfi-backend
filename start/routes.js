@@ -84,11 +84,12 @@ Route.group(() => {
  // Pool info APIs:
 Route.group(() => {
 
-  Route.get('/pool', 'PoolController.createOrUpdate')  
+  Route.post('/pool', 'PoolController.createOrUpdate')  
   Route.get('/pool-liquidity', 'PoolController.getPoolLiquidity')  
-  Route.get('/pool-token', 'PoolTokenController.getTokenInfoFromSC')  
+  Route.post('/pool-token', 'PoolTokenController.getTokenInfoFromSC')  
+  Route.get('/pool-token', 'PoolTokenController.getPoolTokneInfo')  
   Route.get('/token-price', 'PoolTokenController.fetchTokenPrice')  
-
+  Route.get('/pool', 'PoolController.getPoolInfo')  
   // Route.post("/vote/:id", "VoteController.createVote").validator('CheckVote') // vote off-chain
 })
 
