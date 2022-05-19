@@ -29,16 +29,16 @@ caculateVoteQueue.process(async (job) => {
 
     const proposalId = job.data;
 
-    const whitelistService = new WhitelistService();
+    // const whitelistService = new WhitelistService();
 
-    const projectService = new ProjectService();
+    const proposalService = new ProposalService();
 
-    const stakingServce = new StakingService();
+    // const stakingServce = new StakingService();
 
-    const project = await projectService.findByProjectId(proposalId);
-
-    if (!project) {
-      console.log("no need to caculate");
+    const proposal = (await proposalService.findByProjectId(proposalId)).toJSON();
+    
+    if (!proposal) {
+      console.log("can find proposal to caculate");
       return;
     }
 

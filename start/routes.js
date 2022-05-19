@@ -81,7 +81,20 @@ Route.group(() => {
   // Route.post("/vote/:id", "VoteController.createVote").validator('CheckVote') // vote off-chain
 }).middleware(['typeUser', 'checkPrefix', 'checkAdminJwtSecret', 'auth:user']);
 
- 
+ // Pool info APIs:
+Route.group(() => {
+
+  Route.post('/pool', 'PoolController.createOrUpdate')  
+  Route.get('/pool-liquidity', 'PoolController.getPoolLiquidity')  
+  Route.post('/pool-token', 'PoolTokenController.getTokenInfoFromSC')  
+  Route.get('/pool-token', 'PoolTokenController.getPoolTokneInfo')  
+  Route.get('/token-price', 'PoolTokenController.fetchTokenPrice')  
+  Route.get('/pool', 'PoolController.getPoolInfo')  
+  Route.get('/pool/:poolId', 'PoolController.getPoolDetail')  
+
+  // Route.post("/vote/:id", "VoteController.createVote").validator('CheckVote') // vote off-chain
+})
+
 
 
 
