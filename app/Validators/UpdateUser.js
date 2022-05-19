@@ -9,7 +9,7 @@ class UpdateAdmin {
     return {
       username: 'string',
       wallet_address: "string|required",
-      role: "integer|required|range:0,5",
+      // role: "integer|required|range:0,5",
       email: 'email'
     };
   }
@@ -31,18 +31,10 @@ class UpdateAdmin {
     const authUserId = this.ctx.auth.user.id;
     // jwt role
     const authRole = this.ctx.auth.user.role;
-    // req.body
-    const inputs = this.ctx.request.only('role');
+  
     // modify itself
     // user cannot modify his/her own role but other information.
     if (parseInt(id) === parseInt(authUserId)) {
-      if (parseInt(authRole) < parseInt(inputs.role)) {
-
-        this.ctx.response.unauthorized(HelperUtils.responseBadRequest("Error: you are not allowed to modify your own role."))
-        return false;
-
-      }
-
       // allow modify  
       return true;
     }
@@ -54,12 +46,6 @@ class UpdateAdmin {
     }
 
     // update other admin/governance.
-    // user cannot set a higher role than his/her role.
-    if (parseInt(inputs.role) > parseInt(authRole)) {
-      this.ctx.response.badRequest(HelperUtils.responseBadRequest("Error: you are not allowed to set higher role than yours."))
-      return false;
-      // throw new ForbiddenException("Error: you are not allowed to set higher role than yours.")
-    }
     // check user is privileged to change target profile.
     const adminService = new UserService();
     const admin = await adminService.findUser({

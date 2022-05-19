@@ -97,7 +97,7 @@ class UserController {
   }
   async updateUserProfile({ request, response }) {
     try {
-      const inputs = request.only(['role', 'username', 'email', 'wallet_address']);
+      const inputs = request.only(['username', 'email', 'wallet_address']);
       inputs.wallet_address = HelperUtils.checkSumAddress(inputs.wallet_address)
       const id = request.params.id;
 
