@@ -1,14 +1,15 @@
 const ErrorFactory = use('App/Common/ErrorFactory');
+const HelperUtils = use('App/Common/HelperUtils')
 const ForbiddenException = use("App/Exceptions/ForbiddenException")
 const UserService = use('App/Services/UserService');
-
+const Const = use('App/Common/Const')
 
 class UpdateAdmin {
   get rules() {
     return {
       username: 'string',
       wallet_address: "string|required",
-      role: "integer|required|range:-1,5",
+      role: "integer|required|range:0,5",
       email: 'email'
     };
   }
@@ -16,7 +17,7 @@ class UpdateAdmin {
   get messages() {
     return {
       'email.email': "You must provide a valid email",
-      "role.range":"Role not match any predefined roles."
+      "role.range": "Role not match any predefined roles."
     };
   }
 
@@ -24,18 +25,40 @@ class UpdateAdmin {
     return true;
   }
   async authorize() {
+    // target user
     const id = this.ctx.request.params.id;
+    // user perform update
     const authUserId = this.ctx.auth.user.id;
+    // jwt role
     const authRole = this.ctx.auth.user.role;
+    // req.body
     const inputs = this.ctx.request.only('role');
-    // user cannot modify his/her own role.
+    // modify itself
+    // user cannot modify his/her own role but other information.
     if (parseInt(id) === parseInt(authUserId)) {
-      if (parseInt(authRole) !== parseInt(inputs.role))
-        throw new ForbiddenException("Error: you are not allowed to modify your own role.")
+      if (parseInt(authRole) < parseInt(inputs.role)) {
+
+        this.ctx.response.unauthorized(HelperUtils.responseBadRequest("Error: you are not allowed to modify your own role."))
+        return false;
+
+      }
+
+      // allow modify  
+      return true;
     }
+
+    if (parseInt(authRole) === Const.USER_ROLE.GOVERNANCE) {
+      this.ctx.response.unauthorized(HelperUtils.responseBadRequest("Error: governances are only alowed to update themselves."))
+      return false;
+      // throw new ForbiddenException("Error: governances are only alowed to update themselves.")
+    }
+
+    // update other admin/governance.
     // user cannot set a higher role than his/her role.
     if (parseInt(inputs.role) > parseInt(authRole)) {
-      throw new ForbiddenException("Error: you are not allowed to set higher role than yours.")
+      this.ctx.response.badRequest(HelperUtils.responseBadRequest("Error: you are not allowed to set higher role than yours."))
+      return false;
+      // throw new ForbiddenException("Error: you are not allowed to set higher role than yours.")
     }
     // check user is privileged to change target profile.
     const adminService = new UserService();
@@ -44,11 +67,13 @@ class UpdateAdmin {
     });
     // target user not exist.
     if (!admin) {
-      throw new ForbiddenException("Error: you are trying to modify non-existing user.")
+      this.ctx.response.badRequest(HelperUtils.responseBadRequest("Error: you are trying to modify non-existing user."))
+      return false;
     }
     // target user is more privileged.
     if (parseInt(admin.role) > parseInt(authRole)) {
-      throw new ForbiddenException("Error: you are not allowed to modify this user profile.")
+      this.ctx.response.badRequest(HelperUtils.responseBadRequest("Error: you are not allowed to modify this user profile."))
+      return false;
     }
 
     return true

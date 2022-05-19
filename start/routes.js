@@ -32,18 +32,12 @@ Route.group(() => {
 
 // Admin only work routes
 Route.group(() => {
-  // update single admin by id.
-  Route.put('/:id', 'UserController.updateUserProfile').validator('UpdateUser');
-  // delete single admin by id.
-  Route.delete('/:id', 'UserController.deleteUser').validator("DeleteUser");
-
-  // create admin or governance by admin.
-  Route.post('/', 'UserController.createUser').validator('CreateUser');
-  // bulk create user.
-  Route.post('/bulk-create', 'UserController.bulkCreateUser').validator('UserArray')
   
-  // bulk update
-  Route.put('/bulk-update','UserController.bulkUpdateUser').validator('UserArray')
+  // // bulk create user.
+  // Route.post('/bulk-create', 'UserController.bulkCreateUser').validator('UserArray')
+  
+  // // bulk update
+  // Route.put('/bulk-update','UserController.bulkUpdateUser').validator('UserArray')
   
   // check if a wallet_address is available.
   Route.get('check-wallet-address', 'UserAuthController.checkWalletAddress');
@@ -58,6 +52,15 @@ Route.group(() => {
   Route.get('/', 'UserController.getAdminList');
   // get single admin profile by id.
   Route.get('/:id', 'UserController.getUserDetail');
+
+  // update single admin by id.
+  Route.put('/:id', 'UserController.updateUserProfile').validator('UpdateUser');
+  // delete single admin by id.
+  Route.delete('/:id', 'UserController.deleteUser').validator("DeleteUser");
+
+  // create admin or governance by admin.
+  Route.post('/', 'UserController.createUser').validator('CreateUser');
+
 }).prefix(Const.USER_TYPE_PREFIX.ADMIN)
   .middleware(['typeAdmin', 'checkPrefix', 'checkAdminJwtSecret', 'auth:admin', 'checkGovernanceAbove']);
 

@@ -1,4 +1,5 @@
 const ErrorFactory = use('App/Common/ErrorFactory');
+const HelperUtils=use('App/Common/HelperUtils')
 const ForbiddenException = use("App/Exceptions/ForbiddenException")
 const Const = use('App/Common/Const')
 const {rule} = use('Validator')
@@ -30,7 +31,9 @@ class ProposalParams {
     const { proposal_type,start_time,end_time } = this.ctx.request.only(['proposal_type','start_time','end_time'])
     
     if(moment(end_time).isBefore(start_time)){
-      throw new ForbiddenException("Error: end_time must be after start_time!")
+      this.ctx.response.badRequest(HelperUtils.responseBadRequest("Error: end_time must be after start_time!"))
+      return false;
+      // throw new ForbiddenException("Error: end_time must be after start_time!")
     }
 
     // proposal_type must match those types:
@@ -42,7 +45,9 @@ class ProposalParams {
       case Const.PROPOSAL_TYPE.OFFCHAIN_PROPOSAL:
         break;
       default:
-        throw new ForbiddenException("Error: proposal_type is invalid!")
+        this.ctx.response.unauthorized(HelperUtils.responseBadRequest("Error: proposal_type is invalid!"))
+        return false;
+        // throw new ForbiddenException("Error: proposal_type is invalid!")
     }
     return true;
   }

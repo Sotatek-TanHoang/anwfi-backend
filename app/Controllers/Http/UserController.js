@@ -19,7 +19,7 @@ class UserController {
         wallet_address: inputs.wallet_address,
       });
       if (isExistUser) {
-        return HelperUtils.responseBadRequest('Wallet is used');
+        return response.badRequest(HelperUtils.responseBadRequest('Wallet is used'));
       }
 
       const user = new UserModel();

@@ -1,9 +1,9 @@
 const ErrorFactory = use('App/Common/ErrorFactory');
 const ForbiddenException = use("App/Exceptions/ForbiddenException")
 const UserService = use('App/Services/UserService');
-
+const HelperUtils=use('App/Common/HelperUtils')
 class DeleteUser {
-    get rules() {}
+    get rules() { }
 
     get messages() { }
 
@@ -20,14 +20,18 @@ class DeleteUser {
             id
         });
         if (!admin) {
-            throw new ForbiddenException("Error: user not exist.")
+            this.ctx.response.badRequest(HelperUtils.responseBadRequest("Error: user not exist."))
+            return false;
         }
-        // user cannot delete user with higher role than his/her role.
-        if (parseInt(admin.role) > parseInt(authRole)) {
-            throw new ForbiddenException("Error: you are not allowed to delete this user.")
+        if (parseInt(authId) === parseInt(admin.id)) {
+            // allow delete itself
+            return true;
         }
-        if (parseInt(admin.id) === parseInt(authId)) {
-            throw new ForbiddenException("Error: you are not allowed to delete yourself.")
+        // delete other users.
+        // user cannot delete user with higher or equal role than his/her role.
+        if (parseInt(admin.role) >= parseInt(authRole)) {
+            this.ctx.response.unauthorized(HelperUtils.responseBadRequest("Error: you are not allowed to delete this user."))
+            return false;
         }
         return true
     }

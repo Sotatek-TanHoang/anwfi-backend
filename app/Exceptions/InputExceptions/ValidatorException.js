@@ -17,8 +17,8 @@ class ValidatorException extends UnprocessableEntityException {
         .value();
 
       // Custom Response
-      return response.json({
-        status: 422,
+      return response.badRequest({
+        status: 400,
         message: 'Validate Error !',
         data: {
           errors
@@ -35,8 +35,8 @@ class ValidatorException extends UnprocessableEntityException {
     ];
 
     // Custom Response
-    return response.json({
-      status: 422,
+    return response.badRequest({
+      status: 400,
       message: 'Validate Error !',
       data: errors,
     });
