@@ -13,7 +13,7 @@ class ProposalSchema extends Schema {
       table.string('name').notNullable();
       table.decimal('current_value',20,10).notNullable();
       table.decimal('new_value',20,10).notNullable();
-      table.string('description').nullable().defaultTo('');
+      table.longText('description').nullable().defaultTo('');
       table.boolean('is_display').notNullable().defaultTo(0); // Display in page or not
       table.boolean('is_deploy').notNullable().defaultTo(0);
       table.datetime('start_time').notNullable()
