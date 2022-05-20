@@ -1,14 +1,15 @@
 const ErrorFactory = use('App/Common/ErrorFactory');
-const HelperUtils=use('App/Common/HelperUtils')
+const HelperUtils = use('App/Common/HelperUtils')
 const ForbiddenException = use("App/Exceptions/ForbiddenException")
+const ProposalService = use('App/Services/ProposalService')
 const Const = use('App/Common/Const')
-const {rule} = use('Validator')
-const moment=require('moment')
+const { rule } = use('Validator')
+const moment = require('moment')
 class ProposalParams {
   get rules() {
     return {
       proposal_type: "required|string",
-      name:"required|string",
+      name: "required|string",
       current_value: "number|required",
       new_value: "number|required",
       description: "string",
@@ -28,13 +29,26 @@ class ProposalParams {
     };
   }
   async authorize() {
-    const { proposal_type,start_time,end_time } = this.ctx.request.only(['proposal_type','start_time','end_time'])
-    
-    if(moment(end_time).isBefore(start_time)){
+    const { proposal_type, start_time, end_time } = this.ctx.request.only(['proposal_type', 'start_time', 'end_time'])
+
+    if (moment(end_time).isBefore(start_time)) {
       this.ctx.response.badRequest(HelperUtils.responseBadRequest("Error: end_time must be after start_time!"))
       return false;
       // throw new ForbiddenException("Error: end_time must be after start_time!")
     }
+
+    //Todo: check if other proposal of this type is active.
+    
+    // const proposalService = new ProposalService();
+    // const otherProposal = await proposalService.findOne({
+    //   proposal_type,
+    //   end_time_after: new Date(start_time).toISOString()
+    // })
+    // if (otherProposal) {
+    //   this.ctx.response.badRequest(HelperUtils.responseBadRequest("Error: Other proposal with this proposal_type is active now!"))
+    //   return false;
+    // }
+
 
     // proposal_type must match those types:
     switch (proposal_type) {
@@ -47,7 +61,7 @@ class ProposalParams {
       default:
         this.ctx.response.unauthorized(HelperUtils.responseBadRequest("Error: proposal_type is invalid!"))
         return false;
-        // throw new ForbiddenException("Error: proposal_type is invalid!")
+      // throw new ForbiddenException("Error: proposal_type is invalid!")
     }
     return true;
   }

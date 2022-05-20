@@ -1,13 +1,15 @@
 'use strict'
 
 const ErrorFactory = use('App/Common/ErrorFactory');
+const BaseService=use('App/Services/BaseService')
 const ProposalModel = use('App/Models/Proposal');
 const Const = use('App/Common/Const');
 const Database = use('Database')
-class ProposalService {
+
+class ProposalService extends BaseService{
 
   buildQueryBuilder(params) {
-    let builder = ProposalModel.query();
+    let builder = ProposalModel.query(this.trx);
     if (params.id) {
       builder = builder.where('id', params.id);
     }
@@ -35,6 +37,9 @@ class ProposalService {
         .map(e => parseInt(e))
         .filter(e => !(e === Const.PROPOSAL_STATUS.CREATED && params.is_public));
       builder = builder.whereRaw(filter.map(() => 'proposal_status=?').join(' or '), filter)
+    }
+    if(params.end_time_after){
+      builder.where('end_time','>=',params.end_time_after)
     }
     builder = builder.orderBy("id", 'desc')
 

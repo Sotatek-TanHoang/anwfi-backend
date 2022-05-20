@@ -24,7 +24,7 @@ class AdminUserSeeder {
       "proposal_type": "swap fee",
       "current_value": "0.24",
       "new_value": "0.34",
-      "description": "some description",
+      "description": null,
       "start_time": "2022-10-05 21:22:50",
       "end_time": "2022-10-05 21:22:50",
       "quorum": 2000,
