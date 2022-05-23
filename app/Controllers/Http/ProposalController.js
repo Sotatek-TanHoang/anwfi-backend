@@ -91,7 +91,7 @@ class ProposalController {
               `${Const.PROPOSAL_STATUS.ACTIVE},
             ${Const.PROPOSAL_STATUS.SUCCESS},
             ${Const.PROPOSAL_STATUS.QUEUE},`
-            , proposal_type: proposal.type,
+            , proposal_type: proposal.proposal_type,
           });
 
         if (otherActiveProposal) {
