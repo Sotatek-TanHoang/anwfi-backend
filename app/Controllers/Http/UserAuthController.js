@@ -2,7 +2,7 @@
 
 const AuthUserService = use('App/Services/AuthUserService');
 const UserService = use('App/Services/UserService');
-const UserModel=use('App/Models/User')
+const UserModel = use('App/Models/User')
 const HelperUtils = use('App/Common/HelperUtils');
 const Const = use('App/Common/Const');
 const Web3 = require('web3');
@@ -37,7 +37,7 @@ class UserAuthController {
     }
   }
 
-  async checkWalletAddress({ request, params }) {
+  async checkWalletAddress({ request, params, response }) {
     try {
       const inputs = request.all();
       const walletAddress = HelperUtils.checkSumAddress(inputs.wallet_address || ' ');
@@ -62,14 +62,14 @@ class UserAuthController {
       });
     } catch (e) {
       console.log('ERROR: ', e);
-      return HelperUtils.responseErrorInternal('ERROR: Wallet address is invalid');
+      return response.badRequest(HelperUtils.responseErrorInternal('ERROR: Wallet address is invalid'));
     }
   }
 
-  async login({ request, auth, params ,response}) {
+  async login({ request, auth, params, response }) {
     const type = params.type;
     if (type !== Const.USER_TYPE_PREFIX.ADMIN && type !== Const.USER_TYPE_PREFIX.PUBLIC_USER) {
-      return HelperUtils.responseNotFound('ERROR: this api is not properly called!');
+      return response.badRequest(HelperUtils.responseNotFound('ERROR: this api is not properly called!'));
     }
     const param = request.all();
     const wallet_address = Web3.utils.toChecksumAddress(param.wallet_address)
@@ -78,7 +78,7 @@ class UserAuthController {
       const user = await authService.login({
         'wallet_address': wallet_address
       });
-      if(!user){
+      if (!user) {
         throw new Error("Error: User not exist.")
       }
       const token = await auth.authenticator('admin').generate(user, true);
@@ -91,7 +91,7 @@ class UserAuthController {
       return response.notFound(HelperUtils.responseNotFound('ERROR: Login failed!'));
     }
   }
-  async loginPublicUser({ request, auth, params }) {
+  async loginPublicUser({ request, auth, params,response }) {
     const type = params.type;
     if (type !== Const.USER_TYPE_PREFIX.ADMIN && type !== Const.USER_TYPE_PREFIX.PUBLIC_USER) {
       return HelperUtils.responseNotFound('ERROR: this api is not properly called!');
@@ -109,7 +109,7 @@ class UserAuthController {
       if (!user) {
         user = new UserModel()
         user.fill(param);
-        user.role=Const.USER_ROLE.PUBLIC_USER;
+        user.role = Const.USER_ROLE.PUBLIC_USER;
         await user.save()
       }
       const token = await auth.authenticator('user').generate(user, true);
@@ -119,7 +119,7 @@ class UserAuthController {
       });
     } catch (e) {
       console.log('ERROR: ', e);
-      return HelperUtils.responseNotFound('ERROR:Login attempt is failed! Call administrators if you have this problem again.');
+      return response.notFound(HelperUtils.responseNotFound('ERROR:Login attempt is failed! Call administrators if you have this problem again.'));
     }
   }
 }

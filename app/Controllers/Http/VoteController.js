@@ -9,7 +9,7 @@ const ProposalModel = use('App/Models/Proposal');
 const ProposalService = use('App/Services/ProposalService')
 class ProposalController {
 
-  async create({ request, auth }) {
+  async create({ request, auth, response }) {
     try {
       const inputs = request.only(['vote']);
       inputs.wallet_address = auth.user.wallet_address;
@@ -19,10 +19,10 @@ class ProposalController {
       const proposalService = new ProposalService()
       const proposal = await ProposalModel.query().where('id', inputs.proposal_id).first();
       if (!proposal)
-        return HelperUtils.responseBadRequest('ERROR: Cannot find this proposal!');
+        return response.badRequest(HelperUtils.responseBadRequest('ERROR: Cannot find this proposal!'));
 
       if (proposal.proposal_status !== Const.PROPOSAL_STATUS.ACTIVE) {
-        return HelperUtils.responseBadRequest('ERROR: Cannot vote for this proposal right now!');
+        return response.badRequest(HelperUtils.responseBadRequest('ERROR: Cannot vote for this proposal right now!'));
       }
       let userVote;
       // check if exist
@@ -39,16 +39,18 @@ class ProposalController {
       console.log(userVote.balance);
       userVote.status = HelperUtils.compareBigNumber(userVote.balance, proposal.toJSON().min_anwfi)
       await userVote.save();
-      await proposalService.calcVoteResult(proposal.id)
+      await proposalService.calcVoteResult(proposal.id).catch(e=>{
+        console.log("PROPOSAL ERROR:",e.message);
+      })
       return HelperUtils.responseSuccess(userVote);
     }
     catch (e) {
       console.log(e);
-      return HelperUtils.responseErrorInternal('ERROR: vote proposal fail !');
+      return response.badRequest(HelperUtils.responseErrorInternal('ERROR: vote proposal fail !'));
     }
   }
 
-  async getVote({ request }) {
+  async getVote({ request, response }) {
     try {
       const params = request.only(['limit', 'page', 'status']);
       params.proposal_id = request.params.id;
@@ -61,7 +63,7 @@ class ProposalController {
       return HelperUtils.responseSuccess(proposal);
     } catch (e) {
       console.log(e.message);
-      return HelperUtils.responseErrorInternal(`ERROR: get proposal's votes fail!`);
+      return response.badRequest(HelperUtils.responseErrorInternal(`ERROR: get proposal's votes fail!`));
     }
   }
 }

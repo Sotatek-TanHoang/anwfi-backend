@@ -7,7 +7,7 @@ const Database = use('Database')
 
 class UserController {
 
-  async createUser({ request }) {
+  async createUser({ request, response }) {
     try {
       const inputs = request.only(['wallet_address', 'role', 'username', 'email']);
       // convert wallet_address
@@ -19,7 +19,7 @@ class UserController {
         wallet_address: inputs.wallet_address,
       });
       if (isExistUser) {
-        return HelperUtils.responseBadRequest('Wallet is used');
+        return response.badRequest(HelperUtils.responseBadRequest('Wallet is used'));
       }
 
       const user = new UserModel();
@@ -30,7 +30,7 @@ class UserController {
       return HelperUtils.responseSuccess(user);
     } catch (e) {
       console.log(e);
-      return HelperUtils.responseErrorInternal('ERROR: create user fail !');
+      return response.badRequest(HelperUtils.responseErrorInternal('ERROR: create user fail !'));
     }
   }
   async bulkCreateUser({ request }) {
@@ -76,7 +76,7 @@ class UserController {
         })
         // if user exist
         if (user) {
-         
+
           input.role = user.role >= Const.USER_ROLE.SUPER_ADMIN ? user.role : input.role;
 
           await trx.update(input).into('users').where('id', user.id);
@@ -95,9 +95,9 @@ class UserController {
       return HelperUtils.responseErrorInternal('ERROR: bulk update users fail !');
     }
   }
-  async updateUserProfile({ request }) {
+  async updateUserProfile({ request, response }) {
     try {
-      const inputs = request.only(['role', 'username', 'email', 'wallet_address']);
+      const inputs = request.only(['username', 'email', 'wallet_address']);
       inputs.wallet_address = HelperUtils.checkSumAddress(inputs.wallet_address)
       const id = request.params.id;
 
@@ -114,13 +114,13 @@ class UserController {
         return HelperUtils.responseSuccess(admin);
       }
       // user not exist.
-      return HelperUtils.responseBadRequest('Error: user not exist!');
+      return response.badRequest(HelperUtils.responseBadRequest('Error: user not exist!'));
     } catch (e) {
       console.log(e);
-      return HelperUtils.responseErrorInternal('ERROR: update user fail!');
+      return response.badRequest(HelperUtils.responseErrorInternal('ERROR: update user fail!'));
     }
   }
-  async deleteUser({ request }) {
+  async deleteUser({ request, response }) {
     try {
       const id = request.params.id;
       console.log('delete User with params: ', id);
@@ -134,16 +134,16 @@ class UserController {
         await admin.delete();
         return HelperUtils.responseSuccess(admin);
       }
-      return HelperUtils.responseBadRequest("Error: Delete non-existing user!");
+      return response.badRequest(HelperUtils.responseBadRequest("Error: Delete non-existing user!"));
     } catch (e) {
       console.log(e);
-      return HelperUtils.responseErrorInternal('ERROR: delete user fail!');
+      return response.badRequest(HelperUtils.responseErrorInternal('ERROR: delete user fail!'));
     }
   }
-  async getAdminList({ request }) {
+  async getAdminList({ request, response }) {
     try {
       const params = request.only(['limit', 'page']);
-      params.only_admin=true
+      params.only_admin = true
       const searchQuery = request.input('query');
       const limit = params.limit || Const.DEFAULT_LIMIT;
       const page = params.page || 1;
@@ -157,11 +157,11 @@ class UserController {
       return HelperUtils.responseSuccess(admins);
     } catch (e) {
       console.log(e.message);
-      return HelperUtils.responseErrorInternal('ERROR: get user list fail !');
+      return response.badRequest(HelperUtils.responseErrorInternal('ERROR: get user list fail !'));
     }
   }
 
-  async getUserDetail({ params }) {
+  async getUserDetail({ params, response }) {
     try {
       const id = params.id;
       const userService = new UserService();
@@ -169,10 +169,10 @@ class UserController {
       if (admin) {
         return HelperUtils.responseSuccess(admin);
       }
-      return HelperUtils.responseErrorInternal('ERROR: user not exist!');
+      return response.badRequest(HelperUtils.responseErrorInternal('ERROR: user not exist!'));
     } catch (e) {
       console.log(e);
-      return HelperUtils.responseErrorInternal('ERROR: user not exist!');
+      return response.badRequest(HelperUtils.responseErrorInternal('ERROR: bad request!'));
     }
   }
 }

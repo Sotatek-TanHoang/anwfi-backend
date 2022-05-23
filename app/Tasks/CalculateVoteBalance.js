@@ -7,7 +7,8 @@ const Const = use('App/Common/Const')
 class CalculateVoteBalance extends Task {
   static get schedule() {
     return '0 0 */12 ? * *'
-    // return '* * * * * '
+    // return '0 */1 * * *'  
+    return '* * * * * '
   }
 
   async handle() {
@@ -19,6 +20,7 @@ class CalculateVoteBalance extends Task {
       console.log("Schedule: Calculate Vote Balance for proposal: ",proposal.id);
       await voteService.calcBalance(proposal.id)
       await proposalService.calcVoteResult(proposal.id)
+      await proposalService.finishVoteResult(proposal.id)
     }
     return;
   }

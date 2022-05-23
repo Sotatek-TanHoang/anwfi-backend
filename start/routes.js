@@ -18,6 +18,7 @@ const Const = use('App/Common/Const');
 /** @type {typeof import('@adonisjs/framework/src/Route/Manager')} */
 const Route = use('Route')
 Route.get('/', () => 'It\'s working')
+Route.get('/test-bull','TestController.test')
 //Route.get('image/:fileName', 'FileController.getImage');
 
 Route.group(() => {
@@ -31,22 +32,12 @@ Route.group(() => {
 
 // Admin only work routes
 Route.group(() => {
-  // get list of admins with pagination.
-  Route.get('/', 'UserController.getAdminList');
-  // get single admin profile by id.
-  Route.get('/:id', 'UserController.getUserDetail');
-  // update single admin by id.
-  // Route.put('/:id', 'UserController.updateUserProfile').validator('UpdateUser');
-  // delete single admin by id.
-  Route.delete('/:id', 'UserController.deleteUser').validator("DeleteUser");
-
-  // create admin or governance by admin.
-  Route.post('/', 'UserController.createUser').validator('CreateUser');
-  // bulk create user.
-  Route.post('/bulk-create', 'UserController.bulkCreateUser').validator('UserArray')
   
-  // bulk update
-  Route.put('/bulk-update','UserController.bulkUpdateUser').validator('UserArray')
+  // // bulk create user.
+  // Route.post('/bulk-create', 'UserController.bulkCreateUser').validator('UserArray')
+  
+  // // bulk update
+  // Route.put('/bulk-update','UserController.bulkUpdateUser').validator('UserArray')
   
   // check if a wallet_address is available.
   Route.get('check-wallet-address', 'UserAuthController.checkWalletAddress');
@@ -54,6 +45,33 @@ Route.group(() => {
 
 }).prefix(Const.USER_TYPE_PREFIX.ADMIN)
   .middleware(['typeAdmin', 'checkPrefix', 'checkAdminJwtSecret', 'auth:admin', 'checkAdminAbove']);
+
+// Admin and Governance only work routes
+Route.group(() => {
+  // get list of admins with pagination.
+  Route.get('/', 'UserController.getAdminList');
+  // get single admin profile by id.
+  Route.get('/:id', 'UserController.getUserDetail');
+
+  // update single admin by id.
+  Route.put('/:id', 'UserController.updateUserProfile').validator('UpdateUser');
+  // delete single admin by id.
+  Route.delete('/:id', 'UserController.deleteUser').validator("DeleteUser");
+
+  // create admin or governance by admin.
+  Route.post('/', 'UserController.createUser').validator('CreateUser');
+
+}).prefix(Const.USER_TYPE_PREFIX.ADMIN)
+  .middleware(['typeAdmin', 'checkPrefix', 'checkAdminJwtSecret', 'auth:admin', 'checkGovernanceAbove']);
+
+// Admin and Governance only work routes
+Route.group(() => {
+  // get list of admins with pagination.
+  Route.get('/', 'UserController.getAdminList');
+  // get single admin profile by id.
+  Route.get('/:id', 'UserController.getUserDetail');
+}).prefix(Const.USER_TYPE_PREFIX.ADMIN)
+  .middleware(['typeAdmin', 'checkPrefix', 'checkAdminJwtSecret', 'auth:admin', 'checkGovernanceAbove']);
 
 // Proposals APIs for admin
 Route.group(() => {
@@ -84,13 +102,17 @@ Route.group(() => {
  // Pool info APIs:
 Route.group(() => {
 
-  Route.post('/pool', 'PoolController.createOrUpdate')  
-  Route.get('/pool-liquidity', 'PoolController.getPoolLiquidity')  
+  Route.post('/pool', 'PoolController.createOrUpdate')   // lay thong tin pool veef tu SC
+  Route.get('/pool-liquidity', 'PoolController.getPoolLiquidity')  // 
   Route.post('/pool-token', 'PoolTokenController.getTokenInfoFromSC')  
   Route.get('/pool-token', 'PoolTokenController.getPoolTokneInfo')  
   Route.get('/token-price', 'PoolTokenController.fetchTokenPrice')  
   Route.get('/pool', 'PoolController.getPoolInfo')  
   Route.get('/pool/:poolId', 'PoolController.getPoolDetail')  
+
+  // test API
+  Route.get('/finish-proposal', 'ProposalController.finish')  
+
 
   // Route.post("/vote/:id", "VoteController.createVote").validator('CheckVote') // vote off-chain
 })

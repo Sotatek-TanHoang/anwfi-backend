@@ -29,15 +29,17 @@ class ContractService {
     }
 
     async balanceOf(address){
+        
         const contract= this.getContract('awnfi')
         const target=Web3.utils.toChecksumAddress(address)
-        const balance= await contract.methods.balanceOf(target).call()
+        
+        // return await contract.methods.balanceOf(target).call()
+        const rawBalance = await contract.methods.balanceOf(target).call()
         const decimals = await contract.methods.decimals().call()
 
         const divider = new BigNumber(10).pow(BigNumber(decimals))
-        const withDecimals = new BigNumber(balance).dividedBy(divider)
-        
-        return withDecimals.toString();
+        const withDecimals = new BigNumber(rawBalance).dividedBy(divider)
+        return withDecimals
     }
 
    async getPoolInfoFromSC(){

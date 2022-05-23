@@ -44,7 +44,7 @@ class PoolTokenService {
           contract.methods.totalSupply().call(),
         ]
     ).then((values) => {
-        console.log(values)
+        // console.log(values)
         token.decimals=values[0]
         token.name=values[1]
         token.symbol=values[2]
@@ -126,30 +126,34 @@ class PoolTokenService {
         await tokenNew.save()
         }
     }
+
     async fetchTokenPrice(){
     let response = null;
     const token =(await TokenInfoModel.query().where('is_lp_token',0).fetch()).toJSON()
     // console.log(token)
-    for (let i=0;i<token.length;i++){
-       console.log(token[i])
-       const tokenNew =  await TokenInfoModel.query().where('token_address',token[i].token_address).first()
-       await axios.get('https://pro-api.coinmarketcap.com/v2/tools/price-conversion', {
-          headers: {
-            'X-CMC_PRO_API_KEY': Const.COINMARKETCAP_API_KEY,
-          },
-          params: { amount: 1 ,symbol: token[i].symbol} ,
-        })
-        .then((response) => {
-        console.log(response.data.data[0])
-        var utcDate = response.data.data[0].last_updated;  // ISO-8601 formatted date returned from server
-        var localDate = new Date(utcDate);
-        tokenNew.merge({'price':response.data.data[0].quote.USD.price,'last_updated': localDate})
-        tokenNew.save()
-        })
-        .catch((err) => {
-         console.log(err)
-        })
-    }
+    await Promise.all(token.map( async (token) => {
+      const tokenNew =  await TokenInfoModel.query().where('token_address',token.token_address).first()
+      await axios.get('https://pro-api.coinmarketcap.com/v2/tools/price-conversion', {
+         headers: {
+           'X-CMC_PRO_API_KEY': Const.COINMARKETCAP_API_KEY,
+         },
+         params: { amount: 1 ,symbol: token.symbol} ,
+       })
+       .then((response) => {
+       console.log(response.data.data[0])
+       var utcDate = response.data.data[0].last_updated;  // ISO-8601 formatted date returned from server
+       var localDate = new Date(utcDate);
+       tokenNew.merge({'price':response.data.data[0].quote.USD.price,'last_updated': localDate})
+       tokenNew.save()
+       })
+       .catch((err) => {
+        console.log(err)
+       })
+
+    }))
+    // for (let i=0;i<token.length;i++){
+    //    console.log(token[i])
+    // }
    }
 
 }

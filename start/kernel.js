@@ -89,6 +89,6 @@ Server
 |
 | Run the scheduler on boot of the web sever.
 |
-*/
-const Scheduler = use('Adonis/Addons/Scheduler')
-Scheduler.run()
+// */
+// const Scheduler = use('Adonis/Addons/Scheduler')
+// Scheduler.run()
