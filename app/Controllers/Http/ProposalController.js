@@ -73,7 +73,7 @@ class ProposalController {
         // TODO: except off-chain, 2 on-chain proposal with similar type cannot be active at the same time.
         const otherActiveProposal = await proposalService
           .findOne({ proposal_status: Const.PROPOSAL_STATUS.ACTIVE, proposal_type: proposal.type });
-
+          
         if (otherActiveProposal) {
           await trx.rollback()
           return response.badRequest(HelperUtils.responseBadRequest('ERROR: only one on-chain proposal with this type is allowed to be active right now!'));
