@@ -39,7 +39,7 @@ class ContractService {
 
         const divider = new BigNumber(10).pow(BigNumber(decimals))
         const withDecimals = new BigNumber(rawBalance).dividedBy(divider)
-        return withDecimals
+        return withDecimals.toString()
     }
 
    async getPoolInfoFromSC(){

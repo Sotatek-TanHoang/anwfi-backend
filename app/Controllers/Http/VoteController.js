@@ -36,7 +36,7 @@ class ProposalController {
 
       // get user vote balance
       userVote.balance = await contract.balanceOf(auth.user.wallet_address)
-      console.log(userVote.balance);
+      console.log(userVote.balance,"================");
       userVote.status = HelperUtils.compareBigNumber(userVote.balance, proposal.toJSON().min_anwfi)
       await userVote.save();
       await proposalService.calcVoteResult(proposal.id).catch(e=>{
@@ -45,7 +45,7 @@ class ProposalController {
       return HelperUtils.responseSuccess(userVote);
     }
     catch (e) {
-      console.log(e);
+     // console.log(e);
       return response.badRequest(HelperUtils.responseErrorInternal('ERROR: vote proposal fail !'));
     }
   }
@@ -61,6 +61,29 @@ class ProposalController {
 
       const proposal = await voteQuery.paginate(page, limit);
       return HelperUtils.responseSuccess(proposal);
+    } catch (e) {
+      console.log(e.message);
+      return response.badRequest(HelperUtils.responseErrorInternal(`ERROR: get proposal's votes fail!`));
+    }
+  }
+  async checkUserVote({request,auth}){
+    try {
+      const proposal_id = request.params.id;
+      const wallet_address=auth.user.wallet_address;
+
+      const vote=await VoteService.findOne({
+        proposal_id,
+        wallet_address
+      })
+      const result={
+        is_voted:false,
+        vote:null
+      }
+      if(vote){
+        result.vote=vote.toJSON();
+        return HelperUtils.responseSuccess(result);
+      }
+      return HelperUtils.responseSuccess(result);
     } catch (e) {
       console.log(e.message);
       return response.badRequest(HelperUtils.responseErrorInternal(`ERROR: get proposal's votes fail!`));
