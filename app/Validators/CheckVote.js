@@ -1,8 +1,5 @@
 const ErrorFactory = use('App/Common/ErrorFactory');
-<<<<<<< HEAD
-=======
 const HelperUtils=use('App/Common/HelperUtils')
->>>>>>> feature/schedule
 const ProposalService = use("App/Services/ProposalService")
 const Const = use('App/Common/Const')
 const ForbiddenException = use("App/Exceptions/ForbiddenException")
