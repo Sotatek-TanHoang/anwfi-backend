@@ -22,7 +22,6 @@ class ProposalSchema extends Schema {
       table.integer('quorum',6).notNullable().defaultTo(0); // min number awfi of all voted holding  to acept proposal 
       table.integer('pass_percentage', 6).notNullable();// min percent of yes vote to acept proposal
       table.tinyint('proposal_status').notNullable().default(Const.PROPOSAL_STATUS.CREATED);
-      table.string('transaction_hash');
 
      // vote tracking
      table.decimal('up_vote',20,0).notNullable().defaultTo(0);
