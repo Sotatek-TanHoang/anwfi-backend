@@ -90,8 +90,8 @@ Route.group(() => {
  // Pool info APIs:
 Route.group(() => {
 
-  Route.post('/pool', 'PoolController.createOrUpdate')  
-  Route.get('/pool-liquidity', 'PoolController.getPoolLiquidity')  
+  Route.post('/pool', 'PoolController.createOrUpdate')   // lay thong tin pool veef tu SC
+  Route.get('/pool-liquidity', 'PoolController.getPoolLiquidity')  // 
   Route.post('/pool-token', 'PoolTokenController.getTokenInfoFromSC')  
   Route.get('/pool-token', 'PoolTokenController.getPoolTokneInfo')  
   Route.get('/token-price', 'PoolTokenController.fetchTokenPrice')  

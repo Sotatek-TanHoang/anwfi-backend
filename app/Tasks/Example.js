@@ -2,14 +2,14 @@
 
 const Task = use('Task')
 
-class ScheduleIt extends Task {
+class Example extends Task {
   static get schedule () {
     return '* * * * * '
   }
 
   async handle () {
-    console.log('Task ScheduleIt handle');
+    // console.log("Schedule: tesst");
   }
 }
 
-module.exports = ScheduleIt
+module.exports = Example
