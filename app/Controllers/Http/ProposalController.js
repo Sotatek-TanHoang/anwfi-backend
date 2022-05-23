@@ -24,7 +24,7 @@ class ProposalController {
       return response.ok(HelperUtils.responseSuccess(proposal));
     } catch (e) {
       console.log(e);
-      return response.notModified(HelperUtils.responseErrorInternal('ERROR: create proposal fail !'));
+      return response.badRequest(HelperUtils.responseErrorInternal('ERROR: create proposal fail !'));
     }
   }
   async finish({ request, auth }) {
@@ -63,7 +63,7 @@ class ProposalController {
       return response.notFound(HelperUtils.responseBadRequest('ERROR: proposal not exist !'));
     } catch (e) {
       console.log(e);
-      return response.notModified(HelperUtils.responseErrorInternal('ERROR: update proposal fail !'));
+      return response.badRequest(HelperUtils.responseErrorInternal('ERROR: update proposal fail !'));
     }
   }
   async pushProposalProcess({ request, response }) {
@@ -123,7 +123,7 @@ class ProposalController {
     } catch (e) {
       console.log(e);
       await trx.rollback();
-      return response.notModified(HelperUtils.responseErrorInternal('ERROR: update proposal fail !'));
+      return response.badRequest(HelperUtils.responseErrorInternal('ERROR: update proposal fail !'));
     }
   }
   async deleteProposal({ request, response }) {
@@ -144,7 +144,7 @@ class ProposalController {
       return response.badRequest(HelperUtils.responseBadRequest('ERROR: proposal not exist !'));
     } catch (e) {
       console.log(e);
-      return response.notModified(HelperUtils.responseErrorInternal('ERROR: delete proposal fail !'));
+      return response.badRequest(HelperUtils.responseErrorInternal('ERROR: delete proposal fail !'));
     }
   }
   async getProposalList({ request, auth, response }) {

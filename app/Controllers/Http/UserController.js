@@ -30,7 +30,7 @@ class UserController {
       return HelperUtils.responseSuccess(user);
     } catch (e) {
       console.log(e);
-      return response.notModified(HelperUtils.responseErrorInternal('ERROR: create user fail !'));
+      return response.badRequest(HelperUtils.responseErrorInternal('ERROR: create user fail !'));
     }
   }
   async bulkCreateUser({ request }) {
@@ -117,7 +117,7 @@ class UserController {
       return response.badRequest(HelperUtils.responseBadRequest('Error: user not exist!'));
     } catch (e) {
       console.log(e);
-      return response.notModified(HelperUtils.responseErrorInternal('ERROR: update user fail!'));
+      return response.badRequest(HelperUtils.responseErrorInternal('ERROR: update user fail!'));
     }
   }
   async deleteUser({ request, response }) {
@@ -137,7 +137,7 @@ class UserController {
       return response.badRequest(HelperUtils.responseBadRequest("Error: Delete non-existing user!"));
     } catch (e) {
       console.log(e);
-      return response.notModified(HelperUtils.responseErrorInternal('ERROR: delete user fail!'));
+      return response.badRequest(HelperUtils.responseErrorInternal('ERROR: delete user fail!'));
     }
   }
   async getAdminList({ request, response }) {
