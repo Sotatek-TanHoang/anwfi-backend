@@ -28,10 +28,10 @@ class ProposalController {
     }
   }
   async finish({ request, auth }) {
-    const inputs = request.only([ 'id']);
+    const inputs = request.only(['id']);
 
     try {
-      const proposal = await (new ProposalService()).finishVoteResult( inputs.id );
+      const proposal = await (new ProposalService()).finishVoteResult(inputs.id);
 
       return HelperUtils.responseSuccess(proposal);
     } catch (e) {
@@ -44,7 +44,7 @@ class ProposalController {
     try {
       const id = request.params.id
       const inputs = request.only(['proposal_type', 'name', 'current_value', 'new_value', 'description', 'start_time', 'end_time', 'quorum', 'min_anwfi', 'pass_percentage']);
-      
+
       console.log('Update proposal with params: ', inputs);
 
       const proposal = await (new ProposalService()).findOne({ id });
@@ -67,11 +67,11 @@ class ProposalController {
     }
   }
   async pushProposalProcess({ request, response }) {
-    const trx=await Database.beginTransaction()
+    const trx = await Database.beginTransaction()
     try {
       const id = request.params.id
       console.log('Update proposal status with params: ', id);
-      const proposalService=new ProposalService(trx);
+      const proposalService = new ProposalService(trx);
 
       const proposal = await proposalService.findOne({ id });
       if (proposal) {
@@ -85,8 +85,15 @@ class ProposalController {
 
         // TODO: except off-chain, 2 on-chain proposal with similar type cannot be active at the same time.
         const otherActiveProposal = await proposalService
-          .findOne({ proposal_status: Const.PROPOSAL_STATUS.ACTIVE, proposal_type: proposal.type });
-          
+          .findOne({
+            except: proposal.id,
+            status:
+              `${Const.PROPOSAL_STATUS.ACTIVE},
+            ${Const.PROPOSAL_STATUS.SUCCESS},
+            ${Const.PROPOSAL_STATUS.QUEUE},`
+            , proposal_type: proposal.type,
+          });
+
         if (otherActiveProposal) {
           await trx.rollback()
           return response.badRequest(HelperUtils.responseBadRequest('ERROR: only one on-chain proposal with this type is allowed to be active right now!'));
@@ -172,8 +179,8 @@ class ProposalController {
       const proposal = await proposalService.findOne({ id, is_public });
       if (!proposal) throw new Error("ERROR: not found")
       const subQueries = [
-        proposal.votes().where('vote', '=', 1).where('status',true).limit(3).fetch(),
-        proposal.votes().where('vote', '=', 0).where('status',true).limit(3).fetch(),
+        proposal.votes().where('vote', '=', 1).where('status', true).limit(3).fetch(),
+        proposal.votes().where('vote', '=', 0).where('status', true).limit(3).fetch(),
         // Database.from('votes').where('vote', true).andWhere('proposal_id', id).getSum('balance'),
         // Database.from('votes').where('vote', false).andWhere('proposal_id', id).getSum('balance')
       ]
@@ -185,9 +192,9 @@ class ProposalController {
         up_vote_anwfi: HelperUtils.formatDecimal(proposal.up_vote_anwfi),
         down_vote_anwfi: HelperUtils.formatDecimal(proposal.down_vote_anwfi),
       }
-      proposal.__meta__={
-        up_vote:HelperUtils.formatDecimal(proposal.up_vote),
-        down_vote:HelperUtils.formatDecimal(proposal.down_vote)
+      proposal.__meta__ = {
+        up_vote: HelperUtils.formatDecimal(proposal.up_vote),
+        down_vote: HelperUtils.formatDecimal(proposal.down_vote)
       }
       proposal.history = HelperUtils.getProposalHistory(proposal);
       return HelperUtils.responseSuccess(proposal);

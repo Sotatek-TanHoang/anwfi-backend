@@ -32,8 +32,6 @@ Route.group(() => {
 
 // Admin only work routes
 Route.group(() => {
-<<<<<<< HEAD
-=======
   
   // // bulk create user.
   // Route.post('/bulk-create', 'UserController.bulkCreateUser').validator('UserArray')
@@ -55,7 +53,6 @@ Route.group(() => {
   // get single admin profile by id.
   Route.get('/:id', 'UserController.getUserDetail');
 
->>>>>>> feature/schedule
   // update single admin by id.
   Route.put('/:id', 'UserController.updateUserProfile').validator('UpdateUser');
   // delete single admin by id.

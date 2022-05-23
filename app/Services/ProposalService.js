@@ -1,25 +1,24 @@
 'use strict'
 
 const ErrorFactory = use('App/Common/ErrorFactory');
-const BaseService=use('App/Services/BaseService')
+const BaseService = use('App/Services/BaseService')
 const ProposalModel = use('App/Models/Proposal');
 const Const = use('App/Common/Const');
 const Database = use('Database')
-<<<<<<< HEAD
 const HelperUtils = use('App/Common/HelperUtils')
 
-class ProposalService {
-=======
-
-class ProposalService extends BaseService{
->>>>>>> feature/schedule
+class ProposalService extends BaseService {
 
   buildQueryBuilder(params) {
     let builder = ProposalModel.query(this.trx);
     if (params.id) {
       builder = builder.where('id', params.id);
     }
+    if (params.except) {
 
+      builder = builder.where('id', '!=', params.except);
+
+    }
     if (params.wallet_address) {
       builder = builder.where('wallet_address', params.wallet_address);
     }
@@ -31,10 +30,10 @@ class ProposalService extends BaseService{
     }
     if (params.count_vote) {
       builder.withCount('votes as up_vote', (builder) => {
-        builder.where('vote', true).andWhere('status',true)
+        builder.where('vote', true).andWhere('status', true)
       })
       builder.withCount('votes as down_vote', (builder) => {
-        builder.where('vote', false).andWhere('status',true)
+        builder.where('vote', false).andWhere('status', true)
       })
     }
     if (params.status) {
@@ -44,8 +43,8 @@ class ProposalService extends BaseService{
         .filter(e => !(e === Const.PROPOSAL_STATUS.CREATED && params.is_public));
       builder = builder.whereRaw(filter.map(() => 'proposal_status=?').join(' or '), filter)
     }
-    if(params.end_time_after){
-      builder.where('end_time','>=',params.end_time_after)
+    if (params.end_time_after) {
+      builder.where('end_time', '>=', params.end_time_after)
     }
     builder = builder.orderBy("id", 'desc')
 
@@ -109,33 +108,33 @@ class ProposalService extends BaseService{
   async finishVoteResult(id) {
     try {
       const proposal = await ProposalModel.query()
-      .where("id",id)
-      .where("proposal_status",1)
-      .first();
+        .where("id", id)
+        .where("proposal_status", 1)
+        .first();
       if (!proposal) throw new Error("cannot find proposal")
       // console.log("fsdfdsgds")
       var date = new Date(proposal.end_time);
-      var finishTime = date.getTime(); 
+      var finishTime = date.getTime();
 
       const now = new Date().getTime();
-      console.log("oooooooooooo",finishTime)
-      console.log("222222",finishTime+60*60*1000-now)
+      console.log("oooooooooooo", finishTime)
+      console.log("222222", finishTime + 60 * 60 * 1000 - now)
 
       console.log(now)
       // check finish time is not 1 hour to now
-      if(now<finishTime|| finishTime+60*60*1000<=now){
+      if (now < finishTime || finishTime + 60 * 60 * 1000 <= now) {
         return "no need check finish valua"
       }
       const passPercentage = HelperUtils.calcPercentage({
         up_vote: proposal.up_vote,
         down_vote: proposal.down_vote
       });
-  
+
       const quorumPercentage = HelperUtils.calcPercentage({
         up_vote: proposal.up_vote_anwfi,
         down_vote: proposal.down_vote_anwfi
       })
-  
+
       const isProposalPass =
         // up vote anwfi % >= proposal.quorum
         HelperUtils.compareBigNumber(quorumPercentage, proposal.quorum)
@@ -150,7 +149,7 @@ class ProposalService extends BaseService{
       }
       // save timestamp of result;
       proposal.tmp_result = ProposalModel.formatDates('tmp_result', new Date().toISOString());
-  
+
       // proposal.merge({ up_vote, down_vote, up_vote_anwfi, down_vote_anwfi });
       await proposal.save();
       return proposal;
