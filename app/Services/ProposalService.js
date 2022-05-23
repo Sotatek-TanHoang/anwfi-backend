@@ -122,14 +122,14 @@ class ProposalService {
         down_vote: proposal.down_vote
       });
   
-      // const quorumPercentage = HelperUtils.calcPercentage({
-      //   up_vote: proposal.up_vote_anwfi,
-      //   down_vote: proposal.down_vote_anwfi
-      // })
+      const quorumPercentage = HelperUtils.calcPercentage({
+        up_vote: proposal.up_vote_anwfi,
+        down_vote: proposal.down_vote_anwfi
+      })
   
       const isProposalPass =
         // up vote anwfi % >= proposal.quorum
-        HelperUtils.compareBigNumber(proposal.up_vote_anwfi, proposal.quorum)
+        HelperUtils.compareBigNumber(quorumPercentage, proposal.quorum)
         &&
         // pass percentages is equal proposal.pass_percentage
         HelperUtils.compareBigNumber(passPercentage, proposal.pass_percentage);
