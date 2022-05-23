@@ -40,7 +40,7 @@ class ProposalController {
     }
   }
 
-  async updateProposalBasic({ request }) {
+  async updateProposalBasic({ request,response }) {
     try {
       const id = request.params.id
       const inputs = request.only(['proposal_type', 'name', 'current_value', 'new_value', 'description', 'start_time', 'end_time', 'quorum', 'min_anwfi', 'pass_percentage']);
