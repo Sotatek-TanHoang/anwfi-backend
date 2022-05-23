@@ -29,6 +29,9 @@ class Proposal extends Model {
   getQuorum(val){
     return HelperUtils.formatDecimal(val)
   }
+  getDescription(val){
+    return val ?? ""
+  }
   getMinAnwfi(val){
     return HelperUtils.formatDecimal(val)
   }

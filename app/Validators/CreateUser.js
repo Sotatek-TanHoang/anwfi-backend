@@ -7,7 +7,7 @@ class CreateAdmin {
     return {
       username: 'string',
       wallet_address: 'required|string',
-      role: 'required|integer|range:-1,5',
+      role: 'required|integer|range:0,5',
       email: 'email'
     };
   }
@@ -16,7 +16,8 @@ class CreateAdmin {
     const inputs = this.ctx.request.only(['role']);
     // user cannot update a higher role than his/her role.
     if (parseInt(inputs.role) > parseInt(authRole)) {
-      throw new ForbiddenException("Error: you are not allowed to create user with higher role than yours.")
+      this.ctx.response.unauthorized(HelperUtils.responseBadRequest("Error: you are not allowed to create user with higher role than yours."))
+      return false;
     }
 
     return true

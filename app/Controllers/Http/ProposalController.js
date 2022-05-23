@@ -6,9 +6,9 @@ const Const = use('App/Common/Const');
 const Database = use('Database')
 class ProposalController {
 
-  async createProposal({ request, auth }) {
+  async createProposal({ request, auth, response }) {
     try {
-      const inputs = request.only(['proposal_type','name', 'current_value', 'new_value', 'description', 'start_time', 'end_time', 'quorum', 'min_anwfi', 'pass_percentage']);
+      const inputs = request.only(['proposal_type', 'name', 'current_value', 'new_value', 'description', 'start_time', 'end_time', 'quorum', 'min_anwfi', 'pass_percentage']);
       console.log('Create proposal with params: ', inputs);
 
       const proposal = new ProposalModel();
@@ -21,10 +21,10 @@ class ProposalController {
 
       await proposal.save();
 
-      return HelperUtils.responseSuccess(proposal);
+      return response.ok(HelperUtils.responseSuccess(proposal));
     } catch (e) {
       console.log(e);
-      return HelperUtils.responseErrorInternal('ERROR: create proposal fail !');
+      return response.notModified(HelperUtils.responseErrorInternal('ERROR: create proposal fail !'));
     }
   }
   async finish({ request, auth }) {
@@ -43,7 +43,7 @@ class ProposalController {
   async updateProposalBasic({ request }) {
     try {
       const id = request.params.id
-      const inputs = request.only(['proposal_type','name', 'current_value','new_value', 'description', 'start_time', 'end_time', 'quorum', 'min_anwfi', 'pass_percentage']);
+      const inputs = request.only(['proposal_type', 'name', 'current_value', 'new_value', 'description', 'start_time', 'end_time', 'quorum', 'min_anwfi', 'pass_percentage']);
       
       console.log('Update proposal with params: ', inputs);
 
@@ -51,38 +51,47 @@ class ProposalController {
       if (proposal) {
         // Cannot modify proposal after it is active.
         if (proposal.proposal_status !== Const.PROPOSAL_STATUS.CREATED) {
-          return HelperUtils.responseBadRequest('ERROR: you cannot modify the proposal right now!');
+          return response.badRequest(HelperUtils.responseBadRequest('ERROR: you cannot modify the proposal right now!'));
         }
         proposal.tmp_created = ProposalModel.formatDates('tmp_created', new Date().toISOString());
         proposal.merge(inputs);
-        
-        proposal.save();
-        return HelperUtils.responseSuccess(proposal);
+
+        await proposal.save();
+        return response.ok(HelperUtils.responseSuccess(proposal));
       }
 
-      return HelperUtils.responseBadRequest('ERROR: proposal not exist !');
+      return response.notFound(HelperUtils.responseBadRequest('ERROR: proposal not exist !'));
     } catch (e) {
       console.log(e);
-      return HelperUtils.responseErrorInternal('ERROR: update proposal fail !');
+      return response.notModified(HelperUtils.responseErrorInternal('ERROR: update proposal fail !'));
     }
   }
-  async pushProposalProcess({ request }) {
-
+  async pushProposalProcess({ request, response }) {
+    const trx=await Database.beginTransaction()
     try {
       const id = request.params.id
       console.log('Update proposal status with params: ', id);
+      const proposalService=new ProposalService(trx);
 
-      const proposal = await (new ProposalService()).findOne({ id });
+      const proposal = await proposalService.findOne({ id });
       if (proposal) {
 
         switch (parseInt(proposal.proposal_status)) {
           case Const.PROPOSAL_STATUS.ACTIVE:
           case Const.PROPOSAL_STATUS.FAILED:
           case Const.PROPOSAL_STATUS.EXECUTED:
-            return HelperUtils.responseBadRequest('ERROR: you are not allowed to perform this action!');
+            return response.badRequest(HelperUtils.responseBadRequest('ERROR: you are not allowed to perform this action!'));
         }
 
-
+        // TODO: except off-chain, 2 on-chain proposal with similar type cannot be active at the same time.
+        const otherActiveProposal = await proposalService
+          .findOne({ proposal_status: Const.PROPOSAL_STATUS.ACTIVE, proposal_type: proposal.type });
+          
+        if (otherActiveProposal) {
+          await trx.rollback()
+          return response.badRequest(HelperUtils.responseBadRequest('ERROR: only one on-chain proposal with this type is allowed to be active right now!'));
+        }
+        // 
         proposal.proposal_status = parseInt(proposal.proposal_status) + 1;
 
         if (parseInt(proposal.proposal_status) === Const.PROPOSAL_STATUS.ACTIVE) {
@@ -95,20 +104,22 @@ class ProposalController {
           proposal.tmp_executed = ProposalModel.formatDates('tmp_executed', new Date().toISOString());
         }
 
-        proposal.save();
-        return HelperUtils.responseSuccess({
+        await proposal.save(trx);
+        await trx.commit()
+        return response.ok(HelperUtils.responseSuccess({
           proposal_id: id,
           new_status: proposal.proposal_status
-        });
+        }));
       }
-
-      return HelperUtils.responseBadRequest('ERROR: proposal not exist !');
+      await trx.rollback()
+      return response.badRequest(HelperUtils.responseBadRequest('ERROR: proposal not exist !'));
     } catch (e) {
       console.log(e);
-      return HelperUtils.responseErrorInternal('ERROR: update proposal fail !');
+      await trx.rollback();
+      return response.notModified(HelperUtils.responseErrorInternal('ERROR: update proposal fail !'));
     }
   }
-  async deleteProposal({ request }) {
+  async deleteProposal({ request, response }) {
     try {
       const id = request.params.id
       console.log('Delete proposal with id: ', id);
@@ -117,19 +128,19 @@ class ProposalController {
       if (proposal) {
         // Cannot modify proposal after it is active.
         if (proposal.proposal_status !== Const.PROPOSAL_STATUS.CREATED) {
-          return HelperUtils.responseBadRequest('ERROR: you cannot modify the proposal right now!');
+          return response.badRequest(HelperUtils.responseBadRequest('ERROR: you cannot modify the proposal right now!'));
         }
         await proposal.delete();
-        return HelperUtils.responseSuccess(proposal);
+        return response.ok(HelperUtils.responseSuccess(proposal));
       }
 
-      return HelperUtils.responseBadRequest('ERROR: proposal not exist !');
+      return response.badRequest(HelperUtils.responseBadRequest('ERROR: proposal not exist !'));
     } catch (e) {
       console.log(e);
-      return HelperUtils.responseErrorInternal('ERROR: delete proposal fail !');
+      return response.notModified(HelperUtils.responseErrorInternal('ERROR: delete proposal fail !'));
     }
   }
-  async getProposalList({ request, auth }) {
+  async getProposalList({ request, auth, response }) {
     try {
       const params = request.only(['limit', 'page', 'status']);
       const searchQuery = request.input('query');
@@ -138,7 +149,7 @@ class ProposalController {
       params.count_vote = true
       // check if req is public
       if (!auth?.user || auth?.user?.role <= Const.USER_ROLE.PUBLIC_USER) {
-        params.is_public=true
+        params.is_public = true
       }
       const proposalService = new ProposalService();
       let proposalQuery = proposalService.buildQueryBuilder(params);
@@ -146,13 +157,13 @@ class ProposalController {
         proposalQuery = proposalService.buildSearchQuery(proposalQuery, searchQuery);
       }
       const proposal = await proposalQuery.paginate(page, limit);
-      return HelperUtils.responseSuccess(proposal);
+      return response.ok(HelperUtils.responseSuccess(proposal));
     } catch (e) {
       console.log(e.message);
-      return HelperUtils.responseErrorInternal('ERROR: Get proposals list fail!');
+      return response.badRequest(HelperUtils.responseBadRequest('ERROR: Get proposals list fail!'));
     }
   }
-  async getProposalDetail({ request, params, auth }) {
+  async getProposalDetail({ request, params, auth, response }) {
     try {
       const id = params.id;
       const proposalService = new ProposalService();
@@ -182,7 +193,7 @@ class ProposalController {
       return HelperUtils.responseSuccess(proposal);
     } catch (e) {
       console.log(e);
-      return HelperUtils.responseErrorInternal('ERROR: get proposal detail fail !');
+      return response.badRequest(HelperUtils.responseBadRequest('ERROR: get proposal detail fail !'));
     }
   }
 }

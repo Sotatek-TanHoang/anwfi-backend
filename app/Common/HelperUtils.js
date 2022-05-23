@@ -212,6 +212,16 @@ function compareBigNumber(balance, min_anwfi) {
   let b = new BigNumber(balance);
   let anwfi = new BigNumber(min_anwfi);
   return b.comparedTo(anwfi) >= 0 ? true : false;
+<<<<<<< HEAD
+=======
+}
+function calcPassPercentage(yes_count, _total) {
+  let vote_y = new BigNumber(yes_count);
+  let total = new BigNumber(_total);
+
+  let result = vote_y.dividedBy(total).multipliedBy(BigNumber(10000)).decimalPlaces(0);
+  return result.toString();
+>>>>>>> feature/schedule
 }
 function calcPassPercentage(yes_count, _total) {
   let vote_y = new BigNumber(yes_count);
@@ -251,6 +261,10 @@ module.exports = {
   getProposalHistory,
   formatDecimal,
   compareBigNumber,
+<<<<<<< HEAD
   calcPassPercentage,
   calcPercentage,
+=======
+  calcPassPercentage
+>>>>>>> feature/schedule
 };

@@ -6,6 +6,7 @@ const TokenInfoModel = use('App/Models/PoolTokenInfo');
 const Const = use('App/Common/Const');
 const Web3=require('web3')
 const rpcURL = Const.RPCURL;
+const { BigNumber } = require("bignumber.js");
 
 const web3 = new Web3(rpcURL)
 class ContractService {

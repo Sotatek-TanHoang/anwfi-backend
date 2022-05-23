@@ -1,4 +1,8 @@
 const ErrorFactory = use('App/Common/ErrorFactory');
+<<<<<<< HEAD
+=======
+const HelperUtils=use('App/Common/HelperUtils')
+>>>>>>> feature/schedule
 const ProposalService = use("App/Services/ProposalService")
 const Const = use('App/Common/Const')
 const ForbiddenException = use("App/Exceptions/ForbiddenException")
@@ -19,16 +23,20 @@ class CheckVote {
                 id,
                 status: `${Const.PROPOSAL_STATUS.ACTIVE}`
             })
+            
             if (!proposal) {
-                throw new ForbiddenException("ERROR: Proposal not exist!")
+                this.ctx.response.badRequest(HelperUtils.responseBadRequest("ERROR: proposal not exist!"));
+                return false
             }
             const nowUTC = new Date().toISOString();
-            if (moment(nowUTC).isBefore(proposal.end_time)) {
-                return true;
+            if (moment(nowUTC).isAfter(proposal.end_time)) {
+                this.ctx.response.badRequest(HelperUtils.responseBadRequest("ERROR: you cannot vote for this proposal right now!"));
+                return false;
             }
-            throw new ForbiddenException("ERROR: you cannot vote for this proposal right now!")
+            return true;
         } catch (e) {
-            throw new Error("ERROR: Internal Server Error!")
+            console.log(e.message);
+            throw new ForbiddenException(e.message)
         }
 
     }
