@@ -39,9 +39,7 @@ Route.group(() => {
   // // bulk update
   // Route.put('/bulk-update','UserController.bulkUpdateUser').validator('UserArray')
   
-  // check if a wallet_address is available.
-  Route.get('check-wallet-address', 'UserAuthController.checkWalletAddress');
-  Route.post('check-wallet-address', 'UserAuthController.checkWalletAddress');
+  
 
 }).prefix(Const.USER_TYPE_PREFIX.ADMIN)
   .middleware(['typeAdmin', 'checkPrefix', 'checkAdminJwtSecret', 'auth:admin', 'checkAdminAbove']);
@@ -60,6 +58,10 @@ Route.group(() => {
 
   // create admin or governance by admin.
   Route.post('/', 'UserController.createUser').validator('CreateUser');
+
+  // check if a wallet_address is available.
+  Route.get('/wallet/check', 'UserAuthController.checkWalletAddress');
+  Route.post('/wallet/check', 'UserAuthController.checkWalletAddress');
 
 }).prefix(Const.USER_TYPE_PREFIX.ADMIN)
   .middleware(['typeAdmin', 'checkPrefix', 'checkAdminJwtSecret', 'auth:admin', 'checkGovernanceAbove']);
@@ -95,7 +97,7 @@ Route.group(() => {
 Route.group(() => {
 
   Route.post('/vote/:id', 'VoteController.create').validator("CheckVote")
-  
+  Route.get("/vote/status/:id",'VoteController.checkUserVote')
   // Route.post("/vote/:id", "VoteController.createVote").validator('CheckVote') // vote off-chain
 }).middleware(['typeUser', 'checkPrefix', 'checkAdminJwtSecret', 'auth:user']);
 

@@ -36,7 +36,6 @@ class ProposalController {
 
       // get user vote balance
       userVote.balance = await contract.balanceOf(auth.user.wallet_address)
-      console.log(userVote.balance,"================");
       userVote.status = HelperUtils.compareBigNumber(userVote.balance, proposal.toJSON().min_anwfi)
       await userVote.save();
       await proposalService.calcVoteResult(proposal.id).catch(e=>{
@@ -79,8 +78,9 @@ class ProposalController {
         is_voted:false,
         vote:null
       }
-      if(vote){
+      if(vote?.id){
         result.vote=vote.toJSON();
+        result.is_voted=true;
         return HelperUtils.responseSuccess(result);
       }
       return HelperUtils.responseSuccess(result);
