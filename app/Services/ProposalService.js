@@ -41,7 +41,7 @@ class ProposalService extends BaseService {
         .filter(el => el !== '')
         .map(e => parseInt(e))
         .filter(e => !(e === Const.PROPOSAL_STATUS.CREATED && params.is_public));
-      builder = builder.whereRaw(filter.map(() => 'proposal_status=?').join(' or '), filter)
+      builder = builder.whereRaw(`(${filter.map(() => 'proposal_status=?').join(' or ')})`, filter)
     }
     if (params.end_time_after) {
       builder.where('end_time', '>=', params.end_time_after)

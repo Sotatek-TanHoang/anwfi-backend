@@ -40,7 +40,7 @@ class ProposalController {
     }
   }
 
-  async updateProposalBasic({ request,response }) {
+  async updateProposalBasic({ request, response }) {
     try {
       const id = request.params.id
       const inputs = request.only(['proposal_type', 'name', 'current_value', 'new_value', 'description', 'start_time', 'end_time', 'quorum', 'min_anwfi', 'pass_percentage']);
@@ -84,21 +84,23 @@ class ProposalController {
         }
 
         // TODO: except off-chain, 2 on-chain proposal with similar type cannot be active at the same time.
-        const otherActiveProposal = await proposalService
-          .findOne({
-            except: proposal.id,
-            status:
-              `${Const.PROPOSAL_STATUS.ACTIVE},
-            ${Const.PROPOSAL_STATUS.SUCCESS},
-            ${Const.PROPOSAL_STATUS.QUEUE},`
-            , proposal_type: proposal.type,
-          });
+        if (proposal.proposal_type !== Const.PROPOSAL_TYPE.OFFCHAIN_PROPOSAL) {
+          const otherActiveProposal = await proposalService
+            .findOne({
+              except: proposal.id,
+              status:
+                `${Const.PROPOSAL_STATUS.ACTIVE},
+        ${Const.PROPOSAL_STATUS.SUCCESS},
+        ${Const.PROPOSAL_STATUS.QUEUE},`
+              , proposal_type: proposal.proposal_type,
+            });
 
-        if (otherActiveProposal) {
-          await trx.rollback()
-          return response.badRequest(HelperUtils.responseBadRequest('ERROR: only one on-chain proposal with this type is allowed to be active right now!'));
+          if (otherActiveProposal) {
+            await trx.rollback()
+            return response.badRequest(HelperUtils.responseBadRequest('ERROR: only one on-chain proposal with this type is allowed to be active right now!'));
+          }
         }
-        // 
+        // all requirements passed.
         proposal.proposal_status = parseInt(proposal.proposal_status) + 1;
 
         if (parseInt(proposal.proposal_status) === Const.PROPOSAL_STATUS.ACTIVE) {

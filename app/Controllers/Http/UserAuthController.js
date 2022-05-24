@@ -40,24 +40,25 @@ class UserAuthController {
   async checkWalletAddress({ request, params, response }) {
     try {
       const inputs = request.all();
-      const walletAddress = HelperUtils.checkSumAddress(inputs.wallet_address || ' ');
+      const wallet_address = HelperUtils.checkSumAddress(inputs.wallet_address || ' ');
       const adminService = new UserService();
 
-      console.log('Wallet: ', walletAddress);
+      console.log('Wallet: ', wallet_address);
       console.log('Check Wallet: ', inputs, params);
       const user = await adminService.findUser({
-        wallet_address: walletAddress,
+        wallet_address,
+        only_admin: true
         // role: params.type === Const.USER_TYPE_PREFIX.ADMIN ? Const.USER_ROLE.ADMIN : Const.USER_ROLE.PUBLIC_USER,
       });
       if (!user) {
         return HelperUtils.responseSuccess({
-          walletAddress,
+          wallet_address,
           available: true
         });
       }
 
       return HelperUtils.responseSuccess({
-        walletAddress,
+        wallet_address,
         available: false
       });
     } catch (e) {
@@ -91,7 +92,7 @@ class UserAuthController {
       return response.notFound(HelperUtils.responseNotFound('ERROR: Login failed!'));
     }
   }
-  async loginPublicUser({ request, auth, params,response }) {
+  async loginPublicUser({ request, auth, params, response }) {
     const type = params.type;
     if (type !== Const.USER_TYPE_PREFIX.ADMIN && type !== Const.USER_TYPE_PREFIX.PUBLIC_USER) {
       return HelperUtils.responseNotFound('ERROR: this api is not properly called!');

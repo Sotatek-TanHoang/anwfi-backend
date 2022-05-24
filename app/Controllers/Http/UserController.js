@@ -19,7 +19,15 @@ class UserController {
         wallet_address: inputs.wallet_address,
       });
       if (isExistUser) {
-        return response.badRequest(HelperUtils.responseBadRequest('Wallet is used'));
+        if (parseInt(isExistUser.role) !== Const.USER_ROLE.PUBLIC_USER) {
+          return response.badRequest(HelperUtils.responseBadRequest('Wallet is used'));
+        }
+
+        isExistUser.merge(inputs);
+        isExistUser.status = Const.USER_STATUS.ACTIVE;
+        
+        await isExistUser.save();
+        return HelperUtils.responseSuccess(isExistUser);
       }
 
       const user = new UserModel();
