@@ -11,7 +11,7 @@ class FetchPoolInfo extends Task {
   static get schedule() {
     // return '0 0 */12 ? * *'
     return '0 */1 * * *'  
-    return '*/5 * * * *'
+    // return '*/5 * * * *'
   }
 
   async handle() {
