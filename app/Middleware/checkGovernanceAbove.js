@@ -12,7 +12,7 @@ class checkGovernanceAbove {
       case Const.USER_ROLE.GOVERNANCE:  
         return await next();
     }
-    return response.json(HelperUtils.responseBadRequest('ERROR: user role not allowed!'))
+    return response.unauthorized(HelperUtils.responseBadRequest('ERROR: user role not allowed!'))
   }
 }
 

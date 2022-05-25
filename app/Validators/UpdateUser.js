@@ -39,8 +39,8 @@ class UpdateAdmin {
       return true;
     }
 
-    if (parseInt(authRole) === Const.USER_ROLE.GOVERNANCE) {
-      this.ctx.response.unauthorized(HelperUtils.responseBadRequest("Error: governances are only alowed to update themselves."))
+    if (parseInt(authRole) !== Const.USER_ROLE.SUPER_ADMIN) {
+      this.ctx.response.unauthorized(HelperUtils.responseBadRequest("Error: Only super-admin is allowed to perform this action."))
       return false;
       // throw new ForbiddenException("Error: governances are only alowed to update themselves.")
     }

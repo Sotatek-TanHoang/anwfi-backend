@@ -39,10 +39,12 @@ Route.group(() => {
   // // bulk update
   // Route.put('/bulk-update','UserController.bulkUpdateUser').validator('UserArray')
   
+  // create admin or governance by admin.
+  Route.post('/', 'UserController.createUser').validator('CreateUser');
   
 
 }).prefix(Const.USER_TYPE_PREFIX.ADMIN)
-  .middleware(['typeAdmin', 'checkPrefix', 'checkAdminJwtSecret', 'auth:admin', 'checkAdminAbove']);
+  .middleware(['typeAdmin', 'checkPrefix', 'checkAdminJwtSecret', 'auth:admin', 'CheckSuperAdminAbove']);
 
 // Admin and Governance only work routes
 Route.group(() => {
@@ -56,8 +58,7 @@ Route.group(() => {
   // delete single admin by id.
   Route.delete('/:id', 'UserController.deleteUser').validator("DeleteUser");
 
-  // create admin or governance by admin.
-  Route.post('/', 'UserController.createUser').validator('CreateUser');
+  
 
   // check if a wallet_address is available.
   Route.get('/wallet/check', 'UserAuthController.checkWalletAddress');
@@ -66,14 +67,14 @@ Route.group(() => {
 }).prefix(Const.USER_TYPE_PREFIX.ADMIN)
   .middleware(['typeAdmin', 'checkPrefix', 'checkAdminJwtSecret', 'auth:admin', 'checkGovernanceAbove']);
 
-// Admin and Governance only work routes
-Route.group(() => {
-  // get list of admins with pagination.
-  Route.get('/', 'UserController.getAdminList');
-  // get single admin profile by id.
-  Route.get('/:id', 'UserController.getUserDetail');
-}).prefix(Const.USER_TYPE_PREFIX.ADMIN)
-  .middleware(['typeAdmin', 'checkPrefix', 'checkAdminJwtSecret', 'auth:admin', 'checkGovernanceAbove']);
+// // Admin and Governance only work routes
+// Route.group(() => {
+//   // get list of admins with pagination.
+//   Route.get('/', 'UserController.getAdminList');
+//   // get single admin profile by id.
+//   Route.get('/:id', 'UserController.getUserDetail');
+// }).prefix(Const.USER_TYPE_PREFIX.ADMIN)
+//   .middleware(['typeAdmin', 'checkPrefix', 'checkAdminJwtSecret', 'auth:admin', 'checkGovernanceAbove']);
 
 // Proposals APIs for admin
 Route.group(() => {
@@ -94,7 +95,7 @@ Route.group(() => {
   Route.post('/pool', 'PoolController.createPool')   
   
 }).middleware(['typeAdmin', 'checkPrefix', 'checkAdminJwtSecret', 'auth:admin',
-"checkGovernanceAbove",
+"checkAdminAbove",
 ]);
 // Voting APIs:
 Route.group(() => {

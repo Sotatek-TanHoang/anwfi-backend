@@ -1,18 +1,17 @@
 "use strict";
 const Const = use('App/Common/Const')
 const HelperUtils = use('App/Common/HelperUtils');
-class checkAdminAbove {
+class CheckSuperAdminAbove {
   async handle({ response, auth }, next) {
 
     const authRole = auth.user.role;
     // only admin is allow to process.
     switch (authRole) {
       case Const.USER_ROLE.SUPER_ADMIN:
-      case Const.USER_ROLE.ADMIN:
         return await next();
     }
-    return response.unauthorized(HelperUtils.responseBadRequest('ERROR: Only admin is allowed!'))
+    return response.unauthorized(HelperUtils.responseBadRequest('ERROR: Only super admin is allowed!'))
   }
 }
 
-module.exports = checkAdminAbove;
+module.exports = CheckSuperAdminAbove;
