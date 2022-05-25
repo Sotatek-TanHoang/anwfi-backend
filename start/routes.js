@@ -89,9 +89,12 @@ Route.group(() => {
   Route.put('/proposal/status/:id', 'ProposalController.pushProposalProcess')
   // delete single proposal
   Route.delete('/proposal/:id', 'ProposalController.deleteProposal')
-
+  
+  // create single pool
+  Route.post('/pool', 'PoolController.createPool')   
+  
 }).middleware(['typeAdmin', 'checkPrefix', 'checkAdminJwtSecret', 'auth:admin',
-  "checkGovernanceAbove",
+"checkGovernanceAbove",
 ]);
 // Voting APIs:
 Route.group(() => {
@@ -103,18 +106,16 @@ Route.group(() => {
 
  // Pool info APIs:
 Route.group(() => {
-
-  Route.post('/pool', 'PoolController.createOrUpdate')   // lay thong tin pool veef tu SC
-  Route.get('/pool-liquidity', 'PoolController.getPoolLiquidity')  // 
-  Route.post('/pool-token', 'PoolTokenController.getTokenInfoFromSC')  
-  Route.get('/pool-token', 'PoolTokenController.getPoolTokneInfo')  
-  Route.get('/token-price', 'PoolTokenController.fetchTokenPrice')  
-  Route.get('/pool', 'PoolController.getPoolInfo')  
-  Route.get('/pool/:poolId', 'PoolController.getPoolDetail')  
+  Route.get('/pool-token', 'PoolTokenController.getPoolTokenInfo')  
+  Route.get('/pool', 'PoolController.getPoolInfo') // get list pool 
+  Route.get('/pool/:stake_token', 'PoolController.getPoolDetail')  
 
   // test API
+  Route.post('/pool-sc', 'PoolController.createOrUpdate')   // fetch pool info from SC 
+  Route.get('/pool-liquidity', 'PoolController.getPoolLiquidity')  
   Route.get('/finish-proposal', 'ProposalController.finish')  
-
+  Route.post('/pool-token', 'PoolTokenController.getTokenInfoFromSC')  
+  Route.get('/token-price', 'PoolTokenController.fetchTokenPrice')  // fetch token price from coinmarket cap
 
   // Route.post("/vote/:id", "VoteController.createVote").validator('CheckVote') // vote off-chain
 })

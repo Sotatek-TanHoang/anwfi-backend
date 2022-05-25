@@ -36,7 +36,7 @@ class ProposalController {
       return HelperUtils.responseSuccess(proposal);
     } catch (e) {
       console.log(e);
-      return HelperUtils.responseErrorInternal('ERROR: create proposal fail !');
+      return HelperUtils.responseErrorInternal('ERROR  !');
     }
   }
 

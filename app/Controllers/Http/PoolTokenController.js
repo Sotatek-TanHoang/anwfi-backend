@@ -31,7 +31,7 @@ class PoolTokenController {
   }
  
 
-  async getPoolTokneInfo({ request }) {
+  async getPoolTokenInfo({ request }) {
     try {
       
       const params = request.only(['limit', 'page', 'is_lp_token','token_address','symbol']);
