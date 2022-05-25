@@ -6,6 +6,7 @@ const ProposalModel = use('App/Models/Proposal');
 const Const = use('App/Common/Const');
 const Database = use('Database')
 const HelperUtils = use('App/Common/HelperUtils')
+const keccak256 = require('keccak256')
 
 class ProposalService extends BaseService {
 
@@ -111,19 +112,18 @@ class ProposalService extends BaseService {
         .where("id", id)
         .where("proposal_status", 1)
         .first();
-      if (!proposal) throw new Error("cannot find proposal")
-      // console.log("fsdfdsgds")
+      if (!proposal) throw new Error("cannot find proposal or this proposal not active")
       var date = new Date(proposal.end_time);
       var finishTime = date.getTime();
 
       const now = new Date().getTime();
-      console.log("oooooooooooo", finishTime)
-      console.log("222222", finishTime + 60 * 60 * 1000 - now)
+      // console.log("oooooooooooo", finishTime)
+      // console.log("222222", finishTime + 60 * 60 * 1000 - now)
 
-      console.log(now)
+      // console.log(now)
       // check finish time is not 1 hour to now
       if (now < finishTime || finishTime + 60 * 60 * 1000 <= now) {
-        return "no need check finish valua"
+        return "It is not right time to check finish valua"
       }
       const passPercentage = HelperUtils.calcPercentage({
         up_vote: proposal.up_vote,
@@ -150,6 +150,14 @@ class ProposalService extends BaseService {
       // save timestamp of result;
       proposal.tmp_result = ProposalModel.formatDates('tmp_result', new Date().toISOString());
 
+      const picked = (({ wallet_address,proposal_type,name,current_value,new_value ,description,start_time,end_time ,min_anwfi,quorum,pass_percentage,proposal_status}) =>
+       ({ wallet_address,proposal_type,name,current_value,new_value ,description,start_time,end_time ,min_anwfi,quorum,pass_percentage,proposal_status}))
+       (proposal);
+      const data=JSON.stringify(picked) 
+      const proposalHash=keccak256(Buffer.from(data)).toString('hex')
+      console.log("hash----",proposalHash)
+
+      proposal.proposal_hash=proposalHash
       // proposal.merge({ up_vote, down_vote, up_vote_anwfi, down_vote_anwfi });
       await proposal.save();
       return proposal;

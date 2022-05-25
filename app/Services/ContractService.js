@@ -48,7 +48,6 @@ class ContractService {
     console.log("------poolLength------------",poolLength)
     for ( let i=0 ; i< poolLength;i++){
      const poolData=await contract.methods.poolInfo(i).call()
-     console.log(poolData)
      const pool = await PoolModel.query().where('stake_token',poolData.stakeToken).first();
      var status=1
      if(poolData.allocPoint==0) status=2
