@@ -7,11 +7,34 @@ const Const = use('App/Common/Const');
 const rpcURL = Const.RPCURL;
 const web3 = new Web3(rpcURL)
 
+const PoolModel = use('App/Models/Pools');
+
 const ContractService = use('App/Services/ContractService')
 const PoolService = use('App/Services/PoolService')
 
 class PoolController {
 
+  async createPool({ request, auth, response }) {
+    try {
+      const inputs = request.only(['stake_token', 'name', 'alloc_point', 'start_block','bonus_multiplier','bonus_end_block','is_lp_token']);
+      console.log('Create pool  with params: ', inputs);
+      
+      const pool = await (new PoolService()).findOne({ stake_token:inputs.stake_token });
+      if(pool){
+        return response.badRequest(HelperUtils.responseErrorInternal('ERROR: Already have pool with this stake token !'));
+      }
+      const newPool = new PoolModel();
+      newPool.fill(inputs);
+      newPool.status = Const.POOL_STATUS.CREATED;
+
+      await newPool.save();
+
+      return response.ok(HelperUtils.responseSuccess(newPool));
+    } catch (e) {
+      console.log(e);
+      return response.badRequest(HelperUtils.responseErrorInternal('ERROR: create proposal fail !'));
+    }
+  }
   async createOrUpdate() {
     try {
         const contract = new ContractService()
@@ -35,13 +58,16 @@ class PoolController {
 
   async getPoolInfo({ request} ) {
     try {
-      const params = request.only(['limit', 'page', 'is_lp_token','pool_index']);
-      // const searchQuery = request.input('query');
+      const params = request.only(['limit', 'page', 'is_lp_token','stake_token','status','name']);
+      const searchQuery = request.input('query');
       const limit = params.limit || Const.DEFAULT_LIMIT;
       const page = params.page || 1;
       console.log(params);
       const poolService = new PoolService()
-      const poolQuery =  poolService.buildQueryBuilder(params)
+      let poolQuery =  poolService.buildQueryBuilder(params)
+      if (searchQuery) {
+        poolQuery = poolService.buildSearchQuery(poolQuery, searchQuery);
+      }
       const pool = await poolQuery.paginate(page, limit);
 
       return HelperUtils.responseSuccess(pool);
@@ -52,9 +78,9 @@ class PoolController {
   }
   async getPoolDetail({ params} ) {
     try {
-      const poolId = params.poolId
+      const stakeToken = params.stake_token
       const poolService = new PoolService()
-      const pool =  await poolService.poolDetail(poolId)
+      const pool =  await poolService.poolDetail(stakeToken)
 
       return HelperUtils.responseSuccess(pool);
     } catch (e) {
@@ -73,7 +99,7 @@ class PoolController {
       });
     } catch (e) {
       console.log(e.message);
-      return HelperUtils.responseErrorInternal('ERROR: get proposal list fail !');
+      return HelperUtils.responseErrorInternal('ERROR: get pool liquidity fail !');
     }
   }
 }

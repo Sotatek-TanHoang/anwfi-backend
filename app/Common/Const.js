@@ -113,7 +113,12 @@ module.exports = Object.freeze({
   //   DEPLOYED: 1,
   //   NOT_DEPLOY: 0,
   // },
-  PROPOSAL_STATUS: {  // Pool Status for version 2
+  POOL_STATUS: {
+    CREATED: 0,
+    LIVE: 1,
+    END:2,
+  },
+  PROPOSAL_STATUS: {  
     CREATED: 0, 
     ACTIVE: 1,
     SUCCESS: 2,
