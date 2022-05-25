@@ -15,15 +15,19 @@ class PoolService {
     if (params.pool_index) {
       builder = builder.where('pool_index', params.pool_index);
     }
-    // if (params.username) {
-    //   builder = builder.where('username', params.username);
-    // }
-    // if (params.email) {
-    //   builder = builder.where('email', params.email);
-    // }
-    // if (params.signature) {
-    //   builder = builder.where('signature', params.signature);
-    // }
+    if (params.stake_token) {
+      builder = builder.where('stake_token', params.stake_token);
+    }
+    if (params.status) {
+      const filter = params.status.split(',')
+        .filter(el => el !== '')
+        .map(e => parseInt(e))
+        .filter(e => !(e === Const.PROPOSAL_STATUS.CREATED && params.is_public));
+      builder = builder.whereRaw(`(${filter.map(() => 'status=?').join(' or ')})`, filter)
+    }
+    if (params.name) {
+      builder = builder.where('name', params.name);
+    }
     if (params.is_lp_token) {
       builder = builder.where('is_lp_token', params.is_lp_token);
     }
@@ -32,17 +36,22 @@ class PoolService {
     // builder.withCount('projects as projects_created');
     return builder;
   }
+  buildSearchQuery(query, searchQuery) {
+    return query.where((q) => {
+      q.where('name', 'like', `%${searchQuery}%`)
+    })
+  }
 
   async findOne(params) {
     let builder = this.buildQueryBuilder(params);
     return await builder.first();
   }
-  async poolDetail(poolId) {
+  async poolDetail(stakeToken) {
     let pool= await PoolModel.query()
-    .where('id', poolId)
+    .where('stake_token', stakeToken)
     .first();
     const token= await TokenInfoModel.query()
-    .where('token_address',pool.stake_token)
+    .where('token_address',stakeToken)
     .first();
     pool.token=token
     return pool
@@ -55,11 +64,11 @@ class PoolService {
   }
 
   async caculatorLiquidity(pool){
-  const tokenInfo= (await TokenInfoModel.query().where('token_address',pool.stake_token).first()).toJSON();
-
+  const data= await TokenInfoModel.query().where('token_address',pool.stake_token).first()
+  const tokenInfo= data.toJSON();
+  
   if(pool.is_lp_token===0 && tokenInfo.is_lp_token===0){
       console.log("its normal token",pool.id)
-      const tokenInfo= (await TokenInfoModel.query().where('token_address',pool.stake_token).first()).toJSON();
       if(!tokenInfo.price|| !tokenInfo.decimals){
         console.log("no data!")
         pool.liquidity =null
@@ -68,17 +77,18 @@ class PoolService {
         // console.log("tokenAmountnnnnnnnnnnnnnn",tokenAmount)
         pool.liquidity=  Number(tokenInfo.price)*tokenAmount
       // console.log("caculator -------------",pool.liquidity)
-    }
+     }
+    pool.name=tokenInfo.symbol
   }
+
   else if(pool.is_lp_token===1 && tokenInfo.is_lp_token){
-    // console.log("its LP token",tokenInfo)
+    console.log("its LP token",pool.id)
     if(!tokenInfo.decimals){
       console.log("no data!")
       pool.liquidity =null
     }else {
       const token0Info= (await TokenInfoModel.query().where('token_address',tokenInfo.token0).first()).toJSON();
       const token1Info= (await TokenInfoModel.query().where('token_address',tokenInfo.token1).first()).toJSON();
-      // console.log("amount ",tokenInfo.amount_token0)
 
       // console.log(token0Info)
       // console.log(token1Info)
@@ -90,23 +100,24 @@ class PoolService {
       // console.log("token1Amountnnnnnnnnnnnnnn",token1Amount)
 
       pool.liquidity=  Number(token0Info.price)*token0Amount+Number(token1Info.price)*token1Amount
+      pool.name=token0Info.symbol+"/"+token1Info.symbol
+
       // console.log("caculator -------------",pool.liquidity)
   }
  }
  else{
-   console.log("error test data",pool.is_lp_token, tokenInfo.is_lp_token,pool.id)
+   console.log("error data",pool.is_lp_token, tokenInfo.is_lp_token,pool.id)
  }
  const newPool = await PoolModel.query().where("id",pool.id).first()
  newPool.liquidity = pool.liquidity
+ newPool.name=pool.name
  await newPool.save()
 
  }
 
   async caculatorAllLiquidity(){
-    const listPool =(await PoolModel.query().fetch()).toJSON()
-    for (let i=0; i<listPool.length; i++){
-      await this.caculatorLiquidity(listPool[i])
-    }
+    const listPool =(await PoolModel.query().whereNot("status",0).fetch()).toJSON()
+    await Promise.all(listPool.map(async (pool)=> {await this.caculatorLiquidity(pool)}))
   }
 
   async findByProjectId(poolId){
