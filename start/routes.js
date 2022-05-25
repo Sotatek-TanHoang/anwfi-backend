@@ -41,6 +41,7 @@ Route.group(() => {
   
   // create admin or governance by admin.
   Route.post('/', 'UserController.createUser').validator('CreateUser');
+  Route.put('/transfer/:id','UserController.transferSuperAdmin')
   
 
 }).prefix(Const.USER_TYPE_PREFIX.ADMIN)
