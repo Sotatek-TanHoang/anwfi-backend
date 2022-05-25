@@ -25,7 +25,7 @@ class UserController {
 
         isExistUser.merge(inputs);
         isExistUser.status = Const.USER_STATUS.ACTIVE;
-        
+
         await isExistUser.save();
         return HelperUtils.responseSuccess(isExistUser);
       }
@@ -138,6 +138,9 @@ class UserController {
         id
       });
       if (admin) {
+        if (parseInt(admin.role) >= Const.USER_ROLE.SUPER_ADMIN) {
+          return response.badRequest(HelperUtils.responseBadRequest("Error: Cannot delete super admin! please transfer this role to other account"));
+        }
         admin.status = Const.USER_STATUS.DELETED;
         await admin.delete();
         return HelperUtils.responseSuccess(admin);
@@ -146,6 +149,36 @@ class UserController {
     } catch (e) {
       console.log(e);
       return response.badRequest(HelperUtils.responseErrorInternal('ERROR: delete user fail!'));
+    }
+  }
+  async transferSuperAdmin({ request, response, auth }) {
+    const trx = await Database.beginTransaction()
+    try {
+      const id=request.params.id;
+
+      const targetUser = await UserModel.query(trx).where("id", id).first()
+
+      if (!targetUser) {
+        await trx.rollback()
+        return response.badRequest(HelperUtils.responseErrorInternal('ERROR: transfer to non-existing user!'));
+      }
+      if (parseInt(auth.user.role) !== Const.USER_ROLE.SUPER_ADMIN) {
+        await trx.rollback()
+        return response.badRequest(HelperUtils.responseErrorInternal('ERROR: transfer from non-super-admin user!'));
+      }
+
+      targetUser.role = Const.USER_ROLE.SUPER_ADMIN;
+      auth.user.role = Const.USER_ROLE.ADMIN;
+
+      await targetUser.save(trx);
+      await auth.user.save(trx);
+      await trx.commit();
+      return HelperUtils.responseSuccess(targetUser);
+
+    } catch (e) {
+      await trx.rollback()
+      console.log(e.message);
+      return response.badRequest(HelperUtils.responseErrorInternal('ERROR: bad request! Check target wallet_address again.'));
     }
   }
   async getAdminList({ request, response }) {

@@ -97,7 +97,7 @@ class ProposalService extends BaseService {
       // vote count;
       const up_vote = subQueries[2] ?? 0
       const down_vote = subQueries[3] ?? 0
-      console.log(proposal)
+      
       proposal.merge({ up_vote, down_vote, up_vote_anwfi, down_vote_anwfi });
       await proposal.save();
       return proposal;
