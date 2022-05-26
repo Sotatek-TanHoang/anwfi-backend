@@ -103,9 +103,11 @@ class UserController {
       return HelperUtils.responseErrorInternal('ERROR: bulk update users fail !');
     }
   }
-  async updateUserProfile({ request, response }) {
+  async updateUserProfile({ request, response, auth }) {
     try {
-      const inputs = request.only(['username', 'email', 'wallet_address']);
+
+      const inputs = request.only(['username', 'email', 'wallet_address', 'role']);
+
       inputs.wallet_address = HelperUtils.checkSumAddress(inputs.wallet_address)
       const id = request.params.id;
 
@@ -116,6 +118,13 @@ class UserController {
       });
 
       if (admin) {
+        // cannot change super admin role(3).
+        if (parseInt(admin.role) === Const.USER_ROLE.SUPER_ADMIN)
+          inputs.role = admin.role;
+        // cannot set other user role higher than admin(2)
+        if (parseInt(admin.role) < Const.USER_ROLE.SUPER_ADMIN)
+          if (parseInt(inputs.role) >= Const.USER_ROLE.SUPER_ADMIN)
+            return response.badRequest(HelperUtils.responseBadRequest('Error: cannot set this user role!'));
         // update.
         admin.merge(inputs)
         await admin.save();
@@ -154,7 +163,7 @@ class UserController {
   async transferSuperAdmin({ request, response, auth }) {
     const trx = await Database.beginTransaction()
     try {
-      const id=request.params.id;
+      const id = request.params.id;
 
       const targetUser = await UserModel.query(trx).where("id", id).first()
 

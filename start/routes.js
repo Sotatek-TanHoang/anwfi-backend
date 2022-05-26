@@ -33,14 +33,13 @@ Route.group(() => {
 // Admin only work routes
 Route.group(() => {
   
-  // // bulk create user.
-  // Route.post('/bulk-create', 'UserController.bulkCreateUser').validator('UserArray')
-  
-  // // bulk update
-  // Route.put('/bulk-update','UserController.bulkUpdateUser').validator('UserArray')
-  
   // create admin or governance by admin.
   Route.post('/', 'UserController.createUser').validator('CreateUser');
+  // update single admin by id.
+  Route.put('/:id', 'UserController.updateUserProfile').validator('UpdateUser');
+  // delete single admin by id.
+  Route.delete('/:id', 'UserController.deleteUser').validator("DeleteUser");
+
   Route.put('/transfer/:id','UserController.transferSuperAdmin')
   
 
@@ -54,10 +53,7 @@ Route.group(() => {
   // get single admin profile by id.
   Route.get('/:id', 'UserController.getUserDetail');
 
-  // update single admin by id.
-  Route.put('/:id', 'UserController.updateUserProfile').validator('UpdateUser');
-  // delete single admin by id.
-  Route.delete('/:id', 'UserController.deleteUser').validator("DeleteUser");
+ 
 
   
 
