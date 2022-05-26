@@ -9,7 +9,7 @@ class UpdateAdmin {
     return {
       username: 'string',
       wallet_address: "string|required",
-      // role: "integer|required|range:0,5",
+      role: "integer|required|range:-1,4",
       email: 'email'
     };
   }
