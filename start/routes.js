@@ -53,10 +53,6 @@ Route.group(() => {
   // get single admin profile by id.
   Route.get('/:id', 'UserController.getUserDetail');
 
- 
-
-  
-
   // check if a wallet_address is available.
   Route.get('/wallet/check', 'UserAuthController.checkWalletAddress');
   Route.post('/wallet/check', 'UserAuthController.checkWalletAddress');
