@@ -92,6 +92,8 @@ Route.group(() => {
   
   // create single pool
   Route.post('/pool', 'PoolController.createPool')   
+  Route.put('/pool/:poolId', 'PoolController.updatePool')   
+
   
 }).middleware(['typeAdmin', 'checkPrefix', 'checkAdminJwtSecret', 'auth:admin',
 "checkAdminAbove",

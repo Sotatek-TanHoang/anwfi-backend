@@ -23,6 +23,8 @@ class PoolsSchema extends Schema {
       table.decimal('liquidity',65);
       table.boolean('is_lp_token');
       table.timestamps()
+      table.unique(['stake_token']);
+
 
     })
   }
