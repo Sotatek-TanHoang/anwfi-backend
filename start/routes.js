@@ -75,8 +75,8 @@ Route.group(() => {
    // get single proposals.
    Route.get('/proposal/:id', 'ProposalController.getProposalDetail')
 
-}).prefix(Const.USER_TYPE_PREFIX.ADMIN)
-  .middleware(['typeAdmin', 'checkPrefix', 'checkAdminJwtSecret', 'auth:admin', 'checkGovernanceAbove']);
+})
+.middleware(['typeAdmin', 'checkPrefix', 'checkAdminJwtSecret', 'auth:admin', 'checkGovernanceAbove']);
 
 // Proposals APIs for admin
 Route.group(() => {
