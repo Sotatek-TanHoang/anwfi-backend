@@ -39,10 +39,13 @@ Route.group(() => {
   // // bulk update
   // Route.put('/bulk-update','UserController.bulkUpdateUser').validator('UserArray')
   
+  // create admin or governance by admin.
+  Route.post('/', 'UserController.createUser').validator('CreateUser');
+  Route.put('/transfer/:id','UserController.transferSuperAdmin')
   
 
 }).prefix(Const.USER_TYPE_PREFIX.ADMIN)
-  .middleware(['typeAdmin', 'checkPrefix', 'checkAdminJwtSecret', 'auth:admin', 'checkAdminAbove']);
+  .middleware(['typeAdmin', 'checkPrefix', 'checkAdminJwtSecret', 'auth:admin', 'CheckSuperAdminAbove']);
 
 // Admin and Governance only work routes
 Route.group(() => {
@@ -56,8 +59,7 @@ Route.group(() => {
   // delete single admin by id.
   Route.delete('/:id', 'UserController.deleteUser').validator("DeleteUser");
 
-  // create admin or governance by admin.
-  Route.post('/', 'UserController.createUser').validator('CreateUser');
+  
 
   // check if a wallet_address is available.
   Route.get('/wallet/check', 'UserAuthController.checkWalletAddress');
@@ -68,19 +70,17 @@ Route.group(() => {
 
 // Admin and Governance only work routes
 Route.group(() => {
-  // get list of admins with pagination.
-  Route.get('/', 'UserController.getAdminList');
-  // get single admin profile by id.
-  Route.get('/:id', 'UserController.getUserDetail');
-}).prefix(Const.USER_TYPE_PREFIX.ADMIN)
-  .middleware(['typeAdmin', 'checkPrefix', 'checkAdminJwtSecret', 'auth:admin', 'checkGovernanceAbove']);
+   // get list of proposals.
+   Route.get('/proposal', 'ProposalController.getProposalList');
+   // get single proposals.
+   Route.get('/proposal/:id', 'ProposalController.getProposalDetail')
+
+})
+.middleware(['typeAdmin', 'checkPrefix', 'checkAdminJwtSecret', 'auth:admin', 'checkGovernanceAbove']);
 
 // Proposals APIs for admin
 Route.group(() => {
-  // get list of proposals.
-  Route.get('/proposal', 'ProposalController.getProposalList');
-  // get single proposals.
-  Route.get('/proposal/:id', 'ProposalController.getProposalDetail')
+ 
   // create single proposal
   Route.post('/proposal', 'ProposalController.createProposal').validator('ProposalParams');
   // update single proposal basic information (except for status).
@@ -96,7 +96,7 @@ Route.group(() => {
 
   
 }).middleware(['typeAdmin', 'checkPrefix', 'checkAdminJwtSecret', 'auth:admin',
-"checkGovernanceAbove",
+"checkAdminAbove",
 ]);
 // Voting APIs:
 Route.group(() => {
@@ -118,19 +118,8 @@ Route.group(() => {
   Route.get('/finish-proposal', 'ProposalController.finish')  
   Route.post('/pool-token', 'PoolTokenController.getTokenInfoFromSC')  
   Route.get('/token-price', 'PoolTokenController.fetchTokenPrice')  // fetch token price from coinmarket cap
-
-  // Route.post("/vote/:id", "VoteController.createVote").validator('CheckVote') // vote off-chain
 })
 
-
-
-
-// Public API:
-Route.group(() => {
-
-  Route.post('add-subscribe', 'SubscribeController.addSubscribes').validator('AddSubscribe');
-
-}).middleware(['maskEmailAndWallet']);
 
 // public routes
 Route.group(() => {

@@ -44,6 +44,7 @@ const namedMiddleware = {
   checkRole: 'App/Middleware/CheckRole',
   checkParamRole:"App/Middleware/CheckParamRole",
   checkAdminAbove:"App/Middleware/CheckAdminAbove",
+  CheckSuperAdminAbove:"App/Middleware/CheckSuperAdminAbove",
   checkStatus: 'App/Middleware/CheckStatus',
   checkPublicStatus: 'App/Middleware/CheckPublicStatus',
   checkJwtSecret: 'App/Middleware/CheckJwtSecret',

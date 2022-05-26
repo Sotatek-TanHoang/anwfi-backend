@@ -97,7 +97,7 @@ class ProposalService extends BaseService {
       // vote count;
       const up_vote = subQueries[2] ?? 0
       const down_vote = subQueries[3] ?? 0
-      console.log(proposal)
+      
       proposal.merge({ up_vote, down_vote, up_vote_anwfi, down_vote_anwfi });
       await proposal.save();
       return proposal;
@@ -157,7 +157,11 @@ class ProposalService extends BaseService {
       const proposalHash=keccak256(Buffer.from(data)).toString('hex')
       console.log("hash----",proposalHash)
 
+<<<<<<< HEAD
       proposal.proposal_hash="0x"+proposalHash
+=======
+      proposal.proposal_hash=proposalHash
+>>>>>>> 4ea8c0f75bed757f85d6db42afa89f26b7c0e157
       // proposal.merge({ up_vote, down_vote, up_vote_anwfi, down_vote_anwfi });
       await proposal.save();
       return proposal;
