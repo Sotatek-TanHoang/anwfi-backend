@@ -157,7 +157,7 @@ class ProposalService extends BaseService {
       const proposalHash=keccak256(Buffer.from(data)).toString('hex')
       console.log("hash----",proposalHash)
 
-      proposal.proposal_hash=proposalHash
+      proposal.proposal_hash="0x"+proposalHash
       // proposal.merge({ up_vote, down_vote, up_vote_anwfi, down_vote_anwfi });
       await proposal.save();
       return proposal;

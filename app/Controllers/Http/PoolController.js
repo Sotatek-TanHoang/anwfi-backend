@@ -32,9 +32,39 @@ class PoolController {
       return response.ok(HelperUtils.responseSuccess(newPool));
     } catch (e) {
       console.log(e);
-      return response.badRequest(HelperUtils.responseErrorInternal('ERROR: create proposal fail !'));
+      return response.badRequest(HelperUtils.responseErrorInternal('ERROR: create pool fail !'));
     }
   }
+  async updatePool({ request,params, auth, response }) {
+    try {
+      const id = params.poolId
+      const inputs = request.only(['stake_token', 'name', 'alloc_point', 'start_block','bonus_multiplier','bonus_end_block','is_lp_token']);
+      console.log(`Update pool ${id} with params: `, inputs);
+      
+      if(inputs.stake_token){
+      const pool = await (new PoolService()).findOne({ stake_token:inputs.stake_token });     
+      if(pool){
+        return response.badRequest(HelperUtils.responseErrorInternal('ERROR: Already have pool with this stake token !'));
+      }
+      }
+
+      const poolUpdate = await (new PoolService()).findOne({ id });
+
+      if (poolUpdate) {
+        // Cannot modify proposal after it is active.
+        if (poolUpdate.status == Const.POOL_STATUS.CREATED) {
+          poolUpdate.merge(inputs);
+          await poolUpdate.save();
+          return response.ok(HelperUtils.responseSuccess(poolUpdate));
+        }else return response.badRequest(HelperUtils.responseBadRequest('ERROR: pool is deployed !'));
+      } else return response.badRequest(HelperUtils.responseBadRequest(' cannot find this pool with id !'));
+
+    } catch (e) {
+      console.log(e);
+      return response.badRequest(HelperUtils.responseErrorInternal('ERROR: update pool fail !'));
+    }
+  }
+
   async createOrUpdate() {
     try {
         const contract = new ContractService()
