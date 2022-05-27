@@ -11,7 +11,7 @@ class PoolsSchema extends Schema {
       table.string('name', 255); //name pool = symbol token stake or pair token 
       table.integer('pool_index'); // index in pool length  from Smart Contract
       table.decimal('total_stake',40);// total token stake in this pool
-      table.decimal('alloc_point',4);// 
+      table.decimal('alloc_point',40);// 
       table.integer('last_reward_block');
       table.integer('acc_reward_per_share');
       table.integer('bonus_end_block');//  time when bonus_multiplier 

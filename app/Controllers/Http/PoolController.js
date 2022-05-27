@@ -16,11 +16,11 @@ class PoolController {
 
   async createPool({ request, auth, response }) {
     try {
-      const inputs = request.only(['stake_token', 'name', 'alloc_point', 'start_block','bonus_multiplier','bonus_end_block','is_lp_token']);
+      const inputs = request.only(['stake_token', 'name', 'alloc_point', 'start_block', 'bonus_multiplier', 'bonus_end_block', 'is_lp_token']);
       console.log('Create pool  with params: ', inputs);
-      
-      const pool = await (new PoolService()).findOne({ stake_token:inputs.stake_token });
-      if(pool){
+
+      const pool = await (new PoolService()).findOne({ stake_token: inputs.stake_token });
+      if (pool) {
         return response.badRequest(HelperUtils.responseErrorInternal('ERROR: Already have pool with this stake token !'));
       }
       const newPool = new PoolModel();
@@ -35,17 +35,22 @@ class PoolController {
       return response.badRequest(HelperUtils.responseErrorInternal('ERROR: create pool fail !'));
     }
   }
-  async updatePool({ request,params, auth, response }) {
+  async updatePool({ request, params, auth, response }) {
     try {
       const id = params.poolId
+
       const inputs = request.only(['stake_token', 'name', 'alloc_point', 'start_block','bonus_multiplier','bonus_end_block','is_display','is_lp_token']);
+
       console.log(`Update pool ${id} with params: `, inputs);
-      
-      if(inputs.stake_token){
-      const pool = await (new PoolService()).findOne({ stake_token:inputs.stake_token });     
-      if(pool){
-        return response.badRequest(HelperUtils.responseErrorInternal('ERROR: Already have pool with this stake token !'));
-      }
+
+      if (inputs.stake_token) {
+        const pool = await (new PoolService()).findOne({
+          stake_token: inputs.stake_token,
+          except: id
+        });
+        if (pool) {
+          return response.badRequest(HelperUtils.responseErrorInternal('ERROR: Already have pool with this stake token !'));
+        }
       }
 
       const poolUpdate = await (new PoolService()).findOne({ id });
@@ -56,7 +61,7 @@ class PoolController {
           poolUpdate.merge(inputs);
           await poolUpdate.save();
           return response.ok(HelperUtils.responseSuccess(poolUpdate));
-        }else return response.badRequest(HelperUtils.responseBadRequest('ERROR: pool is deployed !'));
+        } else return response.badRequest(HelperUtils.responseBadRequest('ERROR: pool is deployed !'));
       } else return response.badRequest(HelperUtils.responseBadRequest(' cannot find this pool with id !'));
 
     } catch (e) {
@@ -67,14 +72,14 @@ class PoolController {
 
   async createOrUpdate() {
     try {
-        const contract = new ContractService()
-        const data = await contract.getPoolInfoFromSC()
+      const contract = new ContractService()
+      const data = await contract.getPoolInfoFromSC()
     } catch (e) {
       console.log(e);
       return HelperUtils.responseErrorInternal('ERROR: get pool info  fail !');
     }
   }
-  
+
   // async createOrUpdateTokenInfo() {
   //   try {
   //       const contract = new ContractService()
@@ -84,17 +89,19 @@ class PoolController {
   //     return HelperUtils.responseErrorInternal('ERROR: get pool info  fail !');
   //   }
   // }
- 
 
-  async getPoolInfo({ request} ) {
+
+  async getPoolInfo({ request }) {
     try {
+
       const params = request.only(['limit', 'page', 'is_lp_token','stake_token','status','name','is_display','is_lp_token']);
+
       const searchQuery = request.input('query');
       const limit = params.limit || Const.DEFAULT_LIMIT;
       const page = params.page || 1;
       console.log(params);
       const poolService = new PoolService()
-      let poolQuery =  poolService.buildQueryBuilder(params)
+      let poolQuery = poolService.buildQueryBuilder(params)
       if (searchQuery) {
         poolQuery = poolService.buildSearchQuery(poolQuery, searchQuery);
       }
@@ -103,19 +110,19 @@ class PoolController {
       return HelperUtils.responseSuccess(pool);
     } catch (e) {
       console.log(e.message);
-      return HelperUtils.responseErrorInternal('ERROR: get proposal list fail !');
+      return HelperUtils.responseErrorInternal('ERROR: get pools list fail !');
     }
   }
-  async getPoolDetail({ params} ) {
+  async getPoolDetail({ params }) {
     try {
       const stakeToken = params.stake_token
       const poolService = new PoolService()
-      const pool =  await poolService.poolDetail(stakeToken)
+      const pool = await poolService.poolDetail(stakeToken)
 
       return HelperUtils.responseSuccess(pool);
     } catch (e) {
       console.log(e.message);
-      return HelperUtils.responseErrorInternal('ERROR: get proposal list fail !');
+      return HelperUtils.responseErrorInternal('ERROR: get pool detail fail !');
     }
   }
 
