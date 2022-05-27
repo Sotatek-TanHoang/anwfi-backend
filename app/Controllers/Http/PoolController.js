@@ -38,9 +38,7 @@ class PoolController {
   async updatePool({ request, params, auth, response }) {
     try {
       const id = params.poolId
-
       const inputs = request.only(['stake_token', 'name', 'alloc_point', 'start_block','bonus_multiplier','bonus_end_block','is_display','is_lp_token']);
-
       console.log(`Update pool ${id} with params: `, inputs);
 
       if (inputs.stake_token) {
@@ -93,9 +91,7 @@ class PoolController {
 
   async getPoolInfo({ request }) {
     try {
-
       const params = request.only(['limit', 'page', 'is_lp_token','stake_token','status','name','is_display','is_lp_token']);
-
       const searchQuery = request.input('query');
       const limit = params.limit || Const.DEFAULT_LIMIT;
       const page = params.page || 1;

@@ -106,7 +106,7 @@ class ProposalService extends BaseService {
       return;
     }
   }
-  async finishVoteResult(id) {
+  async finishVoteResult(id,isTest) {
     try {
       const proposal = await ProposalModel.query()
         .where("id", id)
@@ -122,8 +122,10 @@ class ProposalService extends BaseService {
 
       // console.log(now)
       // check finish time is not 1 hour to now
+      if(!isTest){
       if (now < finishTime || finishTime + 60 * 60 * 1000 <= now) {
         return "It is not right time to check finish valua"
+      }
       }
       const passPercentage = HelperUtils.calcPercentage({
         up_vote: proposal.up_vote,
