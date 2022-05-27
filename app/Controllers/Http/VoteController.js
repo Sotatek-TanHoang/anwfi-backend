@@ -35,6 +35,7 @@ class ProposalController {
       }
 
       // get user vote balance
+      userVote.timestamp=VoteModel.formatDates('timestamp', new Date().toISOString());
       userVote.balance = await contract.balanceOf(auth.user.wallet_address)
       userVote.status = HelperUtils.compareBigNumber(userVote.balance, proposal.toJSON().min_anwfi)
       await userVote.save();
