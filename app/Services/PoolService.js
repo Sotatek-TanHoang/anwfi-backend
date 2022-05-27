@@ -15,6 +15,9 @@ class PoolService {
     if (params.id) {
       builder = builder.where('id', params.id);
     }
+    if(params.except){
+      builder = builder.where('id','!=', params.except);
+    }
     if (params.pool_index) {
       builder = builder.where('pool_index', params.pool_index);
     }
