@@ -22,6 +22,7 @@ class PoolsSchema extends Schema {
       table.integer('status').notNullable().defaultTo(0);// defaut is create
       table.decimal('liquidity',65);
       table.boolean('is_lp_token');
+      table.boolean('is_display').notNullable().defaultTo(0); // Display in page or not
       table.timestamps()
       table.unique(['stake_token']);
 

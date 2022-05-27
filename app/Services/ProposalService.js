@@ -7,7 +7,7 @@ const Const = use('App/Common/Const');
 const Database = use('Database')
 const HelperUtils = use('App/Common/HelperUtils')
 const keccak256 = require('keccak256')
-
+const {create} =require('ipfs-http-client')
 class ProposalService extends BaseService {
 
   buildQueryBuilder(params) {
@@ -150,14 +150,28 @@ class ProposalService extends BaseService {
       // save timestamp of result;
       proposal.tmp_result = ProposalModel.formatDates('tmp_result', new Date().toISOString());
 
-      const picked = (({ wallet_address,proposal_type,name,current_value,new_value ,description,start_time,end_time ,min_anwfi,quorum,pass_percentage,proposal_status}) =>
-       ({ wallet_address,proposal_type,name,current_value,new_value ,description,start_time,end_time ,min_anwfi,quorum,pass_percentage,proposal_status}))
+      const picked = (({ wallet_address,proposal_type,name,current_value,new_value ,description,start_time,end_time ,min_anwfi,
+        quorum,pass_percentage,proposal_status,up_vote,down_vote,up_vote_anwfi,down_vote_anwfi,tmp_result}) =>
+       ({ wallet_address,proposal_type,name,current_value,new_value ,description,start_time,end_time ,min_anwfi,
+        quorum,pass_percentage,proposal_status,up_vote,down_vote,up_vote_anwfi,down_vote_anwfi,tmp_result}))
        (proposal);
-      const data=JSON.stringify(picked) 
-      const proposalHash=keccak256(Buffer.from(data)).toString('hex')
-      console.log("hash----",proposalHash)
+       if(picked.proposal_status===-1) picked.proposal_status="failed"
+       if(picked.proposal_status===2) picked.proposal_status="success"
+      //  console.log(picked)
 
-      proposal.proposal_hash="0x"+proposalHash
+      const data=JSON.stringify(picked) 
+      let ipfs =await create({
+        host :"ipfs.infura.io",
+        post:5001,
+        protocol:"https"
+      })
+
+      let result =await ipfs.add(data)
+      proposal.ipfs_link=result.path
+      // const proposalHash=keccak256(Buffer.from(data)).toString('hex')
+      // console.log("hash----",proposalHash)
+
+      // proposal.proposal_hash="0x"+proposalHash
       // proposal.merge({ up_vote, down_vote, up_vote_anwfi, down_vote_anwfi });
       await proposal.save();
       return proposal;
