@@ -28,10 +28,10 @@ class ProposalController {
     }
   }
   async finish({ request, auth }) {
-    const inputs = request.only(['id']);
+    const inputs = request.only(['id','isTest']);
 
     try {
-      const proposal = await (new ProposalService()).finishVoteResult(inputs.id);
+      const proposal = await (new ProposalService()).finishVoteResult(inputs.id,inputs.isTest);
 
       return HelperUtils.responseSuccess(proposal);
     } catch (e) {

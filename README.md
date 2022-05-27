@@ -2,7 +2,7 @@
 
 ## Setup
 
-  - Require Node >= 12.x 
+  - Require Node >= 16.x for ipfs lib
   - Have npm and make
   - Have docker and docker-compose
 #### Step 1
