@@ -123,6 +123,21 @@ class UserAuthController {
       return response.notFound(HelperUtils.responseNotFound('ERROR:Login attempt is failed! Call administrators if you have this problem again.'));
     }
   }
+  async updateUserProfile({ request, auth, response }) {
+    try {
+      const inputs = request.only(['username', 'email'])
+
+      const profile =await new UserService().findUser({ id: auth.user.id })
+      if (!profile)
+        throw new Error()
+      profile.merge(inputs);
+      await profile.save();
+      return response.ok(HelperUtils.responseSuccess(profile))
+    } catch (e) {
+      console.log(e.message);
+      return response.badRequest(HelperUtils.responseBadRequest("Error: update profile failed!"))
+    }
+  }
 }
 
 module.exports = UserAuthController;
