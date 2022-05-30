@@ -16,7 +16,8 @@ class CheckVote {
              'bonus_multiplier':'number|required',
              'bonus_end_block':'number|required',
              'is_lp_token':'boolean|required',
-             'is_display':'boolean'
+             'is_display':'boolean',
+             'min_stake_period':'integer'
         };
     }
     get messages() {
