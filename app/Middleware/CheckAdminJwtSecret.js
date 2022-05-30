@@ -2,22 +2,23 @@
 
 const ForbiddenException = use('App/Exceptions/ForbiddenException');
 const UserModel = use('App/Models/User')
-
+const HelperUtils = use("App/Common/HelperUtils")
 class CheckAdminJwtSecret {
-  async handle({ auth }, next) {
-
+  async handle({ auth, response }, next) {
+    
     console.log('User: ', auth.jwtPayload);
-    if(!auth || !auth.jwtPayload || !auth.jwtPayload.data){
-      throw new ForbiddenException();
+    if (!auth || !auth.jwtPayload || !auth.jwtPayload.data) {
+
+      return response.unauthorized(HelperUtils.responseUnauthorized("Sorry, the token expired."))
     }
 
     const user = await UserModel.query().where('id', auth.jwtPayload.data.id).first();
-  
+
     const jwtUser = await auth.jwtPayload.data;
     if (!user || (user.token_jwt !== jwtUser.token_jwt)) {
-      throw new ForbiddenException();
+      return response.unauthorized(HelperUtils.responseUnauthorized("Sorry, the token expired."))
     }
-    await next();
+    return await next();
   }
 }
 
