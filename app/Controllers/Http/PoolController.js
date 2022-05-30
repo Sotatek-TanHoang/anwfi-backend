@@ -62,10 +62,9 @@ class PoolController {
         const { alloc_point, bonus_multiplier, start_block, min_stake_period } = inputs;
         // startblock >= current
         if (HelperUtils.compareBigNumber(poolUpdate.start_block, latestBlockNumber)) {
-         
+
           poolUpdate.merge({ alloc_point, bonus_multiplier, start_block, min_stake_period });
         } else {
-          console.log('hsdfljasdlfasdf',poolUpdate.start_block, latestBlockNumber);
           // after deployed and start_block < current, only update alloc point
           poolUpdate.merge({ alloc_point: inputs.alloc_point });
         }
@@ -78,7 +77,7 @@ class PoolController {
         await poolUpdate.save();
         return response.ok(HelperUtils.responseSuccess(poolUpdate));
       }
-
+      return response.badRequest(HelperUtils.responseErrorInternal('ERROR: update pool fail !'));
     } catch (e) {
       console.log(e);
       return response.badRequest(HelperUtils.responseErrorInternal('ERROR: update pool fail !'));
