@@ -143,7 +143,13 @@ const responseSuccess = (data = null, message) => {
     data,
   }
 };
-
+const responseUnauthorized = (message) => {
+  return {
+    status: 401,
+    message: message || 'Unauthorized !',
+    data:null,
+  }
+};
 const checkSumAddress = (address) => {
   const addressVerified = Web3.utils.toChecksumAddress(address);
   return addressVerified;
@@ -243,6 +249,7 @@ module.exports = {
   responseNotFound,
   responseErrorInternal,
   responseBadRequest,
+  responseUnauthorized,
   checkSumAddress,
   toFixedNumber,
   seconds_since_epoch,

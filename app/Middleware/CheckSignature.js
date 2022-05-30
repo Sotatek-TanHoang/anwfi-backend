@@ -4,8 +4,9 @@ const ForbiddenException = use('App/Exceptions/ForbiddenException');
 const Web3 = require('web3')
 const web3 = new Web3();
 const Env = use('Env')
+const HelperUtils=use("App/Common/HelperUtils")
 class CheckSignature {
-  async handle({ request, }, next) {
+  async handle({ request,response }, next) {
     try {
       if (Env.get('NODE_ENV', 'production') === 'development') {
         return await next();
@@ -28,15 +29,15 @@ class CheckSignature {
       console.log('recoverConvert: ', recover, recoverConvert, wallet_address);
 
       if (recoverConvert && recoverConvert !== wallet_address) {
-        throw new ForbiddenException('Invalid signature!');
+        return response.unauthorized(HelperUtils.responseUnauthorized('Invalid signature!'));
       }
 
       headers.wallet_address = wallet_address;
 
-      await next();
+      return await next();
     } catch (e) {
       console.log('ERROR: ', e);
-      throw new ForbiddenException('Unauthorized!');
+      return response.unauthorized(HelperUtils.responseUnauthorized('Unauthorized!'));
     }
   }
 }
