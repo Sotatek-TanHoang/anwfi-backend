@@ -103,6 +103,7 @@ Route.group(() => {
   Route.get('/pool-token', 'PoolTokenController.getPoolTokenInfo')  
   Route.get('/pool', 'PoolController.getPoolInfo') // get list pool 
   Route.get('/pool/:stake_token', 'PoolController.getPoolDetail')  
+  Route.get('/pool-participant', 'PoolController.getPoolParticipant')   // fetch pool info from SC 
 
   // test API
   Route.post('/pool-sc', 'PoolController.createOrUpdate')   // fetch pool info from SC 

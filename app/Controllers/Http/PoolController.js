@@ -88,7 +88,23 @@ class PoolController {
   //   }
   // }
 
+ async getPoolParticipant({request}){
+  try {
+    const params = request.only(['limit', 'page']);
+    const limit = params.limit || Const.DEFAULT_LIMIT;
+    const page = params.page || 1;
 
+    const contract = new ContractService()
+
+    const data = await contract.getUserStakePoolInfoFromSC(page,limit)
+    return HelperUtils.responseSuccess(data);
+
+  } catch (e) {
+    console.log(e);
+    return HelperUtils.responseErrorInternal('ERROR: get pool info  fail !');
+  }
+
+ }
   async getPoolInfo({ request }) {
     try {
       const params = request.only(['limit', 'page', 'is_lp_token','stake_token','status','name','is_display','is_lp_token']);

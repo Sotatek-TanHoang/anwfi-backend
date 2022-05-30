@@ -3,6 +3,7 @@
 const ErrorFactory = use('App/Common/ErrorFactory');
 const PoolModel = use('App/Models/Pools');
 const TokenInfoModel = use('App/Models/PoolTokenInfo');
+const PoolUserStake=use('App/Models/PoolUserStake');
 const Const = use('App/Common/Const');
 const Web3=require('web3')
 const rpcURL = Const.RPCURL;
@@ -41,7 +42,24 @@ class ContractService {
         const withDecimals = new BigNumber(rawBalance).dividedBy(divider)
         return withDecimals.toString()
     }
+    async getUserStakePoolInfoFromSC(page,limit){
+      const contract= this.getContract('pools')
+      const listUserStake= (await PoolUserStake.query().fetch()).toJSON()
+      await Promise.all(
+        listUserStake.map(async (e)=> {
+       const data=await contract.methods.userInfo(e.pool_id,e.wallet_address).call()
+       console.log("pool id and data ",data,e.pool_id)
+       const poolStakeData = await PoolUserStake.query().where('wallet_address',e.wallet_address).where('pool_id',e.pool_id).first();
+       poolStakeData.amount=data.amount
+       poolStakeData.reward=data.pendingReward
+       await poolStakeData.save()
+       })
+      )
 
+      return (await PoolUserStake.query().paginate(page, limit)).toJSON()
+
+     }
+       
    async getPoolInfoFromSC(){
     const contract= this.getContract('pools')
     const poolLength=await contract.methods.poolLength().call()
