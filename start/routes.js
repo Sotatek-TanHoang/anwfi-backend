@@ -67,6 +67,10 @@ Route.group(() => {
    // get single proposals.
    Route.get('/proposal/:id', 'ProposalController.getProposalDetail')
 
+
+   // user update profile
+   
+   Route.put('/profile', 'UserAuthController.updateUserProfile')
 })
 .middleware(['typeAdmin', 'checkPrefix', 'checkAdminJwtSecret', 'auth:admin', 'checkGovernanceAbove']);
 
