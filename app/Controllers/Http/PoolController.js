@@ -90,13 +90,13 @@ class PoolController {
 
  async getPoolParticipant({request}){
   try {
-    const params = request.only(['limit', 'page']);
+    const params = request.only(['limit', 'page','poolId']);
     const limit = params.limit || Const.DEFAULT_LIMIT;
     const page = params.page || 1;
-
+    const poolId=params.poolId
     const contract = new ContractService()
-
-    const data = await contract.getUserStakePoolInfoFromSC(page,limit)
+    
+    const data = await contract.getUserStakePoolInfoFromSC(page,limit,poolId)
     return HelperUtils.responseSuccess(data);
 
   } catch (e) {

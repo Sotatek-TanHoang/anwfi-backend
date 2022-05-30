@@ -42,9 +42,9 @@ class ContractService {
         const withDecimals = new BigNumber(rawBalance).dividedBy(divider)
         return withDecimals.toString()
     }
-    async getUserStakePoolInfoFromSC(page,limit){
+    async getUserStakePoolInfoFromSC(page,limit,poolId){
       const contract= this.getContract('pools')
-      const listUserStake= (await PoolUserStake.query().fetch()).toJSON()
+      const listUserStake= (await PoolUserStake.query().where('pool_id',poolId).fetch()).toJSON()
       await Promise.all(
         listUserStake.map(async (e)=> {
        const data=await contract.methods.userInfo(e.pool_id,e.wallet_address).call()
@@ -56,7 +56,7 @@ class ContractService {
        })
       )
 
-      return (await PoolUserStake.query().paginate(page, limit)).toJSON()
+      return (await PoolUserStake.query().where('pool_id',poolId).paginate(page, limit)).toJSON()
 
      }
        
