@@ -59,23 +59,23 @@ class PoolController {
         return response.badRequest(HelperUtils.responseBadRequest(' cannot find this pool with id !'));
       // pool has been deployed, only update alloc_point
       if (poolUpdate.status === Const.POOL_STATUS.LIVE) {
-        const { alloc_point, bonus_multiplier, start_block, min_stake_period } = inputs;
+        const { alloc_point, bonus_multiplier, start_block, min_stake_period ,is_display} = inputs;
         // startblock >= current
         if (HelperUtils.compareBigNumber(poolUpdate.start_block, latestBlockNumber)) {
 
-          poolUpdate.merge({ alloc_point, bonus_multiplier, start_block, min_stake_period });
+          poolUpdate.merge({ alloc_point, bonus_multiplier, start_block, min_stake_period ,is_display});
         } else {
           // after deployed and start_block < current, only update alloc point
-          poolUpdate.merge({ alloc_point: inputs.alloc_point });
+          poolUpdate.merge({ alloc_point: inputs.alloc_point ,is_display:inputs.is_display});
         }
         await poolUpdate.save();
-        return response.ok(HelperUtils.responseSuccess(poolUpdate));
+        return response.ok(HelperUtils.responseSuccess( poolUpdate," This pool is deploy.Some field can not change.Success update pool!"));
       }
       // pool not deployed, update all
       else if (poolUpdate.status === Const.POOL_STATUS.CREATED) {
         poolUpdate.merge(inputs);
         await poolUpdate.save();
-        return response.ok(HelperUtils.responseSuccess(poolUpdate));
+        return response.ok(HelperUtils.responseSuccess(poolUpdate,"This pool is not deploy.Success update!"));
       }
       return response.badRequest(HelperUtils.responseErrorInternal('ERROR: update pool fail !'));
     } catch (e) {
