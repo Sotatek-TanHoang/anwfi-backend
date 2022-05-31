@@ -28,7 +28,9 @@ class ContractService {
         const contract = new web3.eth.Contract(abi, address)
         return contract
     }
-
+    static async getLatestBlockNumber(){
+      return web3.eth.getBlockNumber();
+    }
     async balanceOf(address){
         
         const contract= this.getContract('awnfi')

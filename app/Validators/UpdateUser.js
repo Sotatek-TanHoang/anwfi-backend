@@ -9,7 +9,7 @@ class UpdateAdmin {
     return {
       username: 'string',
       wallet_address: "string|required",
-      role: "integer|required|range:-1,4",
+      role: "integer|required|range:0,3",
       email: 'email'
     };
   }
@@ -33,7 +33,6 @@ class UpdateAdmin {
     const authRole = this.ctx.auth.user.role;
   
     // modify itself
-    // user cannot modify his/her own role but other information.
     if (parseInt(id) === parseInt(authUserId)) {
       // allow modify  
       return true;
