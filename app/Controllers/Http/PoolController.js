@@ -16,7 +16,7 @@ class PoolController {
 
   async createPool({ request, auth, response }) {
     try {
-      const inputs = request.only(['stake_token', 'name', 'alloc_point', 'start_block', 'bonus_multiplier', 'bonus_end_block', 'is_lp_token', 'min_stake_period']);
+      const inputs = request.only(['stake_token', 'name', 'alloc_point', 'start_block', 'bonus_multiplier', 'bonus_end_block','is_display', 'is_lp_token', 'min_stake_period']);
       console.log('Create pool  with params: ', inputs);
 
       const pool = await (new PoolService()).findOne({ stake_token: inputs.stake_token });
