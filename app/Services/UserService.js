@@ -35,13 +35,12 @@ class UserService {
     }
     if (params.status !== undefined) {
       builder = builder.where('status', params.status);
-    } else {
-      builder = builder.where('status', Const.USER_STATUS.ACTIVE);
-    }
+    } 
+
     if(params.only_admin){
       builder = builder.where('role','>=', Const.USER_ROLE.GOVERNANCE);
     }
-
+    builder.orderBy('id',"DESC"); 
     // get number of projects that each admin created
     // builder.withCount('projects as projects_created');
     return builder;
