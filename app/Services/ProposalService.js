@@ -7,7 +7,8 @@ const Const = use('App/Common/Const');
 const Database = use('Database')
 const HelperUtils = use('App/Common/HelperUtils')
 const keccak256 = require('keccak256')
-const {create} =require('ipfs-http-client')
+const {create} =require('ipfs-http-client');
+const moment = require('moment');
 class ProposalService extends BaseService {
 
   buildQueryBuilder(params) {
@@ -112,18 +113,13 @@ class ProposalService extends BaseService {
         .where("id", id)
         .where("proposal_status", 1)
         .first();
-      if (!proposal) throw new Error("cannot find proposal or this proposal not active")
-      var date = new Date(proposal.end_time);
-      var finishTime = date.getTime();
-
-      const now = new Date().getTime();
-      // console.log("oooooooooooo", finishTime)
-      // console.log("222222", finishTime + 60 * 60 * 1000 - now)
-
-      // console.log(now)
-      // check finish time is not 1 hour to now
+        console.log('inside 1');
+        if (!proposal) throw new Error("cannot find proposal or this proposal not active")
+      
+      
       if(!isTest){
-      if (now < finishTime || finishTime + 60 * 60 * 1000 <= now) {
+      if (moment(new Date().toISOString()).isAfter(proposal.end_time)) {
+        console.log('aborted');
         return "It is not right time to check finish valua"
       }
       }
