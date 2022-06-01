@@ -116,9 +116,9 @@ class ProposalService extends BaseService {
         console.log('inside 1');
         if (!proposal) throw new Error("cannot find proposal or this proposal not active")
       
-      
       if(!isTest){
-      if (moment(new Date().toISOString()).isAfter(proposal.end_time)) {
+        // current < end_time
+      if (moment(new Date().toISOString()).isBefore(proposal.end_time)) {
         console.log('aborted');
         return "It is not right time to check finish valua"
       }
