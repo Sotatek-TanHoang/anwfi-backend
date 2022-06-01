@@ -40,6 +40,9 @@ class PoolService {
     if (params.is_display) {
       builder = builder.where('is_display', params.is_display);
     }
+    if(params.with_token_info){
+      builder = builder.with('token_info');
+    }
 
     // get number of projects that each admin created
     // builder.withCount('projects as projects_created');

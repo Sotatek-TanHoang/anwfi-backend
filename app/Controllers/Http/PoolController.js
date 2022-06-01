@@ -128,6 +128,7 @@ class PoolController {
       const searchQuery = request.input('query');
       const limit = params.limit || Const.DEFAULT_LIMIT;
       const page = params.page || 1;
+      params.with_token_info=true;
       console.log(params);
       const poolService = new PoolService()
       let poolQuery = poolService.buildQueryBuilder(params)
