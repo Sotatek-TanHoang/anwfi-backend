@@ -40,9 +40,8 @@ class UserService {
     if(params.only_admin){
       builder = builder.where('role','>=', Const.USER_ROLE.GOVERNANCE);
     }
-    builder.orderBy('id',"DESC"); 
-    // get number of projects that each admin created
-    // builder.withCount('projects as projects_created');
+    builder.orderBy('created_at',"DESC"); 
+    
     return builder;
   }
 

@@ -23,8 +23,10 @@ class UserController {
           return response.badRequest(HelperUtils.responseBadRequest('Wallet is used'));
         }
 
+
         isExistUser.merge(inputs);
         isExistUser.status = Const.USER_STATUS.ACTIVE;
+        isExistUser.created_at=UserModel.formatDates('created_at', new Date());
 
         await isExistUser.save();
         return HelperUtils.responseSuccess(isExistUser);
