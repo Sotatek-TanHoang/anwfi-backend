@@ -51,7 +51,7 @@ class PoolService {
   buildSearchQuery(query, searchQuery) {
     return query.where((q) => {
       q.where('name', 'like', `%${searchQuery}%`)
-      .andWhere('stake_token','like',`%${searchQuery}%`)
+      .orWhere('stake_token','like',`%${searchQuery}%`)
     })
   }
 
