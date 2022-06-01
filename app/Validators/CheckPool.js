@@ -1,10 +1,8 @@
 const ErrorFactory = use('App/Common/ErrorFactory');
-const HelperUtils=use('App/Common/HelperUtils')
-const ProposalService = use("App/Services/ProposalService")
-const Const = use('App/Common/Const')
-const ForbiddenException = use("App/Exceptions/ForbiddenException")
-
-const moment = require('moment')
+// const HelperUtils=use('App/Common/HelperUtils')
+// const ProposalService = use("App/Services/ProposalService")
+// const Const = use('App/Common/Const')
+// const ForbiddenException = use("App/Exceptions/ForbiddenException")
 class CheckVote {
     get rules() {
 
@@ -17,7 +15,7 @@ class CheckVote {
              'bonus_end_block':'number|required',
              'is_lp_token':'boolean|required',
              'is_display':'boolean',
-             'min_stake_period':'integer'
+             'min_stake_period':'number'
         };
     }
     get messages() {

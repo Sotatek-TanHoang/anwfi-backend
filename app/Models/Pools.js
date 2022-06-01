@@ -7,6 +7,9 @@ class Pool extends Model {
     static get table() {
         return 'pools';
     }
+    token_info() {
+        return this.hasOne('App/Models/PoolTokenInfo', 'stake_token', 'token_address')
+      }
 }
 
 module.exports = Pool
