@@ -38,7 +38,10 @@ class UserService {
     } 
 
     if(params.only_admin){
-      builder = builder.where('role','>=', Const.USER_ROLE.GOVERNANCE);
+      builder = builder.where(q=>{
+        q.where('role','>=', Const.USER_ROLE.GOVERNANCE)
+      .andWhere('role','!=',Const.USER_ROLE.SUPER_ADMIN);
+      })
     }
     builder.orderBy('created_at',"DESC"); 
     

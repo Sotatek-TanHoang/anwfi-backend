@@ -217,7 +217,7 @@ class UserController {
     try {
       const id = params.id;
       const userService = new UserService();
-      const admin = await userService.findUser({ id });
+      const admin = await userService.findUser({ id,only_admin:true });
       if (admin) {
         return HelperUtils.responseSuccess(admin);
       }
