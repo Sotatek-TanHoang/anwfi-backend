@@ -145,7 +145,7 @@ class PoolTokenService {
        var utcDate = response.data.data[0].last_updated;  // ISO-8601 formatted date returned from server
        var localDate = new Date(utcDate);
        tokenNew.merge({'price':response.data.data[0].quote.USD.price,'last_updated': localDate})
-       tokenNew.save()
+       await tokenNew.save();
        })
        .catch((err) => {
         console.log(err)
