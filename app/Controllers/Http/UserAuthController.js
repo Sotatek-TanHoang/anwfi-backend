@@ -47,7 +47,7 @@ class UserAuthController {
       console.log('Check Wallet: ', inputs, params);
       const user = await adminService.findUser({
         wallet_address,
-        only_admin: true
+        above_governance:true
         // role: params.type === Const.USER_TYPE_PREFIX.ADMIN ? Const.USER_ROLE.ADMIN : Const.USER_ROLE.PUBLIC_USER,
       });
       if (!user) {
