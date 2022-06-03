@@ -38,8 +38,8 @@ class UserAuthController {
   }
 
   async checkWalletAddress({ request, params, response }) {
-    try {
       const inputs = request.all();
+    try {
       const wallet_address = HelperUtils.checkSumAddress(inputs.wallet_address || ' ');
       const adminService = new UserService();
 
@@ -53,17 +53,23 @@ class UserAuthController {
       if (!user) {
         return HelperUtils.responseSuccess({
           wallet_address,
-          available: true
+          available: true,
+          message:'You can use this wallet address!'
         });
       }
 
       return HelperUtils.responseSuccess({
         wallet_address,
-        available: false
+        available: false,
+        message:'This wallet address is used!'
       });
     } catch (e) {
       console.log('ERROR: ', e);
-      return response.badRequest(HelperUtils.responseErrorInternal('ERROR: Wallet address is invalid'));
+      return HelperUtils.responseSuccess({
+        wallet_address:inputs?.wallet_address ?? "no wallet provided",
+        available: false,
+        message:'This wallet address is not a valid ethereum address!'
+      });
     }
   }
 
