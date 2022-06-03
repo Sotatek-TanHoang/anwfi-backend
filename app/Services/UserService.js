@@ -43,6 +43,11 @@ class UserService {
       .andWhere('role','!=',Const.USER_ROLE.SUPER_ADMIN);
       })
     }
+    if(params.above_governance){
+      builder = builder.where(q=>{
+        q.where('role','>=', Const.USER_ROLE.GOVERNANCE)
+      })
+    }
     builder.orderBy('created_at',"DESC"); 
     
     return builder;
