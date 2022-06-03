@@ -150,6 +150,13 @@ const responseUnauthorized = (message) => {
     data:null,
   }
 };
+const responseForbidden = (message) => {
+  return {
+    status: 403,
+    message: message || 'Forbidden !',
+    data:null,
+  }
+};
 const checkSumAddress = (address) => {
   const addressVerified = Web3.utils.toChecksumAddress(address);
   return addressVerified;
@@ -250,6 +257,7 @@ module.exports = {
   responseErrorInternal,
   responseBadRequest,
   responseUnauthorized,
+  responseForbidden,
   checkSumAddress,
   toFixedNumber,
   seconds_since_epoch,

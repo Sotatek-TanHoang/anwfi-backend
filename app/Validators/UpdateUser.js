@@ -39,7 +39,7 @@ class UpdateAdmin {
     }
 
     if (parseInt(authRole) !== Const.USER_ROLE.SUPER_ADMIN) {
-      this.ctx.response.unauthorized(HelperUtils.responseUnauthorized("Error: Only super-admin is allowed to perform this action."))
+      this.ctx.response.forbidden(HelperUtils.responseForbidden("Error: Only super-admin is allowed to perform this action."))
       return false;
       // throw new ForbiddenException("Error: governances are only alowed to update themselves.")
     }
@@ -52,12 +52,12 @@ class UpdateAdmin {
     });
     // target user not exist.
     if (!admin) {
-      this.ctx.response.badRequest(HelperUtils.responseBadRequest("Error: you are trying to modify non-existing user."))
+      this.ctx.response.forbidden(HelperUtils.responseForbidden("Error: you are trying to modify non-existing user."))
       return false;
     }
     // target user is more privileged.
     if (parseInt(admin.role) > parseInt(authRole)) {
-      this.ctx.response.badRequest(HelperUtils.responseBadRequest("Error: you are not allowed to modify this user profile."))
+      this.ctx.response.forbidden(HelperUtils.responseForbidden("Error: you are not allowed to modify this user profile."))
       return false;
     }
 
