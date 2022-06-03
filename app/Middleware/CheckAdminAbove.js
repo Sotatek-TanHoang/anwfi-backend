@@ -11,7 +11,7 @@ class checkAdminAbove {
       case Const.USER_ROLE.ADMIN:
         return await next();
     }
-    return response.unauthorized(HelperUtils.responseUnauthorized('ERROR: Only admin is allowed!'))
+    return response.forbidden(HelperUtils.responseForbidden('ERROR: Only admin is allowed!'))
   }
 }
 

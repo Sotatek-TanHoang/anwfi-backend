@@ -29,7 +29,7 @@ class CheckSignature {
       console.log('recoverConvert: ', recover, recoverConvert, wallet_address);
 
       if (recoverConvert && recoverConvert !== wallet_address) {
-        return response.unauthorized(HelperUtils.responseUnauthorized('Invalid signature!'));
+        return response.forbidden(HelperUtils.responseForbidden('Invalid signature!'));
       }
 
       headers.wallet_address = wallet_address;

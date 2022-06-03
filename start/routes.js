@@ -66,17 +66,15 @@ Route.group(() => {
    Route.get('/proposal', 'ProposalController.getProposalList');
    // get single proposals.
    Route.get('/proposal/:id', 'ProposalController.getProposalDetail')
-
-
    // user update profile
    
    Route.put('/profile', 'UserAuthController.updateUserProfile')
 })
 .middleware(['typeAdmin', 'checkPrefix', 'checkAdminJwtSecret', 'auth:admin', 'checkGovernanceAbove']);
 
-// Proposals APIs for admin
-Route.group(() => {
- 
+// Admin and Governance routes for proposal
+Route.group(()=>{
+  
   // create single proposal
   Route.post('/proposal', 'ProposalController.createProposal').validator('ProposalParams');
   // update single proposal basic information (except for status).
@@ -85,7 +83,12 @@ Route.group(() => {
   Route.put('/proposal/status/:id', 'ProposalController.pushProposalProcess')
   // delete single proposal
   Route.delete('/proposal/:id', 'ProposalController.deleteProposal')
-  
+}).middleware(['typeAdmin', 'checkPrefix', 'checkAdminJwtSecret', 'auth:admin', 'CheckProposalRole']);
+
+
+// Proposals APIs for admin
+Route.group(() => {
+ 
   // create single pool
   Route.post('/pool', 'PoolController.createPool').validator('CheckPool') 
   Route.put('/pool/:poolId', 'PoolController.updatePool').validator('CheckPool')   

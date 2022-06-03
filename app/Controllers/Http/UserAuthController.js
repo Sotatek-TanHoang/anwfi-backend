@@ -37,33 +37,38 @@ class UserAuthController {
     }
   }
 
-  async checkWalletAddress({ request, params, response }) {
+  async checkWalletAddress({ request }) {
+      const inputs = request.only(['wallet_address']);
     try {
-      const inputs = request.all();
       const wallet_address = HelperUtils.checkSumAddress(inputs.wallet_address || ' ');
       const adminService = new UserService();
 
       console.log('Wallet: ', wallet_address);
-      console.log('Check Wallet: ', inputs, params);
+      console.log('Check Wallet: ', inputs);
       const user = await adminService.findUser({
         wallet_address,
         above_governance:true
-        // role: params.type === Const.USER_TYPE_PREFIX.ADMIN ? Const.USER_ROLE.ADMIN : Const.USER_ROLE.PUBLIC_USER,
       });
       if (!user) {
         return HelperUtils.responseSuccess({
           wallet_address,
-          available: true
+          available: true,
+          message:'You can use this wallet address!'
         });
       }
 
       return HelperUtils.responseSuccess({
         wallet_address,
-        available: false
+        available: false,
+        message:'This wallet address is used!'
       });
     } catch (e) {
       console.log('ERROR: ', e);
-      return response.badRequest(HelperUtils.responseErrorInternal('ERROR: Wallet address is invalid'));
+      return HelperUtils.responseSuccess({
+        wallet_address:inputs?.wallet_address ?? "no wallet provided",
+        available: false,
+        message:'This wallet address is not a valid ethereum address!'
+      });
     }
   }
 
