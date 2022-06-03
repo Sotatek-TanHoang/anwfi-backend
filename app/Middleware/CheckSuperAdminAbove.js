@@ -10,7 +10,7 @@ class CheckSuperAdminAbove {
       case Const.USER_ROLE.SUPER_ADMIN:
         return await next();
     }
-    return response.unauthorized(HelperUtils.responseBadRequest('ERROR: Only super admin is allowed!'))
+    return response.unauthorized(HelperUtils.responseUnauthorized('ERROR: Only super admin is allowed!'))
   }
 }
 

@@ -16,7 +16,7 @@ class CreateAdmin {
     const inputs = this.ctx.request.only(['role']);
     // user cannot update a higher role than his/her role.
     if (parseInt(inputs.role) > parseInt(authRole)) {
-      this.ctx.response.unauthorized(HelperUtils.responseBadRequest("Error: you are not allowed to create user with higher role than yours."))
+      this.ctx.response.unauthorized(HelperUtils.responseUnauthorized("Error: you are not allowed to create user with higher role than yours."))
       return false;
     }
 

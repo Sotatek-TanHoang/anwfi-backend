@@ -30,13 +30,13 @@ class DeleteUser {
         }
         // only super admin can delete other user.
         if(parseInt(authRole)!==Const.USER_ROLE.SUPER_ADMIN){
-            this.ctx.response.unauthorized(HelperUtils.responseBadRequest("Error: Only super-admin is allowed to perform this action."))
+            this.ctx.response.unauthorized(HelperUtils.responseUnauthorized("Error: Only super-admin is allowed to perform this action."))
             return false;
         }
         // delete other users.
         // user cannot delete user with higher or equal role than his/her role.
         if (parseInt(admin.role) >= parseInt(authRole)) {
-            this.ctx.response.unauthorized(HelperUtils.responseBadRequest("Error: you are not allowed to delete this user."))
+            this.ctx.response.unauthorized(HelperUtils.responseUnauthorized("Error: you are not allowed to delete this user."))
             return false;
         }
         return true
