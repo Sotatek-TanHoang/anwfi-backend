@@ -37,18 +37,17 @@ class UserAuthController {
     }
   }
 
-  async checkWalletAddress({ request, params, response }) {
-      const inputs = request.all();
+  async checkWalletAddress({ request }) {
+      const inputs = request.only(['wallet_address']);
     try {
       const wallet_address = HelperUtils.checkSumAddress(inputs.wallet_address || ' ');
       const adminService = new UserService();
 
       console.log('Wallet: ', wallet_address);
-      console.log('Check Wallet: ', inputs, params);
+      console.log('Check Wallet: ', inputs);
       const user = await adminService.findUser({
         wallet_address,
         above_governance:true
-        // role: params.type === Const.USER_TYPE_PREFIX.ADMIN ? Const.USER_ROLE.ADMIN : Const.USER_ROLE.PUBLIC_USER,
       });
       if (!user) {
         return HelperUtils.responseSuccess({
