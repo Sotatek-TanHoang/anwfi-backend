@@ -60,14 +60,14 @@ class UserAuthController {
       return HelperUtils.responseSuccess({
         wallet_address,
         available: false,
-        message:'This wallet address is used!'
+        message:'This address is already used!'
       });
     } catch (e) {
       console.log('ERROR: ', e);
       return HelperUtils.responseSuccess({
         wallet_address:inputs?.wallet_address ?? "no wallet provided",
         available: false,
-        message:'This wallet address is not a valid ethereum address!'
+        message:'This address is invalid !'
       });
     }
   }
