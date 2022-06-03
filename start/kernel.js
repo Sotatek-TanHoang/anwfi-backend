@@ -57,6 +57,7 @@ const namedMiddleware = {
   checkAdminSignature: 'App/Middleware/CheckAdminSignature',
   checkBlockPassSignature: 'App/Middleware/CheckBlockPassSignature',
   checkGovernanceAbove:'App/Middleware/checkGovernanceAbove',
+  CheckProposalRole:'App/Middleware/CheckProposalRole',
   formatEmailAndWallet: 'App/Middleware/FormatEmailAndWallet',
   maskEmailAndWallet: 'App/Middleware/MaskEmailAndWallet',
   typeAdmin: 'App/Middleware/TypeAdmin',
