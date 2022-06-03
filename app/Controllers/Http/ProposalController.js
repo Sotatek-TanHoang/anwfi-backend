@@ -155,7 +155,6 @@ class ProposalController {
       const searchQuery = request.input('query');
       const limit = params.limit || Const.DEFAULT_LIMIT;
       const page = params.page || 1;
-      params.count_vote = true
       // check if req is public
       if (!auth?.user || auth?.user?.role <= Const.USER_ROLE.PUBLIC_USER) {
         params.is_public = true
@@ -166,6 +165,14 @@ class ProposalController {
         proposalQuery = proposalService.buildSearchQuery(proposalQuery, searchQuery);
       }
       const proposal = await proposalQuery.paginate(page, limit);
+      proposal.rows.forEach(r=>{
+        r.__meta__={
+          up_vote:r.up_vote,
+          down_vote:r.down_vote,
+          up_vote_anwfi:HelperUtils.formatDecimal(r.up_vote_anwfi),
+          down_vote_anwfi:HelperUtils.formatDecimal(r.down_vote_anwfi)
+        }
+      })
       return response.ok(HelperUtils.responseSuccess(proposal));
     } catch (e) {
       console.log(e.message);
