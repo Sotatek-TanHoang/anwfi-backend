@@ -59,7 +59,7 @@ class ProposalParams {
       case Const.PROPOSAL_TYPE.OFFCHAIN_PROPOSAL:
         break;
       default:
-        this.ctx.response.unauthorized(HelperUtils.responseBadRequest("Error: proposal_type is invalid!"))
+        this.ctx.response.unauthorized(HelperUtils.responseUnauthorized("Error: proposal_type is invalid!"))
         return false;
       // throw new ForbiddenException("Error: proposal_type is invalid!")
     }

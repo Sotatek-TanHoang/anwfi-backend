@@ -60,7 +60,7 @@ class ProposalController {
         return response.ok(HelperUtils.responseSuccess(proposal));
       }
 
-      return response.notFound(HelperUtils.responseBadRequest('ERROR: proposal not exist !'));
+      return response.badRequest(HelperUtils.responseBadRequest('ERROR: proposal not exist !'));
     } catch (e) {
       console.log(e);
       return response.badRequest(HelperUtils.responseErrorInternal('ERROR: update proposal fail !'));
