@@ -22,7 +22,7 @@ class PoolTokenController {
   }
   async updatePoolToken({ request, response }) {
     try {
-      const inputs = request.only('logo_token1','logo_token2');
+      const inputs = request.only('logo_token1', 'logo_token2');
       const id = request.params.id;
 
       const token = await TokenInforModel.query().where("id", id).first();
@@ -52,12 +52,13 @@ class PoolTokenController {
     try {
 
       const params = request.only(['limit', 'page', 'is_lp_token', 'token_address', 'symbol']);
-      // const searchQuery = request.input('query');
+      const searchQuery = request.input('query');
       const limit = params.limit || Const.DEFAULT_LIMIT;
       const page = params.page || 1;
       console.log(params);
       const poolTokenService = new PoolTokenService()
-      const poolTokenQuery = poolTokenService.buildQueryBuilder(params)
+      const qb = poolTokenService.buildQueryBuilder(params)
+      const poolTokenQuery = poolTokenService.buildSearchQuery(qb, searchQuery)
       const poolToken = await poolTokenQuery.paginate(page, limit);
 
       return HelperUtils.responseSuccess(poolToken);

@@ -19,9 +19,12 @@ class PoolTokenService {
     if (params.symbol) {
       builder = builder.where('symbol', params.symbol);
     }
-    // if (params.email) {
-    //   builder = builder.where('email', params.email);
-    // }
+    if (params.name) {
+      builder = builder.where('name', params.name);
+    }
+    if(params.token_address){
+      builder = builder.where('token_address', params.token_address);
+    }
     // if (params.signature) {
     //   builder = builder.where('signature', params.signature);
     // }
@@ -33,7 +36,15 @@ class PoolTokenService {
     // builder.withCount('projects as projects_created');
     return builder;
   }
-
+  buildSearchQuery(query, searchQuery="") {
+    return query.where((q) => {
+      q.where('name', 'like', `%${searchQuery}%`)
+        .orWhere('token_address', 'like', `%${searchQuery}%`)
+        .orWhere('symbol', 'like', `%${searchQuery}%`)
+        .orWhere('token0', 'like', `%${searchQuery}%`)
+        .orWhere('token1', 'like', `%${searchQuery}%`)
+    })
+  }
   async getNormalTokenInfoFromSC(token){
     const abi= require(`../abi/erc20Token.json`)
     const contract = new web3.eth.Contract(abi, token.token_address)
