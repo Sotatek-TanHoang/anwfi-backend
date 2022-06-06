@@ -140,7 +140,7 @@ class PoolTokenService {
          },
          params: { amount: 1 ,symbol: token.symbol} ,
        })
-       .then((response) => {
+       .then(async(response) => {
        console.log(response.data.data[0])
        var utcDate = response.data.data[0].last_updated;  // ISO-8601 formatted date returned from server
        var localDate = new Date(utcDate);
