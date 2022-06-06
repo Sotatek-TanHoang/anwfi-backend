@@ -7,6 +7,9 @@ class PoolTokenInfo extends Model {
     static get table() {
         return 'pool_token_infos';
     }
+    getLogoUrl(val) {
+        return val ?? ""
+    }
 }
 
 module.exports = PoolTokenInfo
