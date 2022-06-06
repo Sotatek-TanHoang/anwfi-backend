@@ -23,8 +23,8 @@ class PoolsSchema extends Schema {
       table.decimal('liquidity',65);
       table.boolean('is_lp_token');
       table.boolean('is_display').notNullable().defaultTo(0); // Display in page or not
-      table.string('logo_token1', 255);
-      table.string('logo_token2', 255);
+      // table.string('logo_token1', 255);
+      // table.string('logo_token2', 255);
       table.timestamps()
       table.unique(['stake_token']);
 
