@@ -22,7 +22,7 @@ class PoolTokenController {
   }
   async updatePoolToken({ request, response }) {
     try {
-      const inputs = request.only('logo_url');
+      const inputs = request.only('logo_token1','logo_token2');
       const id = request.params.id;
 
       const token = await TokenInforModel.query().where("id", id).first();

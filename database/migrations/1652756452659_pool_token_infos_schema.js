@@ -26,7 +26,9 @@ class PoolTokenInfosSchema extends Schema {
       table.string('total_supply')
       table.string('price', 255)
       table.datetime('last_updated')
-      table.longtext('logo_url')
+      //table.longtext('logo_url')
+      table.longtext('logo_token1');
+      table.longtext('logo_token2');
       table.timestamps()
     })
   }

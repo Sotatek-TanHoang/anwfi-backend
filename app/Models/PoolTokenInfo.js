@@ -7,7 +7,11 @@ class PoolTokenInfo extends Model {
     static get table() {
         return 'pool_token_infos';
     }
-    getLogoUrl(val) {
+    // if val==="" adonis return null.
+    getLogoToken1(val) {
+        return val ?? ""
+    }
+    getLogoToken2(val) {
         return val ?? ""
     }
 }
