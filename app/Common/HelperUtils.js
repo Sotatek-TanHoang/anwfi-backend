@@ -147,14 +147,14 @@ const responseUnauthorized = (message) => {
   return {
     status: 401,
     message: message || 'Unauthorized !',
-    data:null,
+    data: null,
   }
 };
 const responseForbidden = (message) => {
   return {
     status: 403,
     message: message || 'Forbidden !',
-    data:null,
+    data: null,
   }
 };
 const checkSumAddress = (address) => {
@@ -218,8 +218,9 @@ const getProposalHistory = (proposal) => {
   return history;
 
 }
-function formatDecimal(value = '0') {
-  return BigNumber(value).toString()
+function formatDecimal(value) {
+
+  return BigNumber(value ?? '0').toString()
 }
 function compareBigNumber(balance, min_anwfi) {
   let b = new BigNumber(balance);
