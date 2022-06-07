@@ -101,7 +101,7 @@ class ProposalService extends BaseService {
 
       proposal.merge({ up_vote, down_vote, up_vote_anwfi, down_vote_anwfi });
       if (updateDelayedValue) {
-      proposal.merge({ d_up_vote: up_vote, d_down_vote, d_up_vote_anwfi, d_down_vote_anwfi });
+        proposal.merge({ d_up_vote: up_vote, d_down_vote: down_vote, d_up_vote_anwfi: up_vote_anwfi, d_down_vote_anwfi: down_vote_anwfi });
       }
       await proposal.save();
       return proposal;
