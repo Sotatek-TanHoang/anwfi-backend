@@ -7,7 +7,7 @@ const Const = use('App/Common/Const');
 const Database = use('Database')
 const HelperUtils = use('App/Common/HelperUtils')
 const keccak256 = require('keccak256')
-const {create} =require('ipfs-http-client');
+const { create } = require('ipfs-http-client');
 const moment = require('moment');
 class ProposalService extends BaseService {
 
@@ -67,7 +67,7 @@ class ProposalService extends BaseService {
     let builder = this.buildQueryBuilder(params);
     return await builder.fetch().then(res => res.rows)
   }
-  async calcVoteResult(id) {
+  async calcVoteResult(id, updateDelayedValue = false) {
     // TODO: calc vote result after user vote.
     try {
       const proposal = await this.findOne({ id })
@@ -98,8 +98,11 @@ class ProposalService extends BaseService {
       // vote count;
       const up_vote = subQueries[2] ?? 0
       const down_vote = subQueries[3] ?? 0
-      
+
       proposal.merge({ up_vote, down_vote, up_vote_anwfi, down_vote_anwfi });
+      if (updateDelayedValue) {
+      proposal.merge({ d_up_vote: up_vote, d_down_vote, d_up_vote_anwfi, d_down_vote_anwfi });
+      }
       await proposal.save();
       return proposal;
     } catch (e) {
@@ -107,21 +110,21 @@ class ProposalService extends BaseService {
       return;
     }
   }
-  async finishVoteResult(id,isTest) {
+  async finishVoteResult(id, isTest) {
     try {
       const proposal = await ProposalModel.query()
         .where("id", id)
         .where("proposal_status", 1)
         .first();
-        console.log('inside 1');
-        if (!proposal) throw new Error("cannot find proposal or this proposal not active")
-      
-      if(!isTest){
+      console.log('inside 1');
+      if (!proposal) throw new Error("cannot find proposal or this proposal not active")
+
+      if (!isTest) {
         // current < end_time
-      if (moment(new Date().toISOString()).isBefore(proposal.end_time)) {
-        console.log('aborted');
-        return "It is not right time to check finish valua"
-      }
+        if (moment(new Date().toISOString()).isBefore(proposal.end_time)) {
+          console.log('aborted');
+          return "It is not right time to check finish valua"
+        }
       }
       const passPercentage = HelperUtils.calcPercentage({
         up_vote: proposal.up_vote,
@@ -148,24 +151,26 @@ class ProposalService extends BaseService {
       // save timestamp of result;
       proposal.tmp_result = ProposalModel.formatDates('tmp_result', new Date().toISOString());
 
-      const picked = (({ wallet_address,proposal_type,name,current_value,new_value ,description,start_time,end_time ,min_anwfi,
-        quorum,pass_percentage,proposal_status,up_vote,down_vote,up_vote_anwfi,down_vote_anwfi,tmp_result}) =>
-       ({ wallet_address,proposal_type,name,current_value,new_value ,description,start_time,end_time ,min_anwfi,
-        quorum,pass_percentage,proposal_status,up_vote,down_vote,up_vote_anwfi,down_vote_anwfi,tmp_result}))
-       (proposal);
-       if(picked.proposal_status===-1) picked.proposal_status="failed"
-       if(picked.proposal_status===2) picked.proposal_status="success"
+      const picked = (({ wallet_address, proposal_type, name, current_value, new_value, description, start_time, end_time, min_anwfi,
+        quorum, pass_percentage, proposal_status, up_vote, down_vote, up_vote_anwfi, down_vote_anwfi, tmp_result }) =>
+      ({
+        wallet_address, proposal_type, name, current_value, new_value, description, start_time, end_time, min_anwfi,
+        quorum, pass_percentage, proposal_status, up_vote, down_vote, up_vote_anwfi, down_vote_anwfi, tmp_result
+      }))
+        (proposal);
+      if (picked.proposal_status === -1) picked.proposal_status = "failed"
+      if (picked.proposal_status === 2) picked.proposal_status = "success"
       //  console.log(picked)
 
-      const data=JSON.stringify(picked) 
-      let ipfs =await create({
-        host :"ipfs.infura.io",
-        post:5001,
-        protocol:"https"
+      const data = JSON.stringify(picked)
+      let ipfs = await create({
+        host: "ipfs.infura.io",
+        post: 5001,
+        protocol: "https"
       })
 
-      let result =await ipfs.add(data)
-      proposal.ipfs_link=result.path
+      let result = await ipfs.add(data)
+      proposal.ipfs_link = result.path
       // const proposalHash=keccak256(Buffer.from(data)).toString('hex')
       // console.log("hash----",proposalHash)
 
