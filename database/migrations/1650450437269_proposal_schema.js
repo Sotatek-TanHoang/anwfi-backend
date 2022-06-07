@@ -30,6 +30,11 @@ class ProposalSchema extends Schema {
      table.decimal('down_vote',20,0).notNullable().defaultTo(0);
      table.decimal('up_vote_anwfi',60,18).notNullable().defaultTo(0);
      table.decimal('down_vote_anwfi',60,18).notNullable().defaultTo(0);
+     // delayed above values
+     table.decimal('d_up_vote',20,0).notNullable().defaultTo(0);
+     table.decimal('d_down_vote',20,0).notNullable().defaultTo(0);
+     table.decimal('d_up_vote_anwfi',60,18).notNullable().defaultTo(0);
+     table.decimal('d_down_vote_anwfi',60,18).notNullable().defaultTo(0);
       // history tracking
       table.datetime('tmp_created').nullable();
       table.datetime('tmp_active').nullable();

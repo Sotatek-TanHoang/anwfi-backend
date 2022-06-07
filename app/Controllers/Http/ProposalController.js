@@ -167,10 +167,10 @@ class ProposalController {
       const proposal = await proposalQuery.paginate(page, limit);
       proposal.rows.forEach(r=>{
         r.__meta__={
-          up_vote:r.up_vote,
-          down_vote:r.down_vote,
-          up_vote_anwfi:HelperUtils.formatDecimal(r.up_vote_anwfi),
-          down_vote_anwfi:HelperUtils.formatDecimal(r.down_vote_anwfi)
+          up_vote:r.d_up_vote,
+          down_vote:r.d_down_vote,
+          up_vote_anwfi:HelperUtils.formatDecimal(r.d_up_vote_anwfi),
+          down_vote_anwfi:HelperUtils.formatDecimal(r.d_down_vote_anwfi)
         }
       })
       return response.ok(HelperUtils.responseSuccess(proposal));
