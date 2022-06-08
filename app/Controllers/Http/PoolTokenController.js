@@ -3,6 +3,7 @@
 const HelperUtils = use('App/Common/HelperUtils');
 
 const Const = use('App/Common/Const');
+const Database = use("Database")
 // const VoteModel = use('App/Models/Vote');
 // const ProposalModel = use('App/Models/Proposal');
 
@@ -21,19 +22,49 @@ class PoolTokenController {
     }
   }
   async updatePoolToken({ request, response }) {
+    const trx = await Database.beginTransaction();
     try {
-      const inputs = request.only('logo_token1', 'logo_token2');
+      const inputs = request.only(['logo_token1', 'logo_token2']);
       const id = request.params.id;
-
+      console.log(inputs);
       const token = await TokenInforModel.query().where("id", id).first();
       if (!token) {
         return response.badRequest(HelperUtils.responseBadRequest("Error: update non-existing token."))
       }
-      token.merge(inputs);
-      await token.save();
+      const { logo_token1 = null, logo_token2 = null } = inputs;
+      // update global.
+      // is normal token.
+
+      if (!token.is_lp_token) {
+        token.merge({ logo_token1 });
+        await Promise.all([
+          await trx.update({ logo_token1:logo_token1 }).into('pool_token_infos').where("token0", token.token_address),
+          await trx.update({ logo_token2:logo_token1 }).into('pool_token_infos').where("token1", token.token_address)
+        ])
+      } else {
+        // is lp_token.
+        token.merge({ logo_token1, logo_token2 });
+        // update normal token
+        await Promise.all([
+          trx.update({ logo_token1 }).into('pool_token_infos').where("token_address", token.token0),
+          trx.update({ logo_token1:logo_token2 }).into('pool_token_infos').where("token_address", token.token1),
+          // update other lp_tokens
+          // logo1
+          trx.update({ logo_token1 }).into('pool_token_infos').where("token0", token.token0),
+          trx.update({ logo_token1 }).into('pool_token_infos').where("token0", token.token1),
+          // logo2
+          trx.update({ logo_token2 }).into('pool_token_infos').where("token1", token.token0),
+          trx.update({ logo_token2 }).into('pool_token_infos').where("token1", token.token1),
+
+        ])
+      }
+
+      await token.save(trx);
+      await trx.commit();
       return HelperUtils.responseSuccess(token.toJSON());
     } catch (e) {
       console.log(e);
+      await trx.rollback();
       return response.badRequest(HelperUtils.responseBadRequest("Error: update pool token failed"))
     }
   }
