@@ -38,7 +38,7 @@ class UserAuthController {
   }
 
   async checkWalletAddress({ request }) {
-      const inputs = request.only(['wallet_address']);
+    const inputs = request.only(['wallet_address']);
     try {
       const wallet_address = HelperUtils.checkSumAddress(inputs.wallet_address || ' ');
       const adminService = new UserService();
@@ -47,27 +47,27 @@ class UserAuthController {
       console.log('Check Wallet: ', inputs);
       const user = await adminService.findUser({
         wallet_address,
-        above_governance:true
+        above_governance: true
       });
       if (!user) {
         return HelperUtils.responseSuccess({
           wallet_address,
           available: true,
-          message:'You can use this wallet address'
+          message: 'You can use this wallet address'
         });
       }
 
       return HelperUtils.responseSuccess({
         wallet_address,
         available: false,
-        message:'This address is already used'
+        message: 'This address is already used'
       });
     } catch (e) {
       console.log('ERROR: ', e);
       return HelperUtils.responseSuccess({
-        wallet_address:inputs?.wallet_address ?? "no wallet provided",
+        wallet_address: inputs?.wallet_address ?? "no wallet provided",
         available: false,
-        message:'This address is invalid'
+        message: 'This address is invalid'
       });
     }
   }
@@ -80,9 +80,10 @@ class UserAuthController {
     const param = request.all();
     const wallet_address = Web3.utils.toChecksumAddress(param.wallet_address)
     try {
-      const authService = new AuthUserService();
-      const user = await authService.login({
-        'wallet_address': wallet_address
+      const authService = new UserService();
+      const user = await authService.findUser({
+        'wallet_address': wallet_address,
+        above_governance: true
       });
       if (!user) {
         throw new Error("Error: User not exist.")
@@ -132,7 +133,7 @@ class UserAuthController {
     try {
       const inputs = request.only(['username', 'email'])
 
-      const profile =await new UserService().findUser({ id: auth.user.id })
+      const profile = await new UserService().findUser({ id: auth.user.id })
       if (!profile)
         throw new Error()
       profile.merge(inputs);
