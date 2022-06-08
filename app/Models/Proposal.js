@@ -20,7 +20,11 @@ class Proposal extends Model {
       'up_vote',
       'down_vote',
       "up_vote_anwfi",
-      'down_vote_anwfi'
+      'down_vote_anwfi',
+      'd_up_vote',
+      'd_down_vote',
+      "d_up_vote_anwfi",
+      'd_down_vote_anwfi'
     ]
   }
   votes() {
