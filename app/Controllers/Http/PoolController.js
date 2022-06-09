@@ -43,7 +43,7 @@ class PoolController {
       const pool = await (new PoolService()).findOne({ stake_token: inputs.stake_token });
       console.log(pool)
       if (pool) {
-        return response.badRequest(HelperUtils.responseErrorInternal('ERROR: Already have pool with this stake token !'));
+        return response.badRequest(HelperUtils.responseDuplical( { "error_type": "ALREADY_EXIST" },'ERROR: Already have pool with this stake token !'));
       }
       else return response.ok(HelperUtils.responseSuccess( " This pool stake token had not use in any pool!"));
     } catch (e) {

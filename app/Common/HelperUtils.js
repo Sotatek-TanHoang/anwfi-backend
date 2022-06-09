@@ -135,6 +135,14 @@ const responseBadRequest = (message) => {
     data: null,
   }
 };
+const responseDuplical = (data,message) => {
+  return {
+    status: 400,
+    message: message || 'Looks like this param is duplical while this field is unique',
+    data: data,
+  }
+};
+
 
 const responseSuccess = (data = null, message) => {
   return {
@@ -256,6 +264,7 @@ module.exports = {
   responseSuccess,
   responseNotFound,
   responseErrorInternal,
+  responseDuplical,
   responseBadRequest,
   responseUnauthorized,
   responseForbidden,

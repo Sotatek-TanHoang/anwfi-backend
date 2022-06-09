@@ -43,11 +43,11 @@ class PoolService {
     if(params.with_token_info){
       builder = builder.with('token_info');
     }
-    if(params.DESC_APR=true){
-      builder = builder.orderBy('apr', 'desc')
+    if(params.DESC_APR ==1){
+      builder = builder.orderBy('apr', "desc")
     }
-    if(params.DESC_APR=false){
-      builder = builder.orderBy('apr', 'asc')
+    if(params.DESC_APR==0){
+      builder = builder.orderBy('apr', "asc")
     }
 
     // get number of projects that each admin created
@@ -137,7 +137,6 @@ class PoolService {
   if(tokenInfo.symbol="ANWFI") ACCEPT_TOKEN_PRICE=1  //anwfi price
   const contractService=new ContractService()
   const getTotalAllocPointFromSC= await contractService.getTotalAllocPointFromSC()
-  console.log(getTotalAllocPointFromSC)
   var POOL_REWARD_IN_1_YEAR = pool.alloc_point / getTotalAllocPointFromSC * 100 * ANWFI_PER_BLOCK * BLOCK_IN_1_YEAR
   if(TOTAL_VALUE_LOCKED==0) pool.apr=0
   else pool.apr= (POOL_REWARD_IN_1_YEAR * REWARD_TOKEN_PRICE)/ (TOTAL_VALUE_LOCKED * ACCEPT_TOKEN_PRICE)
