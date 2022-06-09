@@ -7,7 +7,7 @@ const Const = use('App/Common/Const');
 const TokenInfoModel = use('App/Models/PoolTokenInfo');
 const PoolModel = use('App/Models/Pools');
 const { BigNumber } = require("bignumber.js");
-
+const ContractService=use('App/Services/ContractService');
 class PoolService {
 
   buildQueryBuilder(params) {
@@ -43,6 +43,12 @@ class PoolService {
     if(params.with_token_info){
       builder = builder.with('token_info');
     }
+    if(params.DESC_APR=true){
+      builder = builder.orderBy('apr', 'desc')
+    }
+    if(params.DESC_APR=false){
+      builder = builder.orderBy('apr', 'asc')
+    }
 
     // get number of projects that each admin created
     // builder.withCount('projects as projects_created');
@@ -76,7 +82,7 @@ class PoolService {
     return await builder.fetch().then(res => res.rows)
   }
 
-  async caculatorLiquidity(pool){
+  async caculatorLiquidityAndAPR(pool){
   const data= await TokenInfoModel.query().where('token_address',pool.stake_token).first()
   const tokenInfo= data.toJSON();
   
@@ -120,17 +126,36 @@ class PoolService {
  }
  else{
    console.log("error data",pool.is_lp_token, tokenInfo.is_lp_token,pool.id)
- }
- const newPool = await PoolModel.query().where("id",pool.id).first()
- newPool.liquidity = pool.liquidity
- newPool.name=pool.name
- await newPool.save()
+  }
+  // caculator APR 
+  const REWARD_TOKEN_PRICE =1 //anwfi price
+  const ANWFI_PER_BLOCK=10
+  const BLOCK_IN_1_YEAR=2102400
 
- }
+  const TOTAL_VALUE_LOCKED=pool.total_stake
+  var ACCEPT_TOKEN_PRICE=0.05
+  if(tokenInfo.symbol="ANWFI") ACCEPT_TOKEN_PRICE=1  //anwfi price
+  const contractService=new ContractService()
+  const getTotalAllocPointFromSC= await contractService.getTotalAllocPointFromSC()
+  console.log(getTotalAllocPointFromSC)
+  var POOL_REWARD_IN_1_YEAR = pool.alloc_point / getTotalAllocPointFromSC * 100 * ANWFI_PER_BLOCK * BLOCK_IN_1_YEAR
+  if(TOTAL_VALUE_LOCKED==0) pool.apr=0
+  else pool.apr= (POOL_REWARD_IN_1_YEAR * REWARD_TOKEN_PRICE)/ (TOTAL_VALUE_LOCKED * ACCEPT_TOKEN_PRICE)
+  console.log( pool.id , "this pool have apr ------------------",pool.apr)
 
-  async caculatorAllLiquidity(){
+  const newPool = await PoolModel.query().where("id",pool.id).first()
+  newPool.liquidity = pool.liquidity
+  newPool.name=pool.name
+  newPool.apr=pool.apr
+  await newPool.save()
+
+}
+
+  async caculatorAll(){
     const listPool =(await PoolModel.query().whereNot("status",0).fetch()).toJSON()
-    await Promise.all(listPool.map(async (pool)=> {await this.caculatorLiquidity(pool)}))
+    await Promise.all(listPool.map(async (pool)=> {
+      await this.caculatorLiquidityAndAPR(pool)
+    }))
   }
 
   async findByProjectId(poolId){

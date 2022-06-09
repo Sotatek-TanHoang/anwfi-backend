@@ -35,6 +35,23 @@ class PoolController {
       return response.badRequest(HelperUtils.responseErrorInternal('ERROR: create pool fail !'));
     }
   }
+  async checkPoolToken({ request, auth, response }) {
+    try {
+      const inputs = request.only(['stake_token']);
+      console.log('check pool with PoolToken: ', inputs);
+      
+      const pool = await (new PoolService()).findOne({ stake_token: inputs.stake_token });
+      console.log(pool)
+      if (pool) {
+        return response.badRequest(HelperUtils.responseErrorInternal('ERROR: Already have pool with this stake token !'));
+      }
+      else return response.ok(HelperUtils.responseSuccess( " This pool stake token had not use in any pool!"));
+    } catch (e) {
+      console.log(e);
+      return response.badRequest(HelperUtils.responseErrorInternal('ERROR !'));
+    }
+  }
+
   async updatePool({ request, params, auth, response }) {
     try {
       const id = params.poolId
@@ -124,7 +141,7 @@ class PoolController {
   }
   async getPoolInfo({ request }) {
     try {
-      const params = request.only(['limit', 'page', 'is_lp_token', 'stake_token', 'status', 'name', 'is_display', 'is_lp_token']);
+      const params = request.only(['limit', 'page', 'is_lp_token', 'stake_token', 'status', 'name', 'is_display', 'is_lp_token','DESC_APR']);
       const searchQuery = request.input('query');
       const limit = params.limit || Const.DEFAULT_LIMIT;
       const page = params.page || 1;
@@ -159,7 +176,7 @@ class PoolController {
   async getPoolLiquidity({ request }) {
     try {
       const poolService = new PoolService()
-      const data = await poolService.caculatorAllLiquidity()
+      const data = await poolService.caculatorAll()
 
       return HelperUtils.responseSuccess({
 

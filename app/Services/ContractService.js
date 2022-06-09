@@ -61,7 +61,10 @@ class ContractService {
       return (await PoolUserStake.query().where('pool_id',poolId).paginate(page, limit)).toJSON()
 
      }
-       
+   async getTotalAllocPointFromSC(){
+    const contract= this.getContract('pools')
+    return await contract.methods.totalAllocPoint().call()
+   }
    async getPoolInfoFromSC(){
     const contract= this.getContract('pools')
     const poolLength=await contract.methods.poolLength().call()

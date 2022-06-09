@@ -16,10 +16,10 @@ class FetchPoolInfo extends Task {
 
   async handle() {
     const contract = new ContractService()
-    const data = await contract.getPoolInfoFromSC()
-    const poolService = new PoolService()
-    await poolService.caculatorAllLiquidity()
+    await contract.getPoolInfoFromSC() //fetch pool info from SC
 
+    const poolService = new PoolService()
+    await poolService.caculatorAll() // caculator liquidity and apr off each pool
 
     return;
   }

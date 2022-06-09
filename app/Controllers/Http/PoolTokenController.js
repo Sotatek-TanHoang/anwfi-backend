@@ -96,7 +96,7 @@ class PoolTokenController {
 
     } catch (e) {
       console.log(e.message);
-      return HelperUtils.responseErrorInternal('ERROR: get proposal list fail !');
+      return HelperUtils.responseErrorInternal('ERROR: get pool token list fail !');
     }
   }
 }

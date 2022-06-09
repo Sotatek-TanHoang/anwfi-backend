@@ -21,6 +21,7 @@ class PoolsSchema extends Schema {
       table.integer('reward_amount');// default=0 (because AWN token is mintable)
       table.integer('status').notNullable().defaultTo(0);// defaut is create
       table.decimal('liquidity',65);
+      table.decimal('apr',20,15);
       table.boolean('is_lp_token');
       table.boolean('is_display').notNullable().defaultTo(0); // Display in page or not
       // table.string('logo_token1', 255);
