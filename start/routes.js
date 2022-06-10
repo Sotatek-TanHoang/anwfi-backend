@@ -93,6 +93,7 @@ Route.group(() => {
   Route.post('/pool', 'PoolController.createPool').validator('CheckPool') 
   Route.put('/pool/:poolId', 'PoolController.updatePool').validator('CheckPool')   
   Route.put("/pool/token/:id","PoolTokenController.updatePoolToken");
+  Route.get("/pool/token/check","PoolController.checkPoolStakeToken")
   
 }).middleware(['typeAdmin', 'checkPrefix', 'checkAdminJwtSecret', 'auth:admin',
 "checkAdminAbove",
