@@ -68,18 +68,18 @@ class PoolTokenController {
       return response.badRequest(HelperUtils.responseBadRequest("Error: update pool token failed"))
     }
   }
-  async getTokenInfoFromSC() {
+  async getTokenInfoFromSC({response}) {
     try {
       const tokenService = new PoolTokenService()
       await tokenService.getTokenInfoFromSC()
     } catch (e) {
       console.log(e);
-      return HelperUtils.responseErrorInternal('ERROR: get pool token  info  fail !');
+      return response.internalServerError(HelperUtils.responseErrorInternal('ERROR: get pool token  info  fail !'));
     }
   }
 
 
-  async getPoolTokenInfo({ request }) {
+  async getPoolTokenInfo({ request ,response}) {
     try {
 
       const params = request.only(['limit', 'page', 'is_lp_token', 'token_address', 'symbol']);
@@ -96,7 +96,7 @@ class PoolTokenController {
 
     } catch (e) {
       console.log(e.message);
-      return HelperUtils.responseErrorInternal('ERROR: get pool token list fail !');
+      return response.internalServerError(HelperUtils.responseErrorInternal('ERROR: get pool token list fail !'));
     }
   }
 }

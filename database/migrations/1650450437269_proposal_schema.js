@@ -23,7 +23,7 @@ class ProposalSchema extends Schema {
       table.integer('pass_percentage', 6).notNullable();// min percent of yes vote to acept proposal
       table.tinyint('proposal_status').notNullable().default(Const.PROPOSAL_STATUS.CREATED);
       table.string('proposal_hash');
-      table.string('ipfs_link');
+      table.string('ipfs_link');// ipfs link that proposal up to( when finish  vote and count vote)
 
      // vote tracking
      table.decimal('up_vote',20,0).notNullable().defaultTo(0);

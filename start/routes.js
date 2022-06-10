@@ -107,15 +107,15 @@ Route.group(() => {
 
  // Pool info APIs:
 Route.group(() => {
-  Route.get('/pool-token', 'PoolTokenController.getPoolTokenInfo')  
-  Route.get('/pool', 'PoolController.getPoolInfo') // get list pool 
+  Route.get('/pool-token', 'PoolTokenController.getPoolTokenInfo')  // get token info of pool stake
+  Route.get('/pool', 'PoolController.getPoolInfo') // get list pool info
   Route.get('/pool/validate_token', 'PoolController.checkPoolToken')  
   Route.get('/pool/:stake_token', 'PoolController.getPoolDetail')  
-  Route.get('/pool-participant', 'PoolController.getPoolParticipant')   // fetch pool info from SC 
+  Route.get('/pool-participant', 'PoolController.getPoolParticipant')   // fetch pool Participant info from SC 
 
   // test API
   Route.post('/pool-sc', 'PoolController.createOrUpdate')   // fetch pool info from SC 
-  Route.get('/pool-liquidity', 'PoolController.getPoolLiquidity') // fetch pool info from SC 
+  Route.get('/pool-liquidity', 'PoolController.getPoolLiquidity') // caculator loqidity and apr of pool  
   Route.get('/finish-proposal', 'ProposalController.finish')  
   Route.post('/pool-token', 'PoolTokenController.getTokenInfoFromSC')  
   Route.get('/token-price', 'PoolTokenController.fetchTokenPrice')  // fetch token price from coinmarket cap

@@ -8,7 +8,7 @@ class CrawlPoolEventsSchema extends Schema {
     this.create('crawl_pool_events', (table) => {
       table.increments()
       table.string('wallet_address', 255)
-      table.integer('pool_id')
+      table.integer('pool_id')// is pool index n pool table( pool index is pool id of this pool in Smart Contract )
       table.decimal("amount",40,20)
       table.string('event', 255)
       // table.integer('is_grant')

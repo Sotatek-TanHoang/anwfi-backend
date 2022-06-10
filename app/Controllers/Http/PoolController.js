@@ -101,13 +101,13 @@ class PoolController {
     }
   }
 
-  async createOrUpdate() {
+  async createOrUpdate({response}) {
     try {
       const contract = new ContractService()
       const data = await contract.getPoolInfoFromSC()
     } catch (e) {
       console.log(e);
-      return HelperUtils.responseErrorInternal('ERROR: get pool info  fail !');
+      return response.internalServerError(HelperUtils.responseErrorInternal('ERROR: get pool info  fail !'));
     }
   }
 
@@ -122,7 +122,7 @@ class PoolController {
   // }
 
 
- async getPoolParticipant({request}){
+ async getPoolParticipant({request,response}){
   try {
     const params = request.only(['limit', 'page','poolId']);
     const limit = params.limit || Const.DEFAULT_LIMIT;
@@ -135,11 +135,11 @@ class PoolController {
 
     } catch (e) {
       console.log(e);
-      return HelperUtils.responseErrorInternal('ERROR: get pool info  fail !');
+      return response.internalServerError( HelperUtils.responseErrorInternal('ERROR: get pool partycipant  fail !'));
     }
 
   }
-  async getPoolInfo({ request }) {
+  async getPoolInfo({ request, response}) {
     try {
       const params = request.only(['limit', 'page', 'is_lp_token', 'stake_token', 'status', 'name', 'is_display', 'is_lp_token','DESC_APR']);
       const searchQuery = request.input('query');
@@ -157,10 +157,10 @@ class PoolController {
       return HelperUtils.responseSuccess(pool);
     } catch (e) {
       console.log(e.message);
-      return HelperUtils.responseErrorInternal('ERROR: get pools list fail !');
+      return response.internalServerError(HelperUtils.responseErrorInternal('ERROR: get pools list fail !'));
     }
   }
-  async getPoolDetail({ params }) {
+  async getPoolDetail({ params ,response}) {
     try {
       const stakeToken = params.stake_token
       const poolService = new PoolService()
@@ -169,11 +169,11 @@ class PoolController {
       return HelperUtils.responseSuccess(pool);
     } catch (e) {
       console.log(e.message);
-      return HelperUtils.responseErrorInternal('ERROR: get pool detail fail !');
+      return response.internalServerError(HelperUtils.responseErrorInternal('ERROR: get pool detail fail !'));
     }
   }
 
-  async getPoolLiquidity({ request }) {
+  async getPoolLiquidity({ request ,response}) {
     try {
       const poolService = new PoolService()
       const data = await poolService.caculatorAll()
@@ -183,7 +183,7 @@ class PoolController {
       });
     } catch (e) {
       console.log(e.message);
-      return HelperUtils.responseErrorInternal('ERROR: get pool liquidity fail !');
+      return response.internalServerError(HelperUtils.responseErrorInternal('ERROR: get pool liquidity fail !'));
     }
   }
 }
