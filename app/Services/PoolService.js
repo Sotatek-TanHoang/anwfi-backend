@@ -134,7 +134,9 @@ class PoolService {
 
   const TOTAL_VALUE_LOCKED=pool.total_stake
   var ACCEPT_TOKEN_PRICE=0.05
-  if(tokenInfo.symbol="ANWFI") ACCEPT_TOKEN_PRICE=1  //anwfi price
+  if(tokenInfo.symbol==="ANWFI") {
+    ACCEPT_TOKEN_PRICE=1  //anwfi price ANWFI
+  }
   const contractService=new ContractService()
   const getTotalAllocPointFromSC= await contractService.getTotalAllocPointFromSC()
   var POOL_REWARD_IN_1_YEAR = pool.alloc_point / getTotalAllocPointFromSC * 100 * ANWFI_PER_BLOCK * BLOCK_IN_1_YEAR

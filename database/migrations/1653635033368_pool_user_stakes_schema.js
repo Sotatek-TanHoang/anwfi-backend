@@ -8,7 +8,7 @@ class PoolUserStakesSchema extends Schema {
     this.create('pool_user_stakes', (table) => {
       table.increments()
       table.string('wallet_address', 255)
-      table.integer('pool_id')
+      table.integer('pool_id')// is pool index n pool table( pool index is pool id of this pool in Smart Contract )
       table.decimal("amount",40,20)
       table.decimal("reward",40,20)
       table.timestamps()

@@ -8,7 +8,7 @@ class CrawlStatusSchema extends Schema {
     this.create('crawl_status', (table) => {
       table.increments()
       table.string('contract_name').notNullable()
-      table.integer('block_number').unsigned().notNullable()
+      table.integer('block_number').unsigned().notNullable()// save the block number  that crawler had crawler to
       table.bigInteger('created_at').unsigned().notNullable()
       table.bigInteger('updated_at').unsigned().notNullable()
     })

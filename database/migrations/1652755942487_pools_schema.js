@@ -13,7 +13,7 @@ class PoolsSchema extends Schema {
       table.decimal('total_stake',40);// total token stake in this pool
       table.decimal('alloc_point',40);// 
       table.integer('last_reward_block');
-      table.integer('acc_reward_per_share');
+      table.decimal('acc_reward_per_share',40);
       table.integer('bonus_end_block');//  time when bonus_multiplier 
       table.integer('start_block'); 
       table.integer('min_stake_period');// default =0
