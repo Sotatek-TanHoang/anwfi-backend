@@ -135,7 +135,7 @@ class PoolController {
 
     } catch (e) {
       console.log(e);
-      return response.internalServerError( HelperUtils.responseErrorInternal('ERROR: get pool partycipant  fail !'));
+      return response.internalServerError( HelperUtils.responseErrorInternal('ERROR: get pool participant fail !'));
     }
 
   }
