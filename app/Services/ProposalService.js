@@ -176,6 +176,12 @@ class ProposalService extends BaseService {
 
       // proposal.proposal_hash="0x"+proposalHash
       // proposal.merge({ up_vote, down_vote, up_vote_anwfi, down_vote_anwfi });
+
+      // anwfi vote balance
+      const { up_vote = 0, down_vote = 0, up_vote_anwfi = 0, down_vote_anwfi = 0 } = proposal;
+
+      proposal.merge({ d_up_vote: up_vote, d_down_vote: down_vote, d_up_vote_anwfi: up_vote_anwfi, d_down_vote_anwfi: down_vote_anwfi });
+
       await proposal.save();
       return proposal;
     } catch (e) {
